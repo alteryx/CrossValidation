@@ -27,6 +27,7 @@ config <- list(
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
+
 #' ### Defaults
 #' 
 #' These defaults are used when the R code is run outside Alteryx
@@ -53,6 +54,7 @@ areIdentical <- function(v1, v2){
 }
 
 #' ## Check predictor variables
+#' 
 #' Check if predictor variables in the models and input data are identical.
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
@@ -106,14 +108,14 @@ checkXVars <- function(inputs){
   }
 }
 
-#' Given a factor variable and a set of records in a fixed trial and fold, return the list of classes not present in that trial and fold.
+#' Given a factor variable and a set of records in a fixed trial and fold,
+#' return the list of classes not present in that trial and fold.
 getMissingClasses <- function(currentClasses, currentRecords) {
   currentClasses[(!(currentClasses %in% currentRecords))]
 }
 
 #' For each factor variable, check to see if all levels are present in each fold. 
 #' If not, error out with an informative message.
-#For each factor variable, check to see if all levels are present in each fold. If not, error out with an informative message.
 checkFactorVars <- function(data, folds, config) {
   #All of the discrete variables will be some type of string in Alteryx. So they'll be read as factors, since stringsAsFactors is TRUE in read.Alteryx.
   factorVars <- data[,sapply(data, FUN = is.factor), drop = FALSE]
@@ -192,9 +194,9 @@ getYvars <- function(data, models) {
   # throw an error.
   y_names <- sapply(models, getOneYVar)
   if (!all(y_names == y_names[1])) {
-    AlteryxRDataX::stop.Alteryx("More than one target variable are present in the provided models")
+    stop.Alteryx2("More than one target variable are present in the provided models")
   } else if (!(y_names[1] == colnames(data[,1, drop = FALSE]))) {
-    AlteryxRDataX::stop.Alteryx("The target variable from the models is different than the target chosen in the configuration. Please check your configuration settings and try again.")
+    stop.Alteryx2("The target variable from the models is different than the target chosen in the configuration. Please check your configuration settings and try again.")
   }
   # get the target variable name
   y_name <- y_names[1]
@@ -375,7 +377,7 @@ cvResults <- function(config, data, models, modelNames) {
   if (config$classification) {
     myLevels <- attr(yVar, "levels")
     if (length(myLevels) < 2) {
-      AlteryxRDataX::stop.Alteryx("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
+      stop.Alteryx2("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
     } else if (length(myLevels) == 2) {
       #Use the function from the Model Comparison tool to get/set positive class:
       setPositiveClass <- function(tar_lev) {
