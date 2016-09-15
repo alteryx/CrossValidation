@@ -14,7 +14,7 @@
 library(AlteryxPredictive)
 print("loaded library")
 config <- list(
- `classification` = radioInput('%Question.classification%' , FALSE),
+ `classification` = radioInput('%Question.classification%' , TRUE),
  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
  `numberFolds` = numericInput('%Question.numberFolds%' , 5),
  `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -33,11 +33,8 @@ options(alteryx.debug = config$debug)
 macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
 dataDir <- file.path(macroDirectory, "Data")
 defaults <- list(
-  data = read.csv(file = file.path(dataDir, "default_data.csv")),
-  models = rbind(
-    readRDS(file.path(dataDir, "default_linreg.RDS")),
-    readRDS(file.path(dataDir, "default_boosted.RDS"))
-  )
+  data = readRDS(file.path(dataDir, "data.rds")),
+  models = readRDS(file.path(dataDir, "models.rds"))
 )
 
 #' ### Inputs
@@ -60,18 +57,37 @@ areIdentical <- function(v1, v2){
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
-  print("about to get the xvars")
   modelXVars <- lapply(inputs$models, getXVars)
-  print("got the xvars")
   dataXVars <- names(inputs$data[,-1])
   errorMsg <- NULL
-  for (i in numModels - 1){
-    mvars1 <- modelXVars[[i]]; mvars2 <- modelXVars[[i + 1]]
-    if (areIdentical(mvars1, mvars2)){
-      errorMsg <- paste("Models", modelNames[i] , "and", modelNames[i + 1],
-                        "were created using different predictor variables.")
-      stopMsg <- "Please ensure all models were created using the same predictors."
-    } else if (!all(mvars1 %in% dataXVars)){
+  if (numModels > 1) {
+    for (i in 1:(numModels - 1)){
+      mvars1 <- modelXVars[[i]]
+      mvars2 <- modelXVars[[i + 1]]
+      if (!areIdentical(mvars1, mvars2)){
+        errorMsg <- paste("Models", modelNames[i] , "and", modelNames[i + 1],
+                          "were created using different predictor variables.")
+        stopMsg <- "Please ensure all models were created using the same predictors."
+      } 
+      else if (!all(mvars1 %in% dataXVars)){
+        errorMsg <- paste("Model ", modelNames[i], 
+                          "used predictor variables which were not contained in the input data.")
+        stopMsg <- paste("Please ensure input data contains all the data",
+                         "used to create the models and try again.")
+      } else if (!all(dataXVars %in% mvars1)){
+        errorMsg <- paste("The input data contained variables not used in model", 
+                          modelNames[i])
+        stopMsg <- paste("Please be sure to select only the fields actually used as",
+                         "predictors in the models and try again.")
+      }
+      if (!is.null(errorMsg)){
+        AlteryxMessage2(errorMsg, iType = 2, iPriority = 3)
+        stop.Alteryx2(stopMsg)
+      }
+    }
+  } else {
+    mvars1 <- modelXVars[[1]]
+    if (!all(mvars1 %in% dataXVars)){
       errorMsg <- paste("Model ", modelNames[i], 
                         "used predictor variables which were not contained in the input data.")
       stopMsg <- paste("Please ensure input data contains all the data",
@@ -82,7 +98,8 @@ checkXVars <- function(inputs){
       stopMsg <- paste("Please be sure to select only the fields actually used as",
                        "predictors in the models and try again.")
     }
-    if (isTRUE(errorMsg)){
+    
+    if (!is.null(errorMsg)){
       AlteryxMessage2(errorMsg, iType = 2, iPriority = 3)
       stop.Alteryx2(stopMsg)
     }
@@ -90,9 +107,9 @@ checkXVars <- function(inputs){
 }
 
 #' Given a factor variable and a set of records in a fixed trial and fold, return the list of classes not present in that trial and fold.
-  getMissingClasses <- function(currentClasses, currentRecords) {
-    currentClasses[(!(currentClasses %in% currentRecords))]
-  }
+getMissingClasses <- function(currentClasses, currentRecords) {
+  currentClasses[(!(currentClasses %in% currentRecords))]
+}
 
 #' For each factor variable, check to see if all levels are present in each fold. 
 #' If not, error out with an informative message.
@@ -167,13 +184,9 @@ unserializeToChar <- function(string) {
 #the Y variable from each model and checks them against each other and the Y variable from the input data.
 getOneYVar <- function(model) {
   if (class(model) == "naiveBayes") {
-    bayes_call <- model$call
-    print("this is bayes_call")
-    print(bayes_call)
-    return(as.character(bayes_call[[3]]))
+    bayes_yvar <- model$yvars
+    return(as.character(bayes_yvar))
   } else {
-    print("this is the non-bayes call")
-    print(model$call)
     return(as.character(formula(model$call))[2])
   }
 }
@@ -183,9 +196,6 @@ getYvars <- function(data, models) {
   # Get the names of the target fields and make sure they are all same. If not,
   # throw an error.
   y_names <- sapply(models, getOneYVar)
-  print("got y_names")
-  print("y_names are:")
-  print(y_names)
   if (!all(y_names == y_names[1])) {
     AlteryxRDataX::stop.Alteryx("More than one target variable are present in the provided models")
   } else if (!(y_names[1] == colnames(data[,1, drop = FALSE]))) {
@@ -208,7 +218,7 @@ getMeasuresClassification <- function(actual, scoredData, scoredOutput, posClass
     negClassCol <- which(myLevels != posClass)
     predictions <- scoredData[,posClassCol]
     predictionObj <- prediction(predictions = predictions, labels = actual)
-
+    
     # =================================================================
     # Quick Reference:
     #       precision = tp / (tp + fp)
@@ -232,20 +242,14 @@ getMeasuresClassification <- function(actual, scoredData, scoredOutput, posClass
     F1 <- 2*(precision*recall)/(precision + recall)
     #F1 <- performance(predictionObj, "f")
     #F1 <- unlist(F1@y.values) # converting S4 class to scalar
-
+    
     AUC <- performance(prediction.obj = predictionObj, measure = "auc")
-    print("initial definition of AUC is:")
-    print(AUC)
     AUC <- unlist(AUC@y.values)
-    print("AUC after being unlisted:")
-    print(AUC)
     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
     percentClass1Right <- sum(scoredOutput[which(actual == myLevels[1])] == myLevels[[1]])/length(which(actual == myLevels[1]))
     percentClass2Right <- sum(scoredOutput[which(actual == myLevels[2])] == myLevels[[2]])/length(which(actual == myLevels[2]))
     outVec <- c(as.character(modelNames[modelIndic]), trialIndic, foldIndic, overallAcc, percentClass1Right, percentClass2Right, F1, AUC)
-    print("typeof outVec")
-    print(typeof(outVec))
     outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
@@ -283,16 +287,10 @@ getMeasuresRegression <- function(actual, predicted, modelIndic, trialIndic, fol
 }
 
 generateHists <- function(fitMeasures, config, nLevels) {
-  print("this is fitMeasures before the coercion")
-  print(fitMeasures)
   fitMeasures <- data.matrix(fitMeasures)
   if (config$regression) {
     return(list(Correlation = hist(fitMeasures[,1], breaks = "Sturges"), RMSE = hist(fitMeasures[,2], breaks = "Sturges"), MAE = hist(fitMeasures[,3], breaks = "Sturges"), MPE = hist(fitMeasures[,4], breaks = "Sturges"), MAPE = hist(fitMeasures[,5], breaks = "Sturges")))
   } else if (nLevels == 2) {
-    print("this is fitMeasures")
-    print(fitMeasures)
-    print("this is fitmeasures1")
-    print(fitMeasures[,1])
     return(list(Overall_Accuracy = hist(fitMeasures[,1], breaks = "Sturges"), Accuracy_Class1 = hist(fitMeasures[,2], breaks = "Sturges"), Accuracy_Class2 = hist(fitMeasures[,3], breaks = "Sturges"), F1 = hist(fitMeasures[,4], breaks = "Sturges"), AUC = hist(fitMeasures[,5], breaks = "Sturges")))
   } else {
     tempList <- list(Overall_Accuracy = hist(fitMeasures[,1], breaks = "Sturges"))
@@ -303,6 +301,7 @@ generateHists <- function(fitMeasures, config, nLevels) {
     return(tempList)
   }
 }
+
 
 #' ##Install additional packages (if needed)
 #'Make sure the necessary packages that don't already come with the Predictive install are installed.
@@ -345,10 +344,8 @@ cvResults <- function(config, data, models, modelNames) {
   if (any(modelClasses == "rpart")) {
     suppressWarnings(library("rpart"))
   }
-  if (any(modelClasses == "svm.formula") | any(modelClasses == "naiveBayes")) {
-    print("loading e1071")
+  if (any(modelClasses == "svm.formula" | modelClasses == "naiveBayes")) {
     suppressWarnings(library("e1071"))
-    print("loaded e1071")
   }
   if (any(modelClasses == "svyglm")) {
     suppressWarnings(library("survey"))
@@ -412,10 +409,11 @@ cvResults <- function(config, data, models, modelNames) {
       }
       posClass <- setPositiveClass(myLevels)
       
-      #Initialize list that will hold the 
+      #Initialize list that will hold the information needed for the 2-class specific plots
+      listOutMeasures <- as.list(vector(length = (length(models) * (config$numberTrials))))
     }
   } 
-
+  
   #Initialize table of Actual|Model 1|...|Model n|Trial Number
   fullTable <- matrix(0, nrow = NROW(data) * (config$numberTrials), ncol = (length(models) + 2))
   nameVector <- vector(mode = "character", length = length(models))
@@ -467,7 +465,7 @@ cvResults <- function(config, data, models, modelNames) {
         rowEndCurrentTrial <- NROW(data) * j
         fullTable[rowStartCurrentTrial:rowEndCurrentTrial,NCOL(fullTable)] <- j
       }
-
+      
       currentFolds <- allFolds[[j]]
       #When we increment j, we need to re-increment startRow to start on the next section of fullTable that corresponds to the current trial.
       startRow <- 1 + ((j - 1) * NROW(data))
@@ -499,6 +497,9 @@ cvResults <- function(config, data, models, modelNames) {
         }
         #Now that we've updated the.data and testData, we can define currentModel
         #currentModel <- eval(currentCall)
+        wd = "%Engine.WorkflowDirectory%"
+        #         saveRDS(models[[i]], file.path(wd, "nb.RDS"))
+        #         saveRDS(trainingData, file.path(wd, "trainingdata.RDS"))
         currentModel <- update(models[[i]], data = trainingData)
         #The Alteryx Boosted Model tool adds an attribute called best.trees to the gbm model object. 
         #best.trees is the optimal number of trees according to the user selected test (either cross-validation, a single test/training split, or out of bag estimates).
@@ -529,28 +530,26 @@ cvResults <- function(config, data, models, modelNames) {
         }
         #Since the first column is the actual data, we need to update column i+1 instead of column i
         fullTable[startRow:endRow, i + 1] <- unlist(scoredOutput)
-        if (config$classification) {
+        if ((config$classification) && length(myLevels == 2)) {
           tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClass, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
           outMeasures <- tempOutMeasures[[1]]
-          print("typeof outMeasures")
-          print(typeof(outMeasures))
-
+          if (j == 1) {
+            listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- tempOutMeasures
+          } else {
+            listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- c(listOutMeasures[[(((i - 1) * config$numberTrials) + j)]], tempOutMeasures)
+          }
+          
         } else {
           outMeasures <- getMeasuresRegression(actual = currentTrueData, predicted = scoredOutput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
         }
         currentOMRow <- (i - 1) * (config$numberTrials) * (config$numberFolds) + (j - 1) * config$numberFolds + k
         getMeasuresOut[currentOMRow,] <- outMeasures
-        print("typeof getMeasuresOut:")
-        print(typeof(getMeasuresOut))
       }
     }
     #Get the rows belonging to the current model
     currentRows <- which(getMeasuresOut[,1] == modelNames[i])
-    print("currentRows are:")
-    print(currentRows)
-    print("getMeasuresOut[currentRows,]")
-    print(getMeasuresOut[currentRows,])
     histList[[i]] <- generateHists(fitMeasures = getMeasuresOut[currentRows,4:NCOL(getMeasuresOut)], config = config, nLevels = length(myLevels))
+    #invisible(dev.off())
   }
   write.Alteryx2(getMeasuresOut, 2)
   write.Alteryx2(as.data.frame(fullTable), 3)
@@ -558,6 +557,7 @@ cvResults <- function(config, data, models, modelNames) {
   #Now that we have the appropriate table, it's time to move on to the different fit measures that vary by problem type.
   #Check if the problem is classification or regression.
   if (config$classification) {
+    
     #Create the confusion matrices in "one giant matrix" using key-value pairs
     confMat <- matrix(0, nrow = (length(models) * (config$numberTrials) * length(myLevels)), ncol = 3 + length(myLevels))
     #Name the columns
@@ -599,7 +599,12 @@ cvResults <- function(config, data, models, modelNames) {
     dfConfMat <- as.data.frame(confMat)
     write.Alteryx2(dfConfMat, 1)
   } 
-    #write.Alteryx(as.data.frame(measuresMatrix), 2)
+  if ((config$classification) && (length(myLevels) == 2)) {
+    print("listOutMeasures is:")
+    print(listOutMeasures)
+  }
+  #write.Alteryx(as.data.frame(measuresMatrix), 2)
+  #saveRDS(histList, file.path(wd, "histograms.RDS"))
   AlteryxGraph(4)
   #lapply(histList, sapply, plot)
   #Unfortunately I think the nested *apply approach won't work because the labels need to be updated correctly for each round
@@ -621,8 +626,11 @@ cvResults <- function(config, data, models, modelNames) {
         points(xvals_current_trial, yvals_current_trial, col = j)
       }
     }
+  } else if (length(myLevels) == 2) {
+    print("listOutMeasures is:")
+    print(listOutMeasures)
   }
-  
+  invisible(dev.off())
 }
 
 
