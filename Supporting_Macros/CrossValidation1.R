@@ -175,11 +175,6 @@ createFolds <- function(data, config) {
   return(foldList)
 }
 
-#Make the model object string into a character and then unserialize it.
-unserializeToChar <- function(string) {
-  unserializeObject(as.character(string))
-}
-
 #Get a single y variable using a model call. This function will be used as a helper function in getYvars, which obtains
 #the Y variable from each model and checks them against each other and the Y variable from the input data.
 getOneYVar <- function(model) {
