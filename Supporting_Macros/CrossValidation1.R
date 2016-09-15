@@ -90,13 +90,13 @@ checkXVars <- function(inputs){
   } else {
     mvars1 <- modelXVars[[1]]
     if (!all(mvars1 %in% dataXVars)){
-      errorMsg <- paste("Model ", modelNames[i], 
+      errorMsg <- paste("Model ", modelNames[1], 
                         "used predictor variables which were not contained in the input data.")
       stopMsg <- paste("Please ensure input data contains all the data",
                        "used to create the models and try again.")
     } else if (!all(dataXVars %in% mvars1)){
       errorMsg <- paste("The input data contained variables not used in model", 
-                        modelNames[i])
+                        modelNames[1])
       stopMsg <- paste("Please be sure to select only the fields actually used as",
                        "predictors in the models and try again.")
     }
