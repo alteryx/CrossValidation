@@ -12,6 +12,7 @@
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 library(AlteryxPredictive)
+print("loaded library")
 config <- list(
  `classification` = radioInput('%Question.classification%' , FALSE),
  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
@@ -29,7 +30,8 @@ options(alteryx.debug = config$debug)
 #' ### Defaults
 #' 
 #' These defaults are used when the R code is run outside Alteryx
-dataDir <- 'Supporting_Macros/Data'
+macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
+dataDir <- file.path(macroDirectory, "Data")
 defaults <- list(
   data = read.csv(file = file.path(dataDir, "default_data.csv")),
   models = rbind(
@@ -95,7 +97,7 @@ checkXVars <- function(inputs){
 #' For each factor variable, check to see if all levels are present in each fold. 
 #' If not, error out with an informative message.
 #For each factor variable, check to see if all levels are present in each fold. If not, error out with an informative message.
-checkFactorVars <- function(data, folds, configs) {
+checkFactorVars <- function(data, folds, config) {
   #All of the discrete variables will be some type of string in Alteryx. So they'll be read as factors, since stringsAsFactors is TRUE in read.Alteryx.
   factorVars <- data[,sapply(data, FUN = is.factor), drop = FALSE]
   #We only need to check if there's at least one factor variable. If all variables are continuous, we don't need to do anything.
@@ -107,8 +109,8 @@ checkFactorVars <- function(data, folds, configs) {
       #If a class is missing from a fold, we output a warning suggesting that the user check their data/try to collect more data.
       #If a training set is missing a class, we output a fatal error telling the user they must ensure
       #that each training set contains all classes.
-      for (i in 1: (configs$numberTrials)) {
-        for (j in 1:(configs$numberFolds)) {
+      for (i in 1: (config$numberTrials)) {
+        for (j in 1:(config$numberFolds)) {
           currentTestRecords <- currentVar[unlist(folds[[i]][j])]
           currentTrainingRecords <- currentVar[unlist(folds[[i]][-j])]
           missingTestClasses <- getMissingClasses(currentClasses = uniqueClasses, currentRecords = currentTestRecords)
@@ -149,10 +151,10 @@ checkFactorVars <- function(data, folds, configs) {
 }
 
 #Create the list of cross-validation folds and output warnings/errors as appropriate
-createFolds <- function(data, configs) {
+createFolds <- function(data, config) {
   target <- data[, 1]
-  foldList <- generateCVRuns(labels = target, ntimes = configs$numberTrials, nfold = configs$numberFolds, stratified = configs$stratified)
-  checkFactorVars(data = data, folds = foldList, configs = configs)
+  foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
+  checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
 }
 
@@ -280,11 +282,11 @@ getMeasuresRegression <- function(actual, predicted, modelIndic, trialIndic, fol
   c(as.character(modelNames[modelIndic]), trialIndic, foldIndic, cor(predicted, actual), rmse, mae, mpe, mape)
 }
 
-generateHists <- function(fitMeasures, configs, nLevels) {
+generateHists <- function(fitMeasures, config, nLevels) {
   print("this is fitMeasures before the coercion")
   print(fitMeasures)
   fitMeasures <- data.matrix(fitMeasures)
-  if (configs$regression) {
+  if (config$regression) {
     return(list(Correlation = hist(fitMeasures[,1], breaks = "Sturges"), RMSE = hist(fitMeasures[,2], breaks = "Sturges"), MAE = hist(fitMeasures[,3], breaks = "Sturges"), MPE = hist(fitMeasures[,4], breaks = "Sturges"), MAPE = hist(fitMeasures[,5], breaks = "Sturges")))
   } else if (nLevels == 2) {
     print("this is fitMeasures")
@@ -322,11 +324,11 @@ suppressWarnings(library("sm"))
 suppressWarnings(library("vioplot"))
 
 
-cvResults <- function(configs, data, models, modelNames) {
+cvResults <- function(config, data, models, modelNames) {
   #histList will store the histogram objects
   histList <- list()
   #Do the unserialization.
-  allFolds <- createFolds(data = data, configs = configs)
+  allFolds <- createFolds(data = data, config = config)
   # Get the set of model classes
   #We only take the first class of each model, since that's all we need to determine the necessary libraries and ensure that all of the input models
   #are allowable types.
@@ -378,7 +380,7 @@ cvResults <- function(configs, data, models, modelNames) {
   checkXVars(inputs = inputs)
   yVar <- getYvars(data = data, models = models)
   #Need to get levels for classification case and the positive class in binomial case
-  if (configs$classification) {
+  if (config$classification) {
     myLevels <- attr(yVar, "levels")
     if (length(myLevels) < 2) {
       AlteryxRDataX::stop.Alteryx("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
@@ -415,7 +417,7 @@ cvResults <- function(configs, data, models, modelNames) {
   } 
 
   #Initialize table of Actual|Model 1|...|Model n|Trial Number
-  fullTable <- matrix(0, nrow = NROW(data) * (configs$numberTrials), ncol = (length(models) + 2))
+  fullTable <- matrix(0, nrow = NROW(data) * (config$numberTrials), ncol = (length(models) + 2))
   nameVector <- vector(mode = "character", length = length(models))
   for (i in 1:length(models)) {
     nameVector[i] <- paste0(modelNames[i], " Model")
@@ -424,7 +426,7 @@ cvResults <- function(configs, data, models, modelNames) {
   colnames(fullTable) <- nameVector
   #Initialize the table that will have the results from getMeasuresRegression or getMeasuresClassification.
   #This table will have 6 columns in the regression case, 6 in the 2-class case, and n+2 in the n class case when n>2.
-  if (configs$regression) {
+  if (config$regression) {
     nMeasuresCols <- 8
     colNames <- c("Model", "Trial", "Fold", "Correlation", "RMSE", "MAE", "MPE", "MAPE")
   } else if (length(myLevels) == 2) {
@@ -438,7 +440,7 @@ cvResults <- function(configs, data, models, modelNames) {
     colNames <- sapply(X = unlist(myLevels), FUN = pasteNames, simplify = TRUE)
     colNames <- c("Model", "Trial", "Fold", "Overall Accuracy", colNames)
   }
-  getMeasuresOut <- as.data.frame(matrix(vector(length = (nMeasuresCols * length(models) * (configs$numberTrials) * (configs$numberFolds))), ncol = nMeasuresCols))
+  getMeasuresOut <- as.data.frame(matrix(vector(length = (nMeasuresCols * length(models) * (config$numberTrials) * (config$numberFolds))), ncol = nMeasuresCols))
   colnames(getMeasuresOut) <- colNames
   
   for (i in 1:length(models)) {
@@ -455,7 +457,7 @@ cvResults <- function(configs, data, models, modelNames) {
     #The number of rows in the table from previous models is the total number of records * the number of previous trials * the number of previous models
     #Indexing these rows here makes it easier to index the trials within the j loop.
     
-    for (j in 1:(configs$numberTrials)) {
+    for (j in 1:(config$numberTrials)) {
       #Clear out the old values of fullScoredData and fullActualData
       #I THINK WE ONLY NEED THESE IN THE BINOMIAL CLASSIFICATION CASE! COME BACK AND CHECK!
       if (i == 1) {
@@ -469,7 +471,7 @@ cvResults <- function(configs, data, models, modelNames) {
       currentFolds <- allFolds[[j]]
       #When we increment j, we need to re-increment startRow to start on the next section of fullTable that corresponds to the current trial.
       startRow <- 1 + ((j - 1) * NROW(data))
-      for (k in 1:(configs$numberFolds)) {
+      for (k in 1:(config$numberFolds)) {
         #Define the first and last rows of fullTable that we'll be updating for this value of k
         if (k > 1) {
           #In the k > 1 case, we need update the value of startRow to be 1 more than the previous value of endRow
@@ -489,7 +491,7 @@ cvResults <- function(configs, data, models, modelNames) {
         
         #We need to define the "Actual" column of fullTable when i == 1
         if (i == 1) {
-          if (configs$classification) {
+          if (config$classification) {
             fullTable[startRow:endRow, 1] <- myLevels[currentTrueData]
           } else {
             fullTable[startRow:endRow, 1] <- currentTrueData
@@ -514,7 +516,7 @@ cvResults <- function(configs, data, models, modelNames) {
           currentModel$best.trees <- eval(parse(text = assess.string))
         }
         scoredData <- scoreModel(currentModel, new.data = testData)
-        if (configs$classification) {
+        if (config$classification) {
           #In the classification case, we need to take the class with the highest probability
           #So taking the maximum of each row gives us the desired result
           #For now, I have a suspicion that we might want to create a giant table of all the scoredData pieces together. 
@@ -527,7 +529,7 @@ cvResults <- function(configs, data, models, modelNames) {
         }
         #Since the first column is the actual data, we need to update column i+1 instead of column i
         fullTable[startRow:endRow, i + 1] <- unlist(scoredOutput)
-        if (configs$classification) {
+        if (config$classification) {
           tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClass, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
           outMeasures <- tempOutMeasures[[1]]
           print("typeof outMeasures")
@@ -536,7 +538,7 @@ cvResults <- function(configs, data, models, modelNames) {
         } else {
           outMeasures <- getMeasuresRegression(actual = currentTrueData, predicted = scoredOutput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
         }
-        currentOMRow <- (i - 1) * (configs$numberTrials) * (configs$numberFolds) + (j - 1) * configs$numberFolds + k
+        currentOMRow <- (i - 1) * (config$numberTrials) * (config$numberFolds) + (j - 1) * config$numberFolds + k
         getMeasuresOut[currentOMRow,] <- outMeasures
         print("typeof getMeasuresOut:")
         print(typeof(getMeasuresOut))
@@ -548,16 +550,16 @@ cvResults <- function(configs, data, models, modelNames) {
     print(currentRows)
     print("getMeasuresOut[currentRows,]")
     print(getMeasuresOut[currentRows,])
-    histList[[i]] <- generateHists(fitMeasures = getMeasuresOut[currentRows,4:NCOL(getMeasuresOut)], configs = configs, nLevels = length(myLevels))
+    histList[[i]] <- generateHists(fitMeasures = getMeasuresOut[currentRows,4:NCOL(getMeasuresOut)], config = config, nLevels = length(myLevels))
   }
   write.Alteryx2(getMeasuresOut, 2)
   write.Alteryx2(as.data.frame(fullTable), 3)
   #write.Alteryx(as.data.frame(fullTable), 3)
   #Now that we have the appropriate table, it's time to move on to the different fit measures that vary by problem type.
   #Check if the problem is classification or regression.
-  if (configs$classification) {
+  if (config$classification) {
     #Create the confusion matrices in "one giant matrix" using key-value pairs
-    confMat <- matrix(0, nrow = (length(models) * (configs$numberTrials) * length(myLevels)), ncol = 3 + length(myLevels))
+    confMat <- matrix(0, nrow = (length(models) * (config$numberTrials) * length(myLevels)), ncol = 3 + length(myLevels))
     #Name the columns
     columnNames <- vector(mode = "character", length = length(myLevels))
     for (i in 1:length(myLevels)) {
@@ -567,11 +569,11 @@ cvResults <- function(configs, data, models, modelNames) {
     colnames(confMat) <- columnNames
     #Define the first two columns
     for (i in 1: length(models)) {
-      #The number of rows that have already been done by previous models is (i - 1)*length(myLevels) * (configs$numberTrials)
-      confMatstartRow <- (i - 1)*length(myLevels) * (configs$numberTrials) + 1
-      confMatendRow <- i * length(myLevels) * (configs$numberTrials)
+      #The number of rows that have already been done by previous models is (i - 1)*length(myLevels) * (config$numberTrials)
+      confMatstartRow <- (i - 1)*length(myLevels) * (config$numberTrials) + 1
+      confMatendRow <- i * length(myLevels) * (config$numberTrials)
       confMat[confMatstartRow:confMatendRow, 1] <- as.character((inputs$modelNames)[i])
-      for (j in 1: (configs$numberTrials)) {
+      for (j in 1: (config$numberTrials)) {
         #The number of rows that have been done by different trials in the same level is confMatstartRow + (j - 1) * length(myLevels) - 1
         trialStart <- confMatstartRow + (j - 1) * length(myLevels)
         trialEnd <- trialStart  + length(myLevels) - 1
@@ -607,11 +609,11 @@ cvResults <- function(configs, data, models, modelNames) {
     }
   }
   
-  if (configs$regression) {
+  if (config$regression) {
     xvals <- fullTable[,1]
     for (i in 1:NROW(models)) {
       yvals <- fullTable[,i+1]
-      for (j in 1:configs$numberTrials) {
+      for (j in 1:config$numberTrials) {
         xvals_current_trial <- xvals[which(fullTable[,NCOL(fullTable)] == j)]
         yvals_current_trial <- yvals[which(fullTable[,NCOL(fullTable)] == j)]
         main_title <- paste("Plot of Actuals and Predicted values for Model", modelNames[i], " Trial ", j)
@@ -624,4 +626,4 @@ cvResults <- function(configs, data, models, modelNames) {
 }
 
 
-cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNames = inputs$modelNames)
+cvResults(config = config, data = inputs$data, models = inputs$models, modelNames = inputs$modelNames)
