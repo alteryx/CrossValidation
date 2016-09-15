@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<AlteryxJavaScriptPlugin>
+  <EngineSettings EngineDLL="Macro" EngineDLLEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" SDKVersion="10.1"/>
+  <GuiSettings Html="CrossValidationGui.html" Icon="CrossValidationIcon.png" SDKVersion="10.1" Help=".htm">
+    <InputConnections>
+      <Connection Name="Input3" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
+      <Connection Name="Input28" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
+    </InputConnections>
+    <OutputConnections>
+      <Connection Name="Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
+      <Connection Name="Output48" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+      <Connection Name="Output49" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+      <Connection Name="Output55" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+    </OutputConnections>
+  </GuiSettings>
+  <Properties>
+    <MetaInfo>
+      <NameIsFileName></NameIsFileName>
+      <Name>CV_Plugin</Name>
+      <Description></Description>
+      <RootToolName></RootToolName>
+      <ToolVersion></ToolVersion>
+      <ToolInDb></ToolInDb>
+      <CategoryName>Predictive Refresh</CategoryName>
+      <SearchTags></SearchTags>
+      <Author>Advanced Analytics</Author>
+      <Company>Alteryx, Inc</Company>
+      <Copyright>Alteryx, Inc</Copyright>
+      <DescriptionLink></DescriptionLink>
+    </MetaInfo>
+  </Properties>
+</AlteryxJavaScriptPlugin>

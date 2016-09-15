@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+CrossValidation
+</title>
+    <link rel="stylesheet" href="app.css" media="screen" charset="utf-8">
+    <script type="text/javascript">
+      // Include version 1 of the base GUI library.
+      document.write(
+        '<link rel="import" href="' + window.Alteryx.LibDir + '1/lib/alteryx/gui/includes.html">'
+      );
+    </script>
+</head>
+<body>
+    
+<fieldset>
+  <legend>Configuration</legend>
+  <!--  numberTrials  -->
+  <label for="numberTrials">Number of trials</label>
+  <alteryx-pluginwidget type="NumericSpinner" default="3" min="1" max="100" step="1" id="numberTrials" dataName="numberTrials"></alteryx-pluginwidget>
+  <!--  numberFolds  -->
+  <label for="numberFolds">Number of folds</label>
+  <alteryx-pluginwidget type="NumericSpinner" default="5" min="1" max="100" step="1" id="numberFolds" dataName="numberFolds"></alteryx-pluginwidget>
+  <!--  LabelGroup (27)  -->
+  <label for="LabelGroup (27)">Type of model</label>
+  <alteryx-pluginwidget type="RadioGroup" group="LabelGroup (27)" id="LabelGroup (27)" dataName="LabelGroup (27)">
+    <alteryx-option uiobject="Classification" default="true">classification</alteryx-option>
+    <alteryx-option uiobject="Regression">regression</alteryx-option>
+  </alteryx-pluginwidget>
+  <!--  targetField  -->
+  <label for="targetField">Select the target field</label>
+  <alteryx-pluginwidget type="DropDown" dataType="FieldSelector" inputNumber="0" connectionNumber="0" fieldType="All" id="targetField" dataName="targetField"></alteryx-pluginwidget>
+  <!--  predFields  -->
+  <label for="predFields">Select the predictor fields</label>
+  <alteryx-pluginwidget type="DropDown" dataType="FieldSelectorMulti" inputNumber="0" connectionNumber="0" fieldType="All" id="predFields" dataName="predFields"></alteryx-pluginwidget>
+  <!--  stratified  -->
+  <alteryx-pluginwidget type="CheckBox" text="Should stratified cross-validation be used?" default="false" id="stratified" dataName="stratified"></alteryx-pluginwidget>
+  <!--  posClass  -->
+  <label for="posClass">Name of the positive class (Optional, only relevant for binary classification)</label>
+  <alteryx-pluginwidget type="TextBox" password="false" id="posClass" dataName="posClass"></alteryx-pluginwidget>
+  <!--  displayGraphs  -->
+  <alteryx-pluginwidget type="CheckBox" text="Should graphs of the fit measures be displayed? (Not recommended if the product of the number of trials and the number of folds is large.)" default="false" id="displayGraphs" dataName="displayGraphs"></alteryx-pluginwidget>
+</fieldset>
+
+  <script src="app.min.js" type="text/javascript"></script>
+</body>
+</html>
