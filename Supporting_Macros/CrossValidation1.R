@@ -11,7 +11,7 @@
 #'
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
-library(AlteryxRhelper)
+library(AlteryxPredictive)
 config <- list(
  `classification` = radioInput('%Question.classification%' , FALSE),
  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
@@ -29,49 +29,26 @@ options(alteryx.debug = config$debug)
 #' ### Defaults
 #' 
 #' These defaults are used when the R code is run outside Alteryx
-if (!inAlteryx()){
-  defaults <- list(
-    d1 = read.csv(file = "C:/Macros/Output_Model/default_data.csv"),
-    d2 = rbind(
-      readRDS('C:/Macros/Output_Model/default_linreg.RDS'),
-      readRDS('C:/Macros/Output_Model/default_boosted.RDS')
-    )
+dataDir <- 'Supporting_Macros/Data'
+defaults <- list(
+  data = read.csv(file = file.path(dataDir, "default_data.csv")),
+  models = rbind(
+    readRDS(file.path(dataDir, "default_linreg.RDS")),
+    readRDS(file.path(dataDir, "default_boosted.RDS"))
   )
-}
+)
 
 #' ### Inputs
 #' 
 #' This is a named list of all inputs that stream into the R tool.
-modelNames <- (if (inAlteryx()) {
-  (read.Alteryx("#2"))[,1]
-} else {
-  c("Linear_regression, Boosted")
-})
-
 inputs <- list(
-  data = read.Alteryx2("#1", default = defaults$d1),
-  models = readModelObjects("#2", default = defaults$d2),
-  modelNames = modelNames)
+  data = read.Alteryx2("#1", default = defaults$data),
+  models = readModelObjects("#2", default = defaults$models)
+)
+
+inputs$modelNames = names(inputs$models)
 
 #' ### Helper Functions
-#' 
-#' These are helper functions that should eventually be moved to AlteryxPredictive
-stop.Alteryx2 <- function(msg, ...){
-  if (inAlteryx()) {
-    AlteryxRDataX::stop.Alteryx(msg, ...) 
-  } else {
-    stop(msg, call. = FALSE)
-  }
-}
-
-AlteryxMessage2 <- function(msg, ...){
-  if (inAlteryx()) {
-    AlteryxMessage(msg, ...) 
-  } else {
-    message(msg, ...)
-  }
-}
-
 areIdentical <- function(v1, v2){
   identical(sort(v1), sort(v2))
 }

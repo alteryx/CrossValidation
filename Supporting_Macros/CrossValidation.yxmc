@@ -1,39 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <AlteryxDocument yxmdVer="10.5">
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="54" y="414" />
+        <Position x="54" y="414"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="False" />
+          <UseFileInput value="False"/>
           <Name>Input3</Name>
           <Abbrev>D</Abbrev>
-          <ShowFieldMap value="False" />
-          <Optional value="False" />
+          <ShowFieldMap value="False"/>
+          <Optional value="False"/>
           <TextInput>
             <Configuration>
-              <NumRows value="500" />
+              <NumRows value="500"/>
               <Fields>
-                <Field name="MonthGive" />
-                <Field name="Region" />
-                <Field name="AveDonAmt" />
-                <Field name="LastDonAmt" />
-                <Field name="DonPerYear" />
+                <Field name="MonthGive"/>
+                <Field name="Region"/>
+                <Field name="AveDonAmt"/>
+                <Field name="LastDonAmt"/>
+                <Field name="DonPerYear"/>
               </Fields>
               <Data>
                 <r>
@@ -3543,24 +3543,24 @@
         <Annotation DisplayMode="0">
           <Name>Text Input (1)</Name>
           <AnnotationText>__Input:__ Specify a data input</AnnotationText>
-          <DefaultAnnotationText />
-          <Left value="True" />
+          <DefaultAnnotationText/>
+          <Left value="True"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="750" y="474" />
+        <Position x="750" y="474"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -3578,69 +3578,43 @@
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 library(AlteryxPredictive)
-configs &lt;- list(
-  classification = radioInput('%Question.classification%' , FALSE),
-  numberFolds = numericInput('%Question.numberFolds%' , 5),
-  numberTrials = numericInput('%Question.numberTrials%' , 3),
-  posClass = textInput('%Question.posClass%'),
-  predFields = listInput('%Question.predFields%'),
-  regression = radioInput('%Question.regression%' , TRUE),
-  stratified = checkboxInput('%Question.stratified%' , FALSE),
-  targetField = dropdownInput('%Question.targetField%'),
-  displayGraphs = checkboxInput('%Question.displayGraphs%' , FALSE)
+config &lt;- list(
+ `classification` = radioInput('%Question.classification%' , FALSE),
+ `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
+ `numberFolds` = numericInput('%Question.numberFolds%' , 5),
+ `numberTrials` = numericInput('%Question.numberTrials%' , 3),
+ `posClass` = textInput('%Question.posClass%'),
+ `predFields` = listInput('%Question.predFields%'),
+ `regression` = radioInput('%Question.regression%' , FALSE),
+ `stratified` = checkboxInput('%Question.stratified%' , FALSE),
+ `targetField` = dropdownInput('%Question.targetField%')
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
-options(alteryx.debug = configs$debug)
-
-
+options(alteryx.debug = config$debug)
 ##----
-
 #' ### Defaults
 #' 
 #' These defaults are used when the R code is run outside Alteryx
-if (!inAlteryx()){
-  defaults &lt;- list(
-    d1 = read.csv(file = "C:/Macros/Output_Model/default_data.csv"),
-    d2 = rbind(
-      readRDS('C:/Macros/Output_Model/default_linreg.RDS'),
-      readRDS('C:/Macros/Output_Model/default_boosted.RDS')
-    )
+dataDir &lt;- 'Supporting_Macros/Data'
+defaults &lt;- list(
+  data = read.csv(file = file.path(dataDir, "default_data.csv")),
+  models = rbind(
+    readRDS(file.path(dataDir, "default_linreg.RDS")),
+    readRDS(file.path(dataDir, "default_boosted.RDS"))
   )
-}
+)
 
 #' ### Inputs
 #' 
 #' This is a named list of all inputs that stream into the R tool.
-modelNames &lt;- (if (inAlteryx()) {
-  (read.Alteryx("#2"))[,1]
-} else {
-  c("Linear_regression, Boosted")
-})
-
 inputs &lt;- list(
-  data = read.Alteryx2("#1", default = defaults$d1),
-  models = readModelObjects("#2", default = defaults$d2),
-  modelNames = modelNames)
+  data = read.Alteryx2("#1", default = defaults$data),
+  models = readModelObjects("#2", default = defaults$models)
+)
+
+inputs$modelNames = names(inputs$models)
 
 #' ### Helper Functions
-#' 
-#' These are helper functions that should eventually be moved to AlteryxPredictive
-stop.Alteryx2 &lt;- function(msg, ...){
-  if (inAlteryx()) {
-    AlteryxRDataX::stop.Alteryx(msg, ...) 
-  } else {
-    stop(msg, call. = FALSE)
-  }
-}
-
-AlteryxMessage2 &lt;- function(msg, ...){
-  if (inAlteryx()) {
-    AlteryxMessage(msg, ...) 
-  } else {
-    message(msg, ...)
-  }
-}
-
 areIdentical &lt;- function(v1, v2){
   identical(sort(v1), sort(v2))
 }
@@ -4216,20 +4190,21 @@ cvResults &lt;- function(configs, data, models, modelNames) {
 }
 
 
-cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNames = inputs$modelNames)</RScript>
-          <UseFullUpdate value="False" />
+cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNames = inputs$modelNames) 
+</RScript>
+          <UseFullUpdate value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR"/>
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="846" y="402" />
+        <Position x="846" y="402"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4237,79 +4212,76 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Abbrev>D</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <AnnotationText>__Output:__ This provides a data output</AnnotationText>
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.LabelGroup.LabelGroup">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="90" y="587" />
+        <Position x="90" y="587"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="True" />
+          <UseFileInput value="True"/>
           <Name>Input28</Name>
           <Abbrev>M</Abbrev>
-          <ShowFieldMap value="False" />
-          <Optional value="False" />
+          <ShowFieldMap value="False"/>
+          <Optional value="False"/>
           <FileInput>
             <Configuration>
-              <Passwords />
+              <Passwords/>
               <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">Models.yxdb</File>
-              <FormatSpecificOptions />
+              <FormatSpecificOptions/>
             </Configuration>
           </FileInput>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
-          <Left value="True" />
+          <Left value="True"/>
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob" />
+            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
     </Node>
     <Node ToolID="30">
       <GuiSettings Plugin="AlteryxBasePluginsGui.RecordID.RecordID">
-        <Position x="270" y="474" />
+        <Position x="270" y="474"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4319,29 +4291,29 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Position>0</Position>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
           <SortInfo>
-            <Field field="RecordID" order="Asc" />
+            <Field field="RecordID" order="Asc"/>
           </SortInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxRecordID" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxRecordID"/>
     </Node>
     <Node ToolID="37">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DynamicSelect.DynamicSelect">
-        <Position x="462" y="498" />
+        <Position x="462" y="498"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4349,93 +4321,93 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Expression>[Name] IN ("RecordID", "Region", "AveDonAmt", "LastDonAmt", "DonPerYear")</Expression>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
           <SortInfo>
-            <Field field="RecordID" order="Asc" />
+            <Field field="RecordID" order="Asc"/>
           </SortInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect"/>
     </Node>
     <Node ToolID="39">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
-        <Position x="558" y="450" />
+        <Position x="558" y="450"/>
       </GuiSettings>
       <Properties>
         <Configuration joinByRecordPos="False">
           <JoinInfo connection="Left">
-            <Field field="RecordID" />
+            <Field field="RecordID"/>
           </JoinInfo>
           <JoinInfo connection="Right">
-            <Field field="RecordID" />
+            <Field field="RecordID"/>
           </JoinInfo>
           <SelectConfiguration>
             <Configuration outputConnection="Join">
-              <OrderChanged value="False" />
+              <OrderChanged value="False"/>
               <SelectFields>
-                <SelectField field="Right_RecordID" selected="True" rename="Right_RecordID" />
-                <SelectField field="*Unknown" selected="True" />
+                <SelectField field="Right_RecordID" selected="True" rename="Right_RecordID"/>
+                <SelectField field="*Unknown" selected="True"/>
               </SelectFields>
             </Configuration>
           </SelectConfiguration>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Left">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
           </RecordInfo>
           <SortInfo noProgress="True">
-            <Field field="RecordID" />
+            <Field field="RecordID"/>
           </SortInfo>
         </MetaInfo>
         <MetaInfo connection="Join">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
-            <Field name="Right_RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
+            <Field name="Right_RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
           <SortInfo>
-            <Field field="RecordID" order="" />
+            <Field field="RecordID" order=""/>
           </SortInfo>
         </MetaInfo>
         <MetaInfo connection="Right">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
           <SortInfo noProgress="True">
-            <Field field="RecordID" />
+            <Field field="RecordID"/>
           </SortInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin"/>
     </Node>
     <Node ToolID="40">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DynamicSelect.DynamicSelect">
-        <Position x="654" y="438" />
+        <Position x="654" y="438"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4443,28 +4415,28 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Expression>NOT(Contains([Name], "RecordID")) AND NOT(Contains([Name], "Right")) AND NOT(Contains([Name], "Left"))</Expression>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
           <SortInfo>
-            <Field field="RecordID" order="" />
+            <Field field="RecordID" order=""/>
           </SortInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect"/>
     </Node>
     <Node ToolID="46">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DynamicSelect.DynamicSelect">
-        <Position x="402" y="402" />
+        <Position x="402" y="402"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4472,349 +4444,349 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Expression>[Name] IN ("RecordID", "MonthGive")</Expression>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32" />
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
+            <Field name="RecordID" source="RecordID: Starting Value=1" type="Int32"/>
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
           </RecordInfo>
           <SortInfo>
-            <Field field="RecordID" order="Asc" />
+            <Field field="RecordID" order="Asc"/>
           </SortInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicSelect"/>
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="846" y="462" />
+        <Position x="846" y="462"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Name>Output48</Name>
-          <Abbrev />
+          <Abbrev/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="858" y="522" />
+        <Position x="858" y="522"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Name>Output49</Name>
-          <Abbrev />
+          <Abbrev/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="51">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="918" y="738" />
+        <Position x="918" y="738"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9856_01307433003c437da59e19083b3d4c5f_\Engine_4156_b167e9cc234745e4b42dcabe6432f6d5_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
+            <ViewSize value="100"/>
             <View1>
               <DefaultTab>Report</DefaultTab>
               <Hints>
-                <Table />
+                <Table/>
               </Hints>
             </View1>
-            <View2 />
+            <View2/>
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2"/>
     </Node>
     <Node ToolID="52">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
-        <Position x="1002" y="642" />
+        <Position x="1002" y="642"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Images />
-          <HeaderMode value="True" />
+          <Images/>
+          <HeaderMode value="True"/>
           <HeaderField>Graph</HeaderField>
           <Position>Above</Position>
-          <RawMode value="False" />
-          <ValidatePCXML value="True" />
-          <Message />
-          <RichTextMode value="True" />
+          <RawMode value="False"/>
+          <ValidatePCXML value="True"/>
+          <Message/>
+          <RichTextMode value="True"/>
           <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Segoe UI;}{\f1\fnil\fcharset0 Microsoft Sans Serif;}}
 {\colortbl ;\red255\green255\blue255;}
 \viewkind4\uc1\pard\cf1\b\f0\fs29 Fit and error measures\cf0\b0\f1\par
 }
 ]]></RichTextString>
           <Styles>
-            <Style Name="TextStyle" BackColor="#0080c0" />
+            <Style Name="TextStyle" BackColor="#0080c0"/>
           </Styles>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <DefaultAnnotationText>Fit and error measures</DefaultAnnotationText>
-          <Left value="False" />
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin"/>
     </Node>
     <Node ToolID="53">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1098" y="642" />
+        <Position x="1098" y="642"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9856_01307433003c437da59e19083b3d4c5f_\Engine_4156_e03965e624ab4c2abcee955e9a413f7e_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
+            <ViewSize value="100"/>
             <View1>
               <DefaultTab>Report</DefaultTab>
               <Hints>
-                <Table />
+                <Table/>
               </Hints>
             </View1>
-            <View2 />
+            <View2/>
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2"/>
     </Node>
     <Node ToolID="54">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
-        <Position x="906" y="642" />
+        <Position x="906" y="642"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <ByName_ErrorMode>Warning</ByName_ErrorMode>
           <ByName_OutputMode>All</ByName_OutputMode>
           <Mode>ByName</Mode>
-          <SetOutputOrder value="False" />
+          <SetOutputOrder value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion"/>
     </Node>
     <Node ToolID="55">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="1110" y="726" />
+        <Position x="1110" y="726"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Name>Output55</Name>
-          <Abbrev />
+          <Abbrev/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="114" y="54" width="621" height="309" />
+        <Position x="114" y="54" width="621" height="309"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>INTERFACE</Caption>
-          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10" />
-          <Disabled value="False" />
-          <Folded value="False" />
+          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10"/>
+          <Disabled value="False"/>
+          <Folded value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="124" y="93.00005" width="59" height="59" />
+            <Position x="124" y="93.00005" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>numberTrials</Name>
               <AnnotationText>This configuration option allows the user to choose the number of trials.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="210" y="88.00002" width="59" height="59" />
+            <Position x="210" y="88.00002" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>numberFolds</Name>
               <AnnotationText>This configuration option allows the user to choose the number of folds used in each trial. Typically, cross-validation is done with either five or ten folds.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="270" y="88.00002" width="59" height="59" />
+            <Position x="270" y="88.00002" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>classification</Name>
               <AnnotationText>The user should check this option if their models are for a classification problem.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="330" y="112" width="59" height="59" />
+            <Position x="330" y="112" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>regression</Name>
               <AnnotationText>The user should check this option if their models are for a regression problem.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="29">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.DropDownListBox.DropDown">
-            <Position x="414" y="83" width="59" height="59" />
+            <Position x="414" y="83" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>targetField</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="32">
           <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
-            <Position x="426" y="294" width="59" height="59" />
+            <Position x="426" y="294" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="35">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.DropDownListBox.ListBox">
-            <Position x="534" y="90" width="59" height="59" />
+            <Position x="534" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>predFields</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="38">
           <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
-            <Position x="546" y="270" width="59" height="59" />
+            <Position x="546" y="270" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="594" y="90" width="59" height="59" />
+            <Position x="594" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>stratified</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="258" y="222" width="59" height="59" />
+            <Position x="258" y="222" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>posClass</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="666" y="90" width="59" height="59" />
+            <Position x="666" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>displayGraphs</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
@@ -4823,188 +4795,192 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
   </Nodes>
   <Connections>
     <Connection Wireless="True">
-      <Origin ToolID="3" Connection="Question" />
-      <Destination ToolID="29" Connection="Question Input" />
+      <Origin ToolID="3" Connection="Question"/>
+      <Destination ToolID="29" Connection="Question Input"/>
     </Connection>
     <Connection Wireless="True">
-      <Origin ToolID="3" Connection="Question" />
-      <Destination ToolID="35" Connection="Question Input" />
+      <Origin ToolID="3" Connection="Question"/>
+      <Destination ToolID="35" Connection="Question Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="3" Connection="Output" />
-      <Destination ToolID="30" Connection="Input" />
+      <Origin ToolID="3" Connection="Output"/>
+      <Destination ToolID="30" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output1" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="4" Connection="Output1"/>
+      <Destination ToolID="5" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2" />
-      <Destination ToolID="48" Connection="Input" />
+      <Origin ToolID="4" Connection="Output2"/>
+      <Destination ToolID="48" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
+      <Origin ToolID="4" Connection="Output3"/>
+      <Destination ToolID="49" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output4" />
-      <Destination ToolID="51" Connection="Input" />
+      <Origin ToolID="4" Connection="Output4"/>
+      <Destination ToolID="51" Connection="Input"/>
     </Connection>
     <Connection name="#1">
-      <Origin ToolID="4" Connection="Output4" />
-      <Destination ToolID="54" Connection="Input" />
+      <Origin ToolID="4" Connection="Output4"/>
+      <Destination ToolID="54" Connection="Input"/>
     </Connection>
     <Connection name="#2">
-      <Origin ToolID="28" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="28" Connection="Output"/>
+      <Destination ToolID="4" Connection="Input"/>
     </Connection>
     <Connection name="#1">
-      <Origin ToolID="40" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="40" Connection="Output"/>
+      <Destination ToolID="4" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="30" Connection="Output" />
-      <Destination ToolID="37" Connection="Input" />
+      <Origin ToolID="30" Connection="Output"/>
+      <Destination ToolID="37" Connection="Input"/>
     </Connection>
     <Connection name="#2" Wireless="True">
-      <Origin ToolID="38" Connection="Action" />
-      <Destination ToolID="37" Connection="Action" />
+      <Origin ToolID="38" Connection="Action"/>
+      <Destination ToolID="37" Connection="Action"/>
     </Connection>
     <Connection>
-      <Origin ToolID="30" Connection="Output" />
-      <Destination ToolID="46" Connection="Input" />
+      <Origin ToolID="30" Connection="Output"/>
+      <Destination ToolID="46" Connection="Input"/>
     </Connection>
     <Connection name="#1">
-      <Origin ToolID="32" Connection="Action" />
-      <Destination ToolID="46" Connection="Action" />
+      <Origin ToolID="32" Connection="Action"/>
+      <Destination ToolID="46" Connection="Action"/>
     </Connection>
     <Connection>
-      <Origin ToolID="37" Connection="Output" />
-      <Destination ToolID="39" Connection="Right" />
+      <Origin ToolID="37" Connection="Output"/>
+      <Destination ToolID="39" Connection="Right"/>
     </Connection>
     <Connection>
-      <Origin ToolID="46" Connection="Output" />
-      <Destination ToolID="39" Connection="Left" />
+      <Origin ToolID="46" Connection="Output"/>
+      <Destination ToolID="39" Connection="Left"/>
     </Connection>
     <Connection>
-      <Origin ToolID="39" Connection="Join" />
-      <Destination ToolID="40" Connection="Input" />
+      <Origin ToolID="39" Connection="Join"/>
+      <Destination ToolID="40" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="52" Connection="Output" />
-      <Destination ToolID="53" Connection="Input" />
+      <Origin ToolID="52" Connection="Output"/>
+      <Destination ToolID="53" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="52" Connection="Output" />
-      <Destination ToolID="55" Connection="Input" />
+      <Origin ToolID="52" Connection="Output"/>
+      <Destination ToolID="55" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="54" Connection="Output" />
-      <Destination ToolID="52" Connection="Input" />
+      <Origin ToolID="54" Connection="Output"/>
+      <Destination ToolID="52" Connection="Input"/>
     </Connection>
     <Connection name="#1">
-      <Origin ToolID="29" Connection="Question" />
-      <Destination ToolID="32" Connection="Question" />
+      <Origin ToolID="29" Connection="Question"/>
+      <Destination ToolID="32" Connection="Question"/>
     </Connection>
     <Connection name="#1">
-      <Origin ToolID="35" Connection="Question" />
-      <Destination ToolID="38" Connection="Question" />
+      <Origin ToolID="35" Connection="Question"/>
+      <Destination ToolID="38" Connection="Question"/>
     </Connection>
   </Connections>
   <Properties>
-    <Memory default="True" />
-    <GlobalRecordLimit value="0" />
-    <TempFiles default="True" />
-    <Annotation on="False" includeToolName="False" />
-    <ConvErrorLimit value="10" />
-    <ConvErrorLimit_Stop value="False" />
-    <CancelOnError value="False" />
-    <DisableBrowse value="False" />
-    <EnablePerformanceProfiling value="False" />
-    <DisableAllOutput value="False" />
-    <ShowAllMacroMessages value="False" />
-    <ShowConnectionStatusIsOn value="True" />
-    <ShowConnectionStatusOnlyWhenRunning value="True" />
-    <ZoomLevel value="0" />
+    <Memory default="True"/>
+    <GlobalRecordLimit value="0"/>
+    <TempFiles default="True"/>
+    <Annotation on="False" includeToolName="False"/>
+    <ConvErrorLimit value="10"/>
+    <ConvErrorLimit_Stop value="False"/>
+    <CancelOnError value="False"/>
+    <DisableBrowse value="False"/>
+    <EnablePerformanceProfiling value="False"/>
+    <DisableAllOutput value="False"/>
+    <ShowAllMacroMessages value="False"/>
+    <ShowConnectionStatusIsOn value="True"/>
+    <ShowConnectionStatusOnlyWhenRunning value="True"/>
+    <ZoomLevel value="0"/>
     <LayoutType>Horizontal</LayoutType>
     <Constants>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberTrials</Name>
-        <Value />
-        <IsNumeric value="True" />
+        <Value/>
+        <IsNumeric value="True"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberFolds</Name>
-        <Value />
-        <IsNumeric value="True" />
+        <Value/>
+        <IsNumeric value="True"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>classification</Name>
         <Value>True</Value>
-        <IsNumeric value="False" />
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>regression</Name>
         <Value>False</Value>
-        <IsNumeric value="False" />
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>targetField</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>predFields</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>stratified</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>posClass</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>displayGraphs</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>Macro Output (55)</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
     </Constants>
     <MetaInfo>
-      <NameIsFileName value="False" />
-      <Name>CV_Plugin</Name>
-      <Description />
-      <RootToolName />
-      <ToolVersion />
-      <ToolInDb value="False" />
+      <NameIsFileName value="False"/>
+      <Name>Cross Validation</Name>
+      <Description>Benchmark multiple models using cross validation.</Description>
+      <RootToolName/>
+      <ToolVersion/>
+      <ToolInDb value="False"/>
       <CategoryName>Predictive Refresh</CategoryName>
-      <SearchTags />
+      <SearchTags/>
       <Author>Advanced Analytics</Author>
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
-      <DescriptionLink actual="" displayed="" />
+      <DescriptionLink actual="" displayed=""/>
+      <Example>
+        <Description/>
+        <File/>
+      </Example>
     </MetaInfo>
     <Events>
-      <Enabled value="True" />
+      <Enabled value="True"/>
     </Events>
     <RuntimeProperties>
       <Actions>
@@ -5014,21 +4990,21 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <True>
             <Action>
               <Type>UpdateValue</Type>
-              <Description />
-              <ToolId value="32" />
+              <Description/>
+              <ToolId value="32"/>
               <Mode>Simple</Mode>
-              <Variable />
-              <Replace value="True" />
+              <Variable/>
+              <Replace value="True"/>
               <ReplaceText>MonthGive</ReplaceText>
               <Destination>46/Expression</Destination>
             </Action>
             <Action>
               <Type>UpdateValue</Type>
-              <Description />
-              <ToolId value="38" />
+              <Description/>
+              <ToolId value="38"/>
               <Mode>Simple</Mode>
-              <Variable />
-              <Replace value="True" />
+              <Variable/>
+              <Replace value="True"/>
               <ReplaceText>"Region", "AveDonAmt", "LastDonAmt", "DonPerYear"</ReplaceText>
               <Destination>37/Expression</Destination>
             </Action>
@@ -5040,65 +5016,65 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Type>Tab</Type>
           <Description>Questions</Description>
           <Name>Tab (2)</Name>
-          <ToolId value="2" />
+          <ToolId value="2"/>
           <Questions>
             <Question>
               <Type>MacroInput</Type>
               <Description>Text Input (1)</Description>
               <Name>Text Input (1)</Name>
-              <ToolId value="3" />
+              <ToolId value="3"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (5)</Description>
               <Name>Macro Output (5)</Name>
-              <ToolId value="5" />
+              <ToolId value="5"/>
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of trials</Description>
               <Name>numberTrials</Name>
-              <ToolId value="23" />
-              <Minimum value="1" />
-              <Maximum value="100" />
-              <Increment value="1" />
-              <Default value="3" />
-              <Decimals value="0" />
+              <ToolId value="23"/>
+              <Minimum value="1"/>
+              <Maximum value="100"/>
+              <Increment value="1"/>
+              <Default value="3"/>
+              <Decimals value="0"/>
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of folds</Description>
               <Name>numberFolds</Name>
-              <ToolId value="24" />
-              <Minimum value="1" />
-              <Maximum value="100" />
-              <Increment value="1" />
-              <Default value="5" />
-              <Decimals value="0" />
+              <ToolId value="24"/>
+              <Minimum value="1"/>
+              <Maximum value="100"/>
+              <Increment value="1"/>
+              <Default value="5"/>
+              <Decimals value="0"/>
             </Question>
             <Question>
               <Type>LabelGroup</Type>
               <Description>Type of model</Description>
               <Name>LabelGroup (27)</Name>
-              <ToolId value="27" />
+              <ToolId value="27"/>
               <Questions>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Classification</Description>
                   <Name>classification</Name>
-                  <ToolId value="25" />
-                  <Questions />
-                  <Default value="False" />
-                  <Collapsable value="False" />
+                  <ToolId value="25"/>
+                  <Questions/>
+                  <Default value="False"/>
+                  <Collapsable value="False"/>
                 </Question>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Regression</Description>
                   <Name>regression</Name>
-                  <ToolId value="26" />
-                  <Questions />
-                  <Default value="False" />
-                  <Collapsable value="False" />
+                  <ToolId value="26"/>
+                  <Questions/>
+                  <Default value="False"/>
+                  <Collapsable value="False"/>
                 </Question>
               </Questions>
             </Question>
@@ -5106,81 +5082,81 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
               <Type>MacroInput</Type>
               <Description>Macro Input (28)</Description>
               <Name>Macro Input (28)</Name>
-              <ToolId value="28" />
+              <ToolId value="28"/>
             </Question>
             <Question>
               <Type>ListBox</Type>
               <Description>Select the target field</Description>
               <Name>targetField</Name>
-              <ToolId value="29" />
-              <Multiple value="False" />
-              <Default />
+              <ToolId value="29"/>
+              <Multiple value="False"/>
+              <Default/>
               <Mode>MacroField</Mode>
-              <MacroField_InputTool value="0" />
-              <Field_IncludeNone value="False" />
+              <MacroField_InputTool value="0"/>
+              <Field_IncludeNone value="False"/>
               <MacroField_FilterTypes>Bool,Byte,Int16,Int32,Int64,FixedDecimal,Float,Double,String,WString,V_String,V_WString</MacroField_FilterTypes>
             </Question>
             <Question>
               <Type>ListBox</Type>
               <Description>Select the predictor fields</Description>
               <Name>predFields</Name>
-              <ToolId value="35" />
-              <Multiple value="True" />
-              <Multiple_Custom value="True" />
+              <ToolId value="35"/>
+              <Multiple value="True"/>
+              <Multiple_Custom value="True"/>
               <Multiple_Start>"</Multiple_Start>
               <Multiple_Separator>","</Multiple_Separator>
               <Multiple_End>"</Multiple_End>
-              <Multiple_Default value="False" />
+              <Multiple_Default value="False"/>
               <Mode>MacroField</Mode>
-              <MacroField_InputTool value="0" />
-              <Field_IncludeNone value="False" />
+              <MacroField_InputTool value="0"/>
+              <Field_IncludeNone value="False"/>
               <MacroField_FilterTypes>Bool,Byte,Int16,Int32,Int64,FixedDecimal,Float,Double,String,WString,V_String,V_WString,Date,Time,DateTime,Blob,SpatialObj</MacroField_FilterTypes>
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should stratified cross-validation be used?</Description>
               <Name>stratified</Name>
-              <ToolId value="41" />
-              <Questions />
-              <Default value="False" />
-              <Collapsable value="False" />
+              <ToolId value="41"/>
+              <Questions/>
+              <Default value="False"/>
+              <Collapsable value="False"/>
             </Question>
             <Question>
               <Type>TextBox</Type>
               <Description>Name of the positive class (Optional, only relevant for binary classification)</Description>
               <Name>posClass</Name>
-              <ToolId value="47" />
-              <Default />
-              <Password value="False" />
-              <Multiline value="False" />
-              <Hidden value="False" />
+              <ToolId value="47"/>
+              <Default/>
+              <Password value="False"/>
+              <Multiline value="False"/>
+              <Hidden value="False"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (48)</Description>
               <Name>Macro Output (48)</Name>
-              <ToolId value="48" />
+              <ToolId value="48"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (49)</Description>
               <Name>Macro Output (49)</Name>
-              <ToolId value="49" />
+              <ToolId value="49"/>
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should graphs of the fit measures be displayed? (Not recommended if the product of the number of trials and the number of folds is large.)</Description>
               <Name>displayGraphs</Name>
-              <ToolId value="50" />
-              <Questions />
-              <Default value="False" />
-              <Collapsable value="False" />
+              <ToolId value="50"/>
+              <Questions/>
+              <Default value="False"/>
+              <Collapsable value="False"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (55)</Description>
               <Name>Macro Output (55)</Name>
-              <ToolId value="55" />
+              <ToolId value="55"/>
             </Question>
           </Questions>
         </Question>
@@ -5188,23 +5164,32 @@ cvResults(configs = configs, data = inputs$data, models = inputs$models, modelNa
           <Type>Tab</Type>
           <Description>Debug</Description>
           <Name>Tab (12)</Name>
-          <ToolId value="12" />
-          <Questions />
+          <ToolId value="12"/>
+          <Questions/>
         </Question>
       </Questions>
       <ModuleType>Macro</ModuleType>
-      <MacroCustomHelp value="False" />
-      <MacroDynamicOutputFields value="False" />
-      <MacroImageStd value="39" />
-      <MacroInputs />
-      <MacroOutputs />
-      <Wiz_CustomHelp value="False" />
-      <Wiz_CustomGraphic value="False" />
-      <Wiz_ShowOutput value="True" />
-      <Wiz_OpenOutputTools />
-      <Wiz_OutputMessage />
-      <Wiz_NoOutputFilesMessage />
-      <Wiz_ChainRunWizard />
+      <MacroCustomHelp value="False"/>
+      <MacroDynamicOutputFields value="False"/>
+      <MacroImageStd value="39"/>
+      <MacroInputs/>
+      <MacroOutputs/>
+      <Wiz_CustomHelp value="False"/>
+      <Wiz_CustomGraphic value="False"/>
+      <Wiz_ShowOutput value="True"/>
+      <Wiz_OpenOutputTools>
+        <Tool ToolId="3" Selected="True"/>
+        <Tool ToolId="5" Selected="True"/>
+        <Tool ToolId="28" Selected="True"/>
+        <Tool ToolId="48" Selected="True"/>
+        <Tool ToolId="49" Selected="True"/>
+        <Tool ToolId="51" Selected="False"/>
+        <Tool ToolId="53" Selected="False"/>
+        <Tool ToolId="55" Selected="True"/>
+      </Wiz_OpenOutputTools>
+      <Wiz_OutputMessage/>
+      <Wiz_NoOutputFilesMessage/>
+      <Wiz_ChainRunWizard/>
     </RuntimeProperties>
   </Properties>
 </AlteryxDocument>
