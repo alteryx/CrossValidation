@@ -16,8 +16,8 @@
   <Properties>
     <MetaInfo>
       <NameIsFileName></NameIsFileName>
-      <Name>CV_Plugin</Name>
-      <Description></Description>
+      <Name>Cross Validation</Name>
+      <Description>Benchmark multiple models using cross validation.</Description>
       <RootToolName></RootToolName>
       <ToolVersion></ToolVersion>
       <ToolInDb></ToolInDb>
