@@ -8,7 +8,7 @@
     </InputConnections>
     <OutputConnections>
       <Connection Name="Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
-      <Connection Name="Output48" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
+      <Connection Name="Measures" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
       <Connection Name="Output49" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
       <Connection Name="Output55" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
     </OutputConnections>
