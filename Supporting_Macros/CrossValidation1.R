@@ -605,29 +605,37 @@ cvResults <- function(config, data, models, modelNames) {
   #AlteryxGraph(4)
   #lapply(histList, sapply, plot)
   #Unfortunately I think the nested *apply approach won't work because the labels need to be updated correctly for each round
-  for (i in 1:length(histList)) {
-    for (j in 1:length(histList[[1]])) {
-      plot((histList[[i]])[[j]], main = paste0("Histogram of ", names(histList[[i]])[[j]], " ", modelNames[i]), xlab = names(histList[[i]])[[j]])
-    }
-  }
-  
-  if (config$regression) {
-    xvals <- fullTable[,1]
-    for (i in 1:NROW(models)) {
-      yvals <- fullTable[,i+1]
-      for (j in 1:config$numberTrials) {
-        xvals_current_trial <- xvals[which(fullTable[,NCOL(fullTable)] == j)]
-        yvals_current_trial <- yvals[which(fullTable[,NCOL(fullTable)] == j)]
-        main_title <- paste("Plot of Actuals and Predicted values for Model", modelNames[i], " Trial ", j)
-        plot(c(min(c(xvals, yvals)), max(c(xvals, yvals))), c(min(c(xvals, yvals)), max(c(xvals, yvals))), type = "n", xlab = "Actual", ylab = "Predicted", main = main_title)
-        points(xvals_current_trial, yvals_current_trial, col = j)
+  makePlots <- function(){
+    for (i in 1:length(histList)) {
+      for (j in 1:length(histList[[1]])) {
+        plot((histList[[i]])[[j]], main = paste0("Histogram of ", names(histList[[i]])[[j]], " ", modelNames[i]), xlab = names(histList[[i]])[[j]])
       }
     }
-  } else if (length(myLevels) == 2) {
-    print("listOutMeasures is:")
-    print(listOutMeasures)
+    
+    if (config$regression) {
+      xvals <- fullTable[,1]
+      for (i in 1:NROW(models)) {
+        yvals <- fullTable[,i+1]
+        for (j in 1:config$numberTrials) {
+          xvals_current_trial <- xvals[which(fullTable[,NCOL(fullTable)] == j)]
+          yvals_current_trial <- yvals[which(fullTable[,NCOL(fullTable)] == j)]
+          main_title <- paste("Plot of Actuals and Predicted values for Model", modelNames[i], " Trial ", j)
+          plot(c(min(c(xvals, yvals)), max(c(xvals, yvals))), c(min(c(xvals, yvals)), max(c(xvals, yvals))), type = "n", xlab = "Actual", ylab = "Predicted", main = main_title)
+          points(xvals_current_trial, yvals_current_trial, col = j)
+        }
+      }
+    } else if (length(myLevels) == 2) {
+      print("listOutMeasures is:")
+      print(listOutMeasures)
+    }
   }
-  #invisible(dev.off())
+  if (inAlteryx()){
+    AlteryxGraph(4)
+    makePlots()
+    invisible(dev.off())
+  } else {
+    makePlots() 
+  }
 }
 
 
