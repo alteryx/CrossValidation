@@ -153,15 +153,15 @@ checkFactorVars <- function(data, folds, config) {
             if (length(missingTrainingClasses) > 1) {
               warningMessage1 <- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
-              errorMessage <- "It is impossible to create an accurate model when the training set is missing a class."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing a class."
             } else {
               warningMessage1 <- paste0("Class ", missingTrainingClasses, " was not present in variable ", currentColumnName, " of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
-              errorMessage <- "It is impossible to create an accurate model when the training set is missing classes."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing classes."
             }
             AlteryxMessage2(warningMessage1)
             AlteryxMessage2(warningMessage2)
-            stop.Alteryx2(errorMessage)
+            AlteryxMessage2(errorMessage)
           }
         }
       }
