@@ -183,7 +183,7 @@ unserializeToChar <- function(string) {
 #Get a single y variable using a model call. This function will be used as a helper function in getYvars, which obtains
 #the Y variable from each model and checks them against each other and the Y variable from the input data.
 getOneYVar <- function(model) {
-  if (class(model) == "naiveBayes") {
+  if (inherits(model, "naiveBayes")) {
     bayes_yvar <- model$yvars
     return(as.character(bayes_yvar))
   } else {
@@ -605,7 +605,7 @@ cvResults <- function(config, data, models, modelNames) {
   }
   #write.Alteryx(as.data.frame(measuresMatrix), 2)
   #saveRDS(histList, file.path(wd, "histograms.RDS"))
-  AlteryxGraph(4)
+  #AlteryxGraph(4)
   #lapply(histList, sapply, plot)
   #Unfortunately I think the nested *apply approach won't work because the labels need to be updated correctly for each round
   for (i in 1:length(histList)) {
@@ -630,7 +630,7 @@ cvResults <- function(config, data, models, modelNames) {
     print("listOutMeasures is:")
     print(listOutMeasures)
   }
-  invisible(dev.off())
+  #invisible(dev.off())
 }
 
 
