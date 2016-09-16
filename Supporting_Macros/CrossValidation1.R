@@ -527,8 +527,13 @@ cvResults <- function(config, data, models, modelNames) {
         }
         #Since the first column is the actual data, we need to update column i+1 instead of column i
         fullTable[startRow:endRow, i + 1] <- unlist(scoredOutput)
-        if ((config$classification) && length(myLevels == 2)) {
-          tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClass, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
+        if ((config$classification)) {
+          if (length(myLevels) == 2) {
+            posClassInput <- posClass
+          } else {
+            posClassInput <- 0
+          }
+          tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClassInput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
           outMeasures <- tempOutMeasures[[1]]
           if (j == 1) {
             listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- tempOutMeasures
