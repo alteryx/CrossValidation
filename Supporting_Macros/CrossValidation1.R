@@ -379,33 +379,37 @@ cvResults <- function(config, data, models, modelNames) {
     if (length(myLevels) < 2) {
       stop.Alteryx2("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
     } else if (length(myLevels) == 2) {
-      #Use the function from the Model Comparison tool to get/set positive class:
-      setPositiveClass <- function(tar_lev) {
-        # Set the postive class for two-class classification.
-        # The setPositiveClass function is only triggered if the user leaves the
-        # question on positive class (target level) blank.
-        #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
-        #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
-        #   3) otherwise: use the first level by alphabetical order.
-        #
-        # Parameters:
-        #   tar_lev: a vector of string
-        #            the levels of the target variable.
-        #
-        # Returns:
-        #   no_name: a string, the name of the positive class.
-        yes_id <- match("yes", tolower(tar_lev))
-        true_id <- match("true", tolower(tar_lev))
-        if (!is.na(yes_id)) {
-          return (tar_lev[yes_id])
-        } else if (!is.na(true_id)) {
-          return (tar_lev[true_id])
-        } else {
-          return (tar_lev[1])
+      if ((!is.null(config$posClass)) && ((config$posClass) %in% yVar)) {
+        posClass <- config$posClass
+      } else {
+        #Use the function from the Model Comparison tool to get/set positive class:
+        setPositiveClass <- function(tar_lev) {
+          # Set the postive class for two-class classification.
+          # The setPositiveClass function is only triggered if the user leaves the
+          # question on positive class (target level) blank.
+          #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
+          #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
+          #   3) otherwise: use the first level by alphabetical order.
+          #
+          # Parameters:
+          #   tar_lev: a vector of string
+          #            the levels of the target variable.
+          #
+          # Returns:
+          #   no_name: a string, the name of the positive class.
+          
+          yes_id <- match("yes", tolower(tar_lev))
+          true_id <- match("true", tolower(tar_lev))
+          if (!is.na(yes_id)) {
+            return (tar_lev[yes_id])
+          } else if (!is.na(true_id)) {
+            return (tar_lev[true_id])
+          } else {
+            return (tar_lev[1])
+          }
         }
+        posClass <- setPositiveClass(myLevels)
       }
-      posClass <- setPositiveClass(myLevels)
-      
       #Initialize list that will hold the information needed for the 2-class specific plots
       listOutMeasures <- as.list(vector(length = (length(models) * (config$numberTrials))))
     }
