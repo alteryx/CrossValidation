@@ -12,6 +12,7 @@
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 library(AlteryxPredictive)
+library(plyr)
 print("loaded library")
 config <- list(
  `classification` = radioInput('%Question.classification%' , TRUE),
