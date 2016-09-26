@@ -93,8 +93,65 @@ createFolds <- function(data, config) {
   return(foldList)
 }
 
-#In the 2-class classification case, get the positive class. Otherwise, return null.
 
+#Get a single y variable using a model call. This function will be used as a helper function in getYvars, which obtains
+#the Y variable from each model and checks them against each other and the Y variable from the input data.
+getOneYVar <- function(model) {
+  if (inherits(model, "naiveBayes")) {
+    bayes_yvar <- model$yvars
+    return(as.character(bayes_yvar))
+  } else {
+    return(as.character(formula(model$call))[2])
+  }
+}
+#Check if response variable is the same in the pre-built model(s) and the input data.
+#If so, output this variable.
+getYvars <- function(data, models) {
+  # Get the names of the target fields and make sure they are all same. If not,
+  # throw an error.
+  y_names <- sapply(models, getOneYVar)
+  if (!all(y_names == y_names[1])) {
+    stop.Alteryx2("More than one target variable are present in the provided models")
+  } else if (!(y_names[1] == colnames(data[,1, drop = FALSE]))) {
+    stop.Alteryx2("The target variable from the models is different than the target chosen in the configuration. Please check your configuration settings and try again.")
+  }
+  # get the target variable name
+  y_name <- y_names[1]
+  # Get the target variable
+  return(data[[y_name]])
+}
+
+#In the 2-class classification case, get the positive class. Otherwise, do nothing.
+getPosClass <- function(config, yVar) {
+
+      #Use the function from the Model Comparison tool to get/set positive class:
+      setPositiveClass <- function(tar_lev) {
+        # Set the postive class for two-class classification.
+        # The setPositiveClass function is only triggered if the user leaves the
+        # question on positive class (target level) blank.
+        #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
+        #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
+        #   3) otherwise: use the first level by alphabetical order.
+        #
+        # Parameters:
+        #   tar_lev: a vector of string
+        #            the levels of the target variable.
+        #
+        # Returns:
+        #   no_name: a string, the name of the positive class.
+        
+        yes_id <- match("yes", tolower(tar_lev))
+        true_id <- match("true", tolower(tar_lev))
+        if (!is.na(yes_id)) {
+        return (tar_lev[yes_id])
+      } else if (!is.na(true_id)) {
+         return (tar_lev[true_id])
+      } else {
+        return (tar_lev[1])
+      }
+    }
+    return(setPositiveClass(yVar))
+  }
 
 #' ### Defaults
 #' 
@@ -116,11 +173,19 @@ inputs <- list(
 
 inputs$modelNames = names(inputs$models)
 
+yVar <- getYvars(inputs$data, inputs$models)
 
+if ((config$classification) && (length(unique(yVar)) == 2)) {
+  #For some reason, length(config$posClass) is still 1 even when posClass isn't given.
+  #However, appending a single character to it when it's empty will result in a string of length 1
+  if (length(paste0(config$posClass, "A")) == 1) {
+  config$posClass <- getPosClass(config, yVar)
+  }
+}
 #COME BACK HERE WHEN posClass STUFF IS FINISHED!
 extras <- list(
   yVar = colnames(inputs$data)[1],
-  posClass = 'Yes',
+  posClass = config$posClass,
   allFolds = createFolds(data = inputs$data, config = config)
 )
 
@@ -130,9 +195,14 @@ getActualandResponse <- function(model, data, testIndices, extras){
   testData = data[testIndices,]
   currentModel <- update(model, data = trainingData)
   pred <- scoreModel(currentModel, new.data = testData)
-  response <- gsub("Score_", "", names(pred)[max.col(pred)])
   actual <- as.character(testData[[extras$yVar]])
-  data.frame(response = response, actual = actual)
+  if (config$classification) {
+    response <- gsub("Score_", "", names(pred)[max.col(pred)])
+    return(data.frame(response = response, actual = actual, pred))
+  } else {
+    response <- pred
+    return(data.frame(response = response, actual = actual))
+  }
 }
 
 #' 
@@ -140,7 +210,7 @@ getCrossValidatedResults <- function(inputs, allFolds, extras){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    out <- getActualandResponse(model, inputs$data, testIndices, extras)
+    out <- (getActualandResponse(model, inputs$data, testIndices, extras))
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
