@@ -12,8 +12,7 @@
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 library(AlteryxPredictive)
-library(plyr)
-print("loaded library")
+
 config <- list(
  `classification` = radioInput('%Question.classification%' , TRUE),
  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
@@ -28,6 +27,7 @@ config <- list(
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
+library(plyr)
 
 #' ### Defaults
 #' 

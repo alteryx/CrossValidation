@@ -6,6 +6,8 @@ library("TunePareto")
 library("sm")
 library("vioplot")
 
+
+
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
   `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
@@ -91,11 +93,8 @@ createFolds <- function(data, config) {
   return(foldList)
 }
 
-extras <- list(
-  yVar = 'MonthGive',
-  posClass = 'Yes',
-  allFolds = createFolds(data = inputs$data, config = config)
-)
+#In the 2-class classification case, get the positive class. Otherwise, return null.
+
 
 #' ### Defaults
 #' 
@@ -117,6 +116,13 @@ inputs <- list(
 
 inputs$modelNames = names(inputs$models)
 
+
+#COME BACK HERE WHEN posClass STUFF IS FINISHED!
+extras <- list(
+  yVar = colnames(inputs$data)[1],
+  posClass = 'Yes',
+  allFolds = createFolds(data = inputs$data, config = config)
+)
 
 #' Given a model, a dataset and index of test cases, return actual and response
 getActualandResponse <- function(model, data, testIndices, extras){
@@ -165,10 +171,14 @@ generateOutput3 <- function(inputs, config, extras){
 
 dataOutput3 <- generateOutput3(inputs, config, extras)
 
-if (inAlteryx) {
+if (inAlteryx()) {
   write.Alteryx(dataOutput3, 3)
 }
 
-generateOutput2 <- function(inputs, config, extras) {
-  
-}
+# generateOutput2 <- function(inputs, config, extras) {
+#   if (config$regression) {
+#     
+#   } else if ()
+# }
+
+
