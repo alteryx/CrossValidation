@@ -182,11 +182,17 @@ if ((config$classification) && (length(unique(yVar)) == 2)) {
   config$posClass <- getPosClass(config, yVar)
   }
 }
+if (config$classification) {
+  myLevels <- levels(yVar)
+} else {
+  myLevels <- NULL
+}
 
 extras <- list(
   yVar = colnames(inputs$data)[1],
   posClass = config$posClass,
-  allFolds = createFolds(data = inputs$data, config = config)
+  allFolds = createFolds(data = inputs$data, config = config),
+  levels = myLevels
 )
 
 #' Given a model, a dataset and index of test cases, return actual and response
@@ -281,13 +287,12 @@ getMeasuresClassification <- function(outData) {
   modelIndic <- unique(outData$mid)
   trialIndic <- unique(outData$trial)
   foldIndic <- unique(outData$fold)
-  myLevels <- levels(actual)
   overallAcc <- sum(actual == scoredOutput)/length(actual)
-  if (length(myLevels) == 2) {
+  if (length(extras$levels) == 2) {
     true_y <- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
     #We need to know which column of scoredData corresponds to the positive class in order to set up the needed intermediate steps for obtaining the AUC
-    posClassCol <- which(myLevels == posClass)
-    negClassCol <- which(myLevels != posClass)
+    posClassCol <- which((extras$levels) == posClass)
+    negClassCol <- which((extras$levels) != posClass)
     predictions <- scoredData[,posClassCol]
     predictionObj <- prediction(predictions = predictions, labels = actual)
     
@@ -319,17 +324,17 @@ getMeasuresClassification <- function(outData) {
     AUC <- unlist(AUC@y.values)
 #     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
 #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
-    percentClass1Right <- sum(scoredOutput[which(actual == myLevels[1])] == myLevels[[1]])/length(which(actual == myLevels[1]))
-    percentClass2Right <- sum(scoredOutput[which(actual == myLevels[2])] == myLevels[[2]])/length(which(actual == myLevels[2]))
+    percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
+    percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
     outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
     #outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
-    outVec <- vector(length = length(myLevels))
-    for (l in 1:length(myLevels)) {
-      tempPred <- scoredOutput[actual == myLevels[[l]]]
-      nCorrect <- sum(temppred == myLevels[[l]])
-      thisAcc <- nCorrect/sum(actual == myLevels[[l]])
+    outVec <- vector(length = length((extras$levels)))
+    for (l in 1:length((extras$levels))) {
+      tempPred <- scoredOutput[actual == (extras$levels)[[l]]]
+      nCorrect <- sum(temppred == (extras$levels)[[l]])
+      thisAcc <- nCorrect/sum(actual == (extras$levels)[[l]])
       outVec[l] <- thisAcc
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
@@ -340,16 +345,40 @@ getMeasuresClassification <- function(outData) {
 }
 
 
-generateOutput2 <- function(inputs) {
+generateOutput2 <- function(data) {
   if (config$regression) {
-    return(ddply(.data = dataOutput3, .(trial, fold, mid), .fun = getMeasuresRegression))
+    return(ddply(.data = data, .(trial, fold, mid), .fun = getMeasuresRegression))
   } else {
-    return(ddply(.data = dataOutput3, .(trial, fold, mid), .fun = getMeasuresClassification))
+    return(ddply(.data = data, .(trial, fold, mid), .fun = getMeasuresClassification))
   }
 }
 
-dataOutput2 <- generateOutput2(inputs)
+dataOutput2 <- generateOutput2(dataOutput3)
 
 if (inAlteryx()) {
   write.Alteryx(dataOutput2, 2)
 }
+
+generateConfusionMatrices <- function(outData) {
+  outvec <- vector(length = length(extras$levels))
+  pasteClass <- function(nameOfClass) {
+    paste0("Class_", nameOfClass)
+  }
+  names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
+  for (i in 1:length(extras$levels)) {
+    outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
+  }
+  return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = unique(outData$response), outvec))
+}
+
+generateOutput1 <- function(data) {
+  return(ddply(.data = data, .(trial, fold, mid, response), .fun = generateConfusionMatrices))
+}
+
+if (config$classification) {
+  confMats <- generateOutput1(dataOutput3)
+  if (inAlteryx()) {
+    write.Alteryx(confMats, 1)
+  }
+}
+
