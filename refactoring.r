@@ -182,7 +182,7 @@ if ((config$classification) && (length(unique(yVar)) == 2)) {
   config$posClass <- getPosClass(config, yVar)
   }
 }
-#COME BACK HERE WHEN posClass STUFF IS FINISHED!
+
 extras <- list(
   yVar = colnames(inputs$data)[1],
   posClass = config$posClass,
@@ -245,10 +245,111 @@ if (inAlteryx()) {
   write.Alteryx(dataOutput3, 3)
 }
 
-# generateOutput2 <- function(inputs, config, extras) {
-#   if (config$regression) {
-#     
-#   } else if ()
-# }
+#Append an extra column that will contain trial, fold, and model ID concatenated
+lastCol <- paste0(dataOutput3[,1], dataOutput3[,2], dataOutput3[,3])
+
+#Get the necessary measures in the regression case
+getMeasuresRegression <- function(outData) {
+  actual <- unlist(outData$actual)
+  predicted <- unlist(outData$response)
+  modelIndic <- outData$mid
+  trialIndic <- outData$trial
+  foldIndic <- outData$fold
+  err <- actual - predicted
+  rmse <- sqrt(mean(err*err))
+  mae <- mean(abs(err))
+  # When there are values near 0 in the target variable, it can lead to an attempt to divide by 0
+  # In this case, use the weighted version.
+  if (any(abs(actual) < 0.001)) {
+    AlteryxMessage("The target variable contains values very close to 0 (-0.001, 0.001). WPE and WAPE are being used instead of MPE and MAPE.", iType = 2, iPriority = 3)
+    mpe <- 100 * sum(err) / sum(actual)
+    mape <- 100 * sum(abs(err)) / sum(actual)
+  } else {
+    mpe <- 100*mean(err/actual)
+    mape <- 100*mean(abs(err/actual))
+  }
+  c(as.character(modelIndic), trialIndic, foldIndic, cor(predicted, actual), rmse, mae, mpe, mape)
+}
+
+#Get the necessary measures in the classification case
+getMeasuresClassification <- function(outData) {
+  actual <- outData$actual
+  scoredData <- outData[,6:7]
+  scoredOutput <- outData$response
+  #I know this isn't ideal, but I'm not sure how to get around it if we're using ddply (so we only want to have a single data.frame argument)
+  posClass <- config$posClass
+  modelIndic <- unique(outData$mid)
+  trialIndic <- unique(outData$trial)
+  foldIndic <- unique(outData$fold)
+  myLevels <- levels(actual)
+  overallAcc <- sum(actual == scoredOutput)/length(actual)
+  if (length(myLevels) == 2) {
+    true_y <- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
+    #We need to know which column of scoredData corresponds to the positive class in order to set up the needed intermediate steps for obtaining the AUC
+    posClassCol <- which(myLevels == posClass)
+    negClassCol <- which(myLevels != posClass)
+    predictions <- scoredData[,posClassCol]
+    predictionObj <- prediction(predictions = predictions, labels = actual)
+    
+    # =================================================================
+    # Quick Reference:
+    #       precision = tp / (tp + fp)
+    #          recall = tp / (tp + fn)
+    #             tpr = tp / (tp + fn)
+    #             fpr = fp / (fp + tn)
+    #              f1 = 2 * precision * recall / (precision + recall)
+    # ==================================================================
+    
+#     perf_acc <- performance(predictionObj, "acc", "cutoff")
+#     perf_lift <- performance(predictionObj, "lift", "rpp")
+#     perf_gain <- performance(predictionObj, "tpr", "rpp")
+#     perf_roc <- performance(predictionObj, "tpr", "fpr")
+#     perf_pr <- performance(predictionObj, "prec", "rec")
+    actualPosIndic <- which(actual == posClass)
+    nActualPos <- length(actualPosIndic)
+    nCorrectPos <- sum(scoredOutput[actualPosIndic] == posClass)
+    nPredPos <- sum(scoredOutput == posClass)
+    precision <- nCorrectPos/nPredPos
+    recall <- nCorrectPos/nActualPos
+    F1 <- 2*(precision*recall)/(precision + recall)
+    #F1 <- performance(predictionObj, "f")
+    #F1 <- unlist(F1@y.values) # converting S4 class to scalar
+    
+    AUC <- performance(prediction.obj = predictionObj, measure = "auc")
+    AUC <- unlist(AUC@y.values)
+#     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
+#                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
+    percentClass1Right <- sum(scoredOutput[which(actual == myLevels[1])] == myLevels[[1]])/length(which(actual == myLevels[1]))
+    percentClass2Right <- sum(scoredOutput[which(actual == myLevels[2])] == myLevels[[2]])/length(which(actual == myLevels[2]))
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
+    #outList <- list(outVec, rocrMeasures)
+  } else {
+    #Compute accuracy by class
+    outVec <- vector(length = length(myLevels))
+    for (l in 1:length(myLevels)) {
+      tempPred <- scoredOutput[actual == myLevels[[l]]]
+      nCorrect <- sum(temppred == myLevels[[l]])
+      thisAcc <- nCorrect/sum(actual == myLevels[[l]])
+      outVec[l] <- thisAcc
+      names(outVec)[l] <- paste0("Accuracy_Class_", l)
+    }
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
+    #outList <- list(outvec)
+  }
+  return(outVec)
+}
 
 
+generateOutput2 <- function(inputs) {
+  if (config$regression) {
+    return(ddply(.data = dataOutput3, .(trial, fold, mid), .fun = getMeasuresRegression))
+  } else {
+    return(ddply(.data = dataOutput3, .(trial, fold, mid), .fun = getMeasuresClassification))
+  }
+}
+
+dataOutput2 <- generateOutput2(inputs)
+
+if (inAlteryx()) {
+  write.Alteryx(dataOutput2, 2)
+}
