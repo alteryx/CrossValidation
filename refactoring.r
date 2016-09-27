@@ -7,17 +7,14 @@ library("sm")
 library("vioplot")
 
 
-
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
   `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
   `posClass` = textInput('%Question.posClass%'),
-  `predFields` = listInput('%Question.predFields%'),
   `regression` = radioInput('%Question.regression%' , FALSE),
-  `stratified` = checkboxInput('%Question.stratified%' , FALSE),
-  `targetField` = dropdownInput('%Question.targetField%')
+  `stratified` = checkboxInput('%Question.stratified%' , FALSE)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
@@ -35,7 +32,7 @@ checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
   modelXVars <- lapply(inputs$models, getXVars)
-  dataXVars <- names(inputs$data[,-1])
+  dataXVars <- names(inputs$data)
   errorMsg <- NULL
   if (numModels > 1) {
     for (i in 1:(numModels - 1)){
@@ -51,12 +48,7 @@ checkXVars <- function(inputs){
                           "used predictor variables which were not contained in the input data.")
         stopMsg <- paste("Please ensure input data contains all the data",
                          "used to create the models and try again.")
-      } else if (!all(dataXVars %in% mvars1)){
-        errorMsg <- paste("The input data contained variables not used in model", 
-                          modelNames[i])
-        stopMsg <- paste("Please be sure to select only the fields actually used as",
-                         "predictors in the models and try again.")
-      }
+      } 
       if (!is.null(errorMsg)){
         AlteryxMessage2(errorMsg, iType = 2, iPriority = 3)
         stop.Alteryx2(stopMsg)
@@ -69,11 +61,6 @@ checkXVars <- function(inputs){
                         "used predictor variables which were not contained in the input data.")
       stopMsg <- paste("Please ensure input data contains all the data",
                        "used to create the models and try again.")
-    } else if (!all(dataXVars %in% mvars1)){
-      errorMsg <- paste("The input data contained variables not used in model", 
-                        modelNames[1])
-      stopMsg <- paste("Please be sure to select only the fields actually used as",
-                       "predictors in the models and try again.")
     }
     
     if (!is.null(errorMsg)){
@@ -173,7 +160,7 @@ getYvars <- function(data, models) {
   y_names <- sapply(models, getOneYVar)
   if (!all(y_names == y_names[1])) {
     stop.Alteryx2("More than one target variable are present in the provided models")
-  } else if (!(y_names[1] == colnames(data[,1, drop = FALSE]))) {
+  } else if (!(y_names[1] %in% colnames(data))) {
     stop.Alteryx2("The target variable from the models is different than the target chosen in the configuration. Please check your configuration settings and try again.")
   }
   # get the target variable name
