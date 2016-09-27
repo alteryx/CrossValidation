@@ -22,6 +22,67 @@ config <- list(
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 
+
+#' ### Helper Functions
+areIdentical <- function(v1, v2){
+  identical(sort(v1), sort(v2))
+}
+
+#' ## Check predictor variables
+#' 
+#' Check if predictor variables in the models and input data are identical.
+checkXVars <- function(inputs){
+  numModels <- length(inputs$models)
+  modelNames <- names(inputs$models)
+  modelXVars <- lapply(inputs$models, getXVars)
+  dataXVars <- names(inputs$data[,-1])
+  errorMsg <- NULL
+  if (numModels > 1) {
+    for (i in 1:(numModels - 1)){
+      mvars1 <- modelXVars[[i]]
+      mvars2 <- modelXVars[[i + 1]]
+      if (!areIdentical(mvars1, mvars2)){
+        errorMsg <- paste("Models", modelNames[i] , "and", modelNames[i + 1],
+                          "were created using different predictor variables.")
+        stopMsg <- "Please ensure all models were created using the same predictors."
+      } 
+      else if (!all(mvars1 %in% dataXVars)){
+        errorMsg <- paste("Model ", modelNames[i], 
+                          "used predictor variables which were not contained in the input data.")
+        stopMsg <- paste("Please ensure input data contains all the data",
+                         "used to create the models and try again.")
+      } else if (!all(dataXVars %in% mvars1)){
+        errorMsg <- paste("The input data contained variables not used in model", 
+                          modelNames[i])
+        stopMsg <- paste("Please be sure to select only the fields actually used as",
+                         "predictors in the models and try again.")
+      }
+      if (!is.null(errorMsg)){
+        AlteryxMessage2(errorMsg, iType = 2, iPriority = 3)
+        stop.Alteryx2(stopMsg)
+      }
+    }
+  } else {
+    mvars1 <- modelXVars[[1]]
+    if (!all(mvars1 %in% dataXVars)){
+      errorMsg <- paste("Model ", modelNames[1], 
+                        "used predictor variables which were not contained in the input data.")
+      stopMsg <- paste("Please ensure input data contains all the data",
+                       "used to create the models and try again.")
+    } else if (!all(dataXVars %in% mvars1)){
+      errorMsg <- paste("The input data contained variables not used in model", 
+                        modelNames[1])
+      stopMsg <- paste("Please be sure to select only the fields actually used as",
+                       "predictors in the models and try again.")
+    }
+    
+    if (!is.null(errorMsg)){
+      AlteryxMessage2(errorMsg, iType = 2, iPriority = 3)
+      stop.Alteryx2(stopMsg)
+    }
+  }
+}
+
 #' Given a factor variable and a set of records in a fixed trial and fold,
 #' return the list of classes not present in that trial and fold.
 getMissingClasses <- function(currentClasses, currentRecords) {
@@ -174,6 +235,7 @@ inputs <- list(
 inputs$modelNames = names(inputs$models)
 
 yVar <- getYvars(inputs$data, inputs$models)
+checkXars(inputs)
 
 if ((config$classification) && (length(unique(yVar)) == 2)) {
   #For some reason, length(config$posClass) is still 1 even when posClass isn't given.
