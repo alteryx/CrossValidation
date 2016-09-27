@@ -12,7 +12,7 @@
 #' ### Configuration
 ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 library(AlteryxPredictive)
-print("loaded library")
+
 config <- list(
  `classification` = radioInput('%Question.classification%' , TRUE),
  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
@@ -27,6 +27,7 @@ config <- list(
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
+library(plyr)
 
 #' ### Defaults
 #' 
@@ -90,13 +91,13 @@ checkXVars <- function(inputs){
   } else {
     mvars1 <- modelXVars[[1]]
     if (!all(mvars1 %in% dataXVars)){
-      errorMsg <- paste("Model ", modelNames[i], 
+      errorMsg <- paste("Model ", modelNames[1], 
                         "used predictor variables which were not contained in the input data.")
       stopMsg <- paste("Please ensure input data contains all the data",
                        "used to create the models and try again.")
     } else if (!all(dataXVars %in% mvars1)){
       errorMsg <- paste("The input data contained variables not used in model", 
-                        modelNames[i])
+                        modelNames[1])
       stopMsg <- paste("Please be sure to select only the fields actually used as",
                        "predictors in the models and try again.")
     }
@@ -153,15 +154,15 @@ checkFactorVars <- function(data, folds, config) {
             if (length(missingTrainingClasses) > 1) {
               warningMessage1 <- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
-              errorMessage <- "It is impossible to create an accurate model when the training set is missing a class."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing a class."
             } else {
               warningMessage1 <- paste0("Class ", missingTrainingClasses, " was not present in variable ", currentColumnName, " of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
-              errorMessage <- "It is impossible to create an accurate model when the training set is missing classes."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing classes."
             }
             AlteryxMessage2(warningMessage1)
             AlteryxMessage2(warningMessage2)
-            stop.Alteryx2(errorMessage)
+            AlteryxMessage2(errorMessage)
           }
         }
       }
@@ -379,33 +380,37 @@ cvResults <- function(config, data, models, modelNames) {
     if (length(myLevels) < 2) {
       stop.Alteryx2("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
     } else if (length(myLevels) == 2) {
-      #Use the function from the Model Comparison tool to get/set positive class:
-      setPositiveClass <- function(tar_lev) {
-        # Set the postive class for two-class classification.
-        # The setPositiveClass function is only triggered if the user leaves the
-        # question on positive class (target level) blank.
-        #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
-        #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
-        #   3) otherwise: use the first level by alphabetical order.
-        #
-        # Parameters:
-        #   tar_lev: a vector of string
-        #            the levels of the target variable.
-        #
-        # Returns:
-        #   no_name: a string, the name of the positive class.
-        yes_id <- match("yes", tolower(tar_lev))
-        true_id <- match("true", tolower(tar_lev))
-        if (!is.na(yes_id)) {
-          return (tar_lev[yes_id])
-        } else if (!is.na(true_id)) {
-          return (tar_lev[true_id])
-        } else {
-          return (tar_lev[1])
+      if ((!is.null(config$posClass)) && ((config$posClass) %in% yVar)) {
+        posClass <- config$posClass
+      } else {
+        #Use the function from the Model Comparison tool to get/set positive class:
+        setPositiveClass <- function(tar_lev) {
+          # Set the postive class for two-class classification.
+          # The setPositiveClass function is only triggered if the user leaves the
+          # question on positive class (target level) blank.
+          #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
+          #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
+          #   3) otherwise: use the first level by alphabetical order.
+          #
+          # Parameters:
+          #   tar_lev: a vector of string
+          #            the levels of the target variable.
+          #
+          # Returns:
+          #   no_name: a string, the name of the positive class.
+          
+          yes_id <- match("yes", tolower(tar_lev))
+          true_id <- match("true", tolower(tar_lev))
+          if (!is.na(yes_id)) {
+            return (tar_lev[yes_id])
+          } else if (!is.na(true_id)) {
+            return (tar_lev[true_id])
+          } else {
+            return (tar_lev[1])
+          }
         }
+        posClass <- setPositiveClass(myLevels)
       }
-      posClass <- setPositiveClass(myLevels)
-      
       #Initialize list that will hold the information needed for the 2-class specific plots
       listOutMeasures <- as.list(vector(length = (length(models) * (config$numberTrials))))
     }
@@ -527,8 +532,13 @@ cvResults <- function(config, data, models, modelNames) {
         }
         #Since the first column is the actual data, we need to update column i+1 instead of column i
         fullTable[startRow:endRow, i + 1] <- unlist(scoredOutput)
-        if ((config$classification) && length(myLevels == 2)) {
-          tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClass, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
+        if ((config$classification)) {
+          if (length(myLevels) == 2) {
+            posClassInput <- posClass
+          } else {
+            posClassInput <- 0
+          }
+          tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClassInput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
           outMeasures <- tempOutMeasures[[1]]
           if (j == 1) {
             listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- tempOutMeasures
