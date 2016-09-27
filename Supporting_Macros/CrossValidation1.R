@@ -3,34 +3,25 @@
 #' author: Bridget Toomey
 #' ---
 
-#' ## Read
-#' 
-#' The first step is to read configuration and inputs that stream in from
-#' Alteryx. For this code to be portable, we need to provide defaults that will
-#' be used when the R code is not run inside an Alteryx workflow.
-#'
-#' ### Configuration
-## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
-library(AlteryxPredictive)
-
+#' ### Read Configuration
+#' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
+suppressWarnings(library(AlteryxPredictive))
 config <- list(
- `classification` = radioInput('%Question.classification%' , TRUE),
- `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
- `numberFolds` = numericInput('%Question.numberFolds%' , 5),
- `numberTrials` = numericInput('%Question.numberTrials%' , 3),
- `posClass` = textInput('%Question.posClass%'),
- `predFields` = listInput('%Question.predFields%'),
- `regression` = radioInput('%Question.regression%' , FALSE),
- `stratified` = checkboxInput('%Question.stratified%' , FALSE),
- `targetField` = dropdownInput('%Question.targetField%')
+  `classification` = radioInput('%Question.classification%' , TRUE),
+  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
+  `numberFolds` = numericInput('%Question.numberFolds%' , 5),
+  `numberTrials` = numericInput('%Question.numberTrials%' , 3),
+  `posClass` = textInput('%Question.posClass%'),
+  `predFields` = listInput('%Question.predFields%'),
+  `regression` = radioInput('%Question.regression%' , FALSE),
+  `stratified` = checkboxInput('%Question.stratified%' , FALSE),
+  `targetField` = dropdownInput('%Question.targetField%')
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
-library(plyr)
 
 #' ### Defaults
-#' 
 #' These defaults are used when the R code is run outside Alteryx
 macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
 dataDir <- file.path(macroDirectory, "Data")
@@ -47,7 +38,7 @@ inputs <- list(
   models = readModelObjects("#2", default = defaults$models)
 )
 
-inputs$modelNames = names(inputs$models)
+##---- Inputs/Config Complete
 
 #' ### Helper Functions
 areIdentical <- function(v1, v2){
@@ -117,6 +108,8 @@ getMissingClasses <- function(currentClasses, currentRecords) {
 
 #' For each factor variable, check to see if all levels are present in each fold. 
 #' If not, error out with an informative message.
+#' 
+
 checkFactorVars <- function(data, folds, config) {
   #All of the discrete variables will be some type of string in Alteryx. So they'll be read as factors, since stringsAsFactors is TRUE in read.Alteryx.
   factorVars <- data[,sapply(data, FUN = is.factor), drop = FALSE]
@@ -178,6 +171,7 @@ createFolds <- function(data, config) {
   return(foldList)
 }
 
+
 #Get a single y variable using a model call. This function will be used as a helper function in getYvars, which obtains
 #the Y variable from each model and checks them against each other and the Y variable from the input data.
 getOneYVar <- function(model) {
@@ -205,69 +199,102 @@ getYvars <- function(data, models) {
   return(data[[y_name]])
 }
 
-#Get the necessary measures in the classification case
-getMeasuresClassification <- function(actual, scoredData, scoredOutput, posClass, modelIndic, trialIndic, foldIndic, modelNames) {
-  myLevels <- levels(actual)
-  overallAcc <- sum(actual == scoredOutput)/length(actual)
-  if (length(myLevels) == 2) {
-    true_y <- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
-    #We need to know which column of scoredData corresponds to the positive class in order to set up the needed intermediate steps for obtaining the AUC
-    posClassCol <- which(myLevels == posClass)
-    negClassCol <- which(myLevels != posClass)
-    predictions <- scoredData[,posClassCol]
-    predictionObj <- prediction(predictions = predictions, labels = actual)
-    
-    # =================================================================
-    # Quick Reference:
-    #       precision = tp / (tp + fp)
-    #          recall = tp / (tp + fn)
-    #             tpr = tp / (tp + fn)
-    #             fpr = fp / (fp + tn)
-    #              f1 = 2 * precision * recall / (precision + recall)
-    # ==================================================================
-    
-    perf_acc <- performance(predictionObj, "acc", "cutoff")
-    perf_lift <- performance(predictionObj, "lift", "rpp")
-    perf_gain <- performance(predictionObj, "tpr", "rpp")
-    perf_roc <- performance(predictionObj, "tpr", "fpr")
-    perf_pr <- performance(predictionObj, "prec", "rec")
-    actualPosIndic <- which(actual == posClass)
-    nActualPos <- length(actualPosIndic)
-    nCorrectPos <- sum(scoredOutput[actualPosIndic] == posClass)
-    nPredPos <- sum(scoredOutput == posClass)
-    precision <- nCorrectPos/nPredPos
-    recall <- nCorrectPos/nActualPos
-    F1 <- 2*(precision*recall)/(precision + recall)
-    #F1 <- performance(predictionObj, "f")
-    #F1 <- unlist(F1@y.values) # converting S4 class to scalar
-    
-    AUC <- performance(prediction.obj = predictionObj, measure = "auc")
-    AUC <- unlist(AUC@y.values)
-    rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
-                         roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
-    percentClass1Right <- sum(scoredOutput[which(actual == myLevels[1])] == myLevels[[1]])/length(which(actual == myLevels[1]))
-    percentClass2Right <- sum(scoredOutput[which(actual == myLevels[2])] == myLevels[[2]])/length(which(actual == myLevels[2]))
-    outVec <- c(as.character(modelNames[modelIndic]), trialIndic, foldIndic, overallAcc, percentClass1Right, percentClass2Right, F1, AUC)
-    outList <- list(outVec, rocrMeasures)
-  } else {
-    #Compute accuracy by class
-    outVec <- vector(length = length(myLevels))
-    for (l in 1:length(myLevels)) {
-      tempPred <- scoredOutput[actual == myLevels[[l]]]
-      nCorrect <- sum(temppred == myLevels[[l]])
-      thisAcc <- nCorrect/sum(actual == myLevels[[l]])
-      outVec[l] <- thisAcc
+#In the 2-class classification case, get the positive class. Otherwise, do nothing.
+getPosClass <- function(config, yVar) {
+
+      #Use the function from the Model Comparison tool to get/set positive class:
+      setPositiveClass <- function(tar_lev) {
+        # Set the postive class for two-class classification.
+        # The setPositiveClass function is only triggered if the user leaves the
+        # question on positive class (target level) blank.
+        #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
+        #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
+        #   3) otherwise: use the first level by alphabetical order.
+        #
+        # Parameters:
+        #   tar_lev: a vector of string
+        #            the levels of the target variable.
+        #
+        # Returns:
+        #   no_name: a string, the name of the positive class.
+        
+        yes_id <- match("yes", tolower(tar_lev))
+        true_id <- match("true", tolower(tar_lev))
+        if (!is.na(yes_id)) {
+        return (tar_lev[yes_id])
+      } else if (!is.na(true_id)) {
+         return (tar_lev[true_id])
+      } else {
+        return (tar_lev[1])
+      }
     }
-    outVec <- c(as.character(modelNames[modelIndic]), trialIndic, foldIndic, overallAcc, outVec)
-    outList <- list(outvec)
-  }
-  return(outList)
+    return(setPositiveClass(yVar))
 }
 
-#Get them in the regression case
-getMeasuresRegression <- function(actual, predicted, modelIndic, trialIndic, foldIndic, modelNames) {
-  actual <- unlist(actual)
-  predicted <- unlist(predicted)
+adjustGbmModel <- function(model){
+  method <- if (model$cv.folds > 1){
+   "cv"
+  } else if (model$train.function < 1){
+    "test"
+  } else {
+    "OOB"
+  }
+  model$best.trees <- gbm.perf(model, method = method)
+  return(model)
+}
+
+
+
+#' Given a model, a dataset and index of test cases, return actual and response
+getActualandResponse <- function(model, data, testIndices, extras){
+  trainingData = data[-testIndices,]
+  testData = data[testIndices,]
+  currentModel <- update(model, data = trainingData)
+  if (inherits(currentModel, 'gbm')){
+    currentModel <- adjustGbmModel(currentModel)
+  }
+  pred <- scoreModel(currentModel, new.data = testData)
+  actual <- as.character(testData[[extras$yVar]])
+  if (config$classification) {
+    response <- gsub("Score_", "", names(pred)[max.col(pred)])
+    return(data.frame(response = response, actual = actual, pred))
+  } else {
+    response <- pred
+    return(data.frame(response = response, actual = actual))
+  }
+}
+
+#' 
+getCrossValidatedResults <- function(inputs, allFolds, extras){
+  function(mid, trial, fold){
+    model <- inputs$models[[mid]]
+    testIndices <- allFolds[[trial]][[fold]]
+    out <- (getActualandResponse(model, inputs$data, testIndices, extras))
+    out <- cbind(trial = trial, fold = fold, mid = mid, out)
+    return(out)
+  }
+}
+
+getPkgListForModels <- function(models){
+  modelClasses <- unlist(lapply(models, class))
+  pkgMap = list(
+    gbm = "gbm", rpart = "rpart", svm.formula = "e1071", svm = "e1071",
+    naiveBayes = "e1071", svyglm = "survey", nnet.formula = "nnet",
+    randomForest.formula = "randomForest", earth = "earth"
+  )
+  unique(unlist(pkgMap[modelClasses]))
+}
+
+
+
+
+#Get the necessary measures in the regression case
+getMeasuresRegression <- function(outData, extras) {
+  actual <- unlist(outData$actual)
+  predicted <- unlist(outData$response)
+  modelIndic <- outData$mid
+  trialIndic <- outData$trial
+  foldIndic <- outData$fold
   err <- actual - predicted
   rmse <- sqrt(mean(err*err))
   mae <- mean(abs(err))
@@ -281,372 +308,161 @@ getMeasuresRegression <- function(actual, predicted, modelIndic, trialIndic, fol
     mpe <- 100*mean(err/actual)
     mape <- 100*mean(abs(err/actual))
   }
-  c(as.character(modelNames[modelIndic]), trialIndic, foldIndic, cor(predicted, actual), rmse, mae, mpe, mape)
+  c(as.character(modelIndic), trialIndic, foldIndic, cor(predicted, actual), rmse, mae, mpe, mape)
 }
 
-generateHists <- function(fitMeasures, config, nLevels) {
-  fitMeasures <- data.matrix(fitMeasures)
-  if (config$regression) {
-    return(list(Correlation = hist(fitMeasures[,1], breaks = "Sturges"), RMSE = hist(fitMeasures[,2], breaks = "Sturges"), MAE = hist(fitMeasures[,3], breaks = "Sturges"), MPE = hist(fitMeasures[,4], breaks = "Sturges"), MAPE = hist(fitMeasures[,5], breaks = "Sturges")))
-  } else if (nLevels == 2) {
-    return(list(Overall_Accuracy = hist(fitMeasures[,1], breaks = "Sturges"), Accuracy_Class1 = hist(fitMeasures[,2], breaks = "Sturges"), Accuracy_Class2 = hist(fitMeasures[,3], breaks = "Sturges"), F1 = hist(fitMeasures[,4], breaks = "Sturges"), AUC = hist(fitMeasures[,5], breaks = "Sturges")))
+#Get the necessary measures in the classification case
+getMeasuresClassification <- function(outData, extras) {
+  actual <- outData$actual
+  scoredData <- outData[,6:7]
+  scoredOutput <- outData$response
+  #I know this isn't ideal, but I'm not sure how to get around it if we're using ddply (so we only want to have a single data.frame argument)
+  posClass <- extras$posClass
+  modelIndic <- unique(outData$mid)
+  trialIndic <- unique(outData$trial)
+  foldIndic <- unique(outData$fold)
+  overallAcc <- sum(actual == scoredOutput)/length(actual)
+  if (length(extras$levels) == 2) {
+    true_y <- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
+    #We need to know which column of scoredData corresponds to the positive class in order to set up the needed intermediate steps for obtaining the AUC
+    posClassCol <- which((extras$levels) == posClass)
+    negClassCol <- which((extras$levels) != posClass)
+    predictions <- scoredData[,posClassCol]
+    predictionObj <- prediction(predictions = predictions, labels = actual)
+    
+    # =================================================================
+    # Quick Reference:
+    #       precision = tp / (tp + fp)
+    #          recall = tp / (tp + fn)
+    #             tpr = tp / (tp + fn)
+    #             fpr = fp / (fp + tn)
+    #              f1 = 2 * precision * recall / (precision + recall)
+    # ==================================================================
+    
+    #     perf_acc <- performance(predictionObj, "acc", "cutoff")
+    #     perf_lift <- performance(predictionObj, "lift", "rpp")
+    #     perf_gain <- performance(predictionObj, "tpr", "rpp")
+    #     perf_roc <- performance(predictionObj, "tpr", "fpr")
+    #     perf_pr <- performance(predictionObj, "prec", "rec")
+    actualPosIndic <- which(actual == posClass)
+    nActualPos <- length(actualPosIndic)
+    nCorrectPos <- sum(scoredOutput[actualPosIndic] == posClass)
+    nPredPos <- sum(scoredOutput == posClass)
+    precision <- nCorrectPos/nPredPos
+    recall <- nCorrectPos/nActualPos
+    F1 <- 2*(precision*recall)/(precision + recall)
+    #F1 <- performance(predictionObj, "f")
+    #F1 <- unlist(F1@y.values) # converting S4 class to scalar
+    
+    AUC <- performance(prediction.obj = predictionObj, measure = "auc")
+    AUC <- unlist(AUC@y.values)
+    #     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
+    #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
+    percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
+    percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
+    #outList <- list(outVec, rocrMeasures)
   } else {
-    tempList <- list(Overall_Accuracy = hist(fitMeasures[,1], breaks = "Sturges"))
-    for (m in 1:nLevels) {
-      tempList[[m+1]] <- hist(fitMeasures[,(1+m)], breaks = "Sturges")
-      names(tempList)[m+1] <- paste0("Class_", m)
+    #Compute accuracy by class
+    outVec <- vector(length = length((extras$levels)))
+    for (l in 1:length((extras$levels))) {
+      tempPred <- scoredOutput[actual == (extras$levels)[[l]]]
+      nCorrect <- sum(temppred == (extras$levels)[[l]])
+      thisAcc <- nCorrect/sum(actual == (extras$levels)[[l]])
+      outVec[l] <- thisAcc
+      names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
-    return(tempList)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
+    #outList <- list(outvec)
   }
+  return(outVec)
 }
 
-
-#' ##Install additional packages (if needed)
-#'Make sure the necessary packages that don't already come with the Predictive install are installed.
-#'Install the needed packages if they are not available
-needed <-  c("ROCR", "TunePareto") %in% row.names(installed.packages())
-if (!all(needed)) {
-  if (!needed[1]) {
-    install.packages("ROCR", repos = "https://cran.rstudio.com")
+#' ### Functions to Generate Output
+#' 
+generateConfusionMatrices <- function(outData, extras) {
+  outvec <- vector(length = length(extras$levels))
+  pasteClass <- function(nameOfClass) {
+    paste0("Class_", nameOfClass)
   }
-  if (!needed[2]) {
-    install.packages("TunePareto", repos = "https://cran.rstudio.com")
+  names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
+  for (i in 1:length(extras$levels)) {
+    outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
   }
+  return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = unique(outData$response), outvec))
 }
 
-#'Load the needed libraries
-suppressWarnings(library("ROCR"))
-suppressWarnings(library("TunePareto"))
-suppressWarnings(library("sm"))
-suppressWarnings(library("vioplot"))
+generateOutput1 <- function(data, extras) {
+  d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
+    extras = extras
+  )
+  reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
+}
 
+generateOutput2 <- function(data, extras) {
+  fun <- if (config$regression) {
+    getMeasuresRegression 
+  } else {
+    getMeasuresClassification
+  }
+  d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
+  reshape2::melt(d, id = c('trial', 'fold', 'mid'))
+}
 
-cvResults <- function(config, data, models, modelNames) {
-  #histList will store the histogram objects
-  histList <- list()
-  #Do the unserialization.
-  allFolds <- createFolds(data = data, config = config)
-  # Get the set of model classes
-  #We only take the first class of each model, since that's all we need to determine the necessary libraries and ensure that all of the input models
-  #are allowable types.
-  #TRY TO MOVE OTHER LIBRARY CALLS DOWN HERE SO THEY'RE ALL TOGETHER!
-  modelClasses <- vector(mode = "character", length = length(models))
-  for (i in 1:length(models)) {
-    fullCurrentClasses <- class(models[[i]])
-    modelClasses[i] <- fullCurrentClasses[[1]]
-  }
-  # Load the needed packages given the set of models
-  if (any(modelClasses == "gbm")) {
-    suppressWarnings(library("gbm"))
-  }
-  if (any(modelClasses == "rpart")) {
-    suppressWarnings(library("rpart"))
-  }
-  if (any(modelClasses == "svm.formula" | modelClasses == "naiveBayes")) {
-    suppressWarnings(library("e1071"))
-  }
-  if (any(modelClasses == "svyglm")) {
-    suppressWarnings(library("survey"))
-  }
-  if (any(modelClasses == "nnet.formula")) {
-    suppressWarnings(library("nnet"))
-  }
-  if (any(modelClasses == "randomForest.formula")) {
-    suppressWarnings(library("randomForest"))
-  }
-  if (any(modelClasses == "earth")) {
-    suppressWarnings(library("earth"))
+generateOutput3 <- function(inputs, config, extras){
+  pkgsToLoad <- getPkgListForModels(inputs$models)
+  for (pkg in pkgsToLoad) library(pkg, character.only = TRUE)
+  allFolds <- extras$allFolds
+  g <- expand.grid(
+    mid = seq_along(inputs$models),
+    trial = seq_along(allFolds),
+    fold = seq_along(allFolds[[1]])
+  )
+  mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
+}
+
+# Helper Functions End ----
+
+runCrossValidation <- function(inputs, config){
+  library(ROCR)
+  library(plyr)
+  library("TunePareto")
+  library("sm")
+  library("vioplot")
+
+  yVar <- getYvars(inputs$data, inputs$models)
+  # For some reason, length(config$posClass) is still 1 even when posClass
+  # isn't give However, appending a single character to it when it's empty will
+  # result in a string of length 1
+  if ((config$classification) && (length(unique(yVar)) == 2)) {
+    if (config$posClass == "") {
+      config$posClass <- as.character(getPosClass(config, levels(yVar)))
+    }
   }
   
-  # Remove models from the input that are not supported
-  classTest <- modelClasses %in% c("gbm", "rpart", "svm.formula", "glm", "svyglm", "nnet.formula", "randomForest.formula", "earth", "lm", "naiveBayes")
-  if (!all(classTest)) {
-    # Warn the user about which models are being removed
-    if (sum(as.numeric(!classTest)) == 1) {
-      AlteryxMessage(paste("The model", models$Name[!classTest], "is not a supported type, and has been removed."))
-    } else {
-      bad_models <- paste(models$Name[!classTest], collapse = ", ")
-      AlteryxMessage(paste("The models", bad_models, "are not a supported type, and have been removed."))
-    }
-    models <- models[[classTest]]
-  }
-  #Only checking X vars for now, not defining them. We need to define them separately for each model in case the different models
-  #have them in a different order
-  checkXVars(inputs = inputs)
-  yVar <- getYvars(data = data, models = models)
-  #Need to get levels for classification case and the positive class in binomial case
+  inputs$modelNames = names(inputs$models)
+  checkXVars(inputs)
+  
+  extras <- list(
+    yVar = colnames(inputs$data)[1],
+    posClass = config$posClass,
+    allFolds = createFolds(data = inputs$data, config = config),
+    levels = if (config$classification) levels(yVar) else NULL
+  )
+  
+  # FIXME: clean up hardcoded values
+  dataOutput3 <- generateOutput3(inputs, config, extras)
+  write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
+  print(head(dataOutput3[,1:5]))
+  
+  dataOutput2 <- generateOutput2(dataOutput3, extras)
+  write.Alteryx2(dataOutput2, nOutput = 2)
+  print(head(dataOutput2))
+  
   if (config$classification) {
-    myLevels <- attr(yVar, "levels")
-    if (length(myLevels) < 2) {
-      stop.Alteryx2("The target variable has fewer than two levels! Please ensure that the target has at least 2 levels and try again.")
-    } else if (length(myLevels) == 2) {
-      if ((!is.null(config$posClass)) && ((config$posClass) %in% yVar)) {
-        posClass <- config$posClass
-      } else {
-        #Use the function from the Model Comparison tool to get/set positive class:
-        setPositiveClass <- function(tar_lev) {
-          # Set the postive class for two-class classification.
-          # The setPositiveClass function is only triggered if the user leaves the
-          # question on positive class (target level) blank.
-          #   1) if there's "yes/Yes/YES ..." in the target variable, then use "yes/Yes/YES"
-          #   2) if there's "true/True/TRUE..." in the target variable, then use "true/True/TRUE"
-          #   3) otherwise: use the first level by alphabetical order.
-          #
-          # Parameters:
-          #   tar_lev: a vector of string
-          #            the levels of the target variable.
-          #
-          # Returns:
-          #   no_name: a string, the name of the positive class.
-          
-          yes_id <- match("yes", tolower(tar_lev))
-          true_id <- match("true", tolower(tar_lev))
-          if (!is.na(yes_id)) {
-            return (tar_lev[yes_id])
-          } else if (!is.na(true_id)) {
-            return (tar_lev[true_id])
-          } else {
-            return (tar_lev[1])
-          }
-        }
-        posClass <- setPositiveClass(myLevels)
-      }
-      #Initialize list that will hold the information needed for the 2-class specific plots
-      listOutMeasures <- as.list(vector(length = (length(models) * (config$numberTrials))))
-    }
-  } 
-  
-  #Initialize table of Actual|Model 1|...|Model n|Trial Number
-  fullTable <- matrix(0, nrow = NROW(data) * (config$numberTrials), ncol = (length(models) + 2))
-  nameVector <- vector(mode = "character", length = length(models))
-  for (i in 1:length(models)) {
-    nameVector[i] <- paste0(modelNames[i], " Model")
-  }
-  nameVector <- c("Actual", nameVector, "Trial_Number")
-  colnames(fullTable) <- nameVector
-  #Initialize the table that will have the results from getMeasuresRegression or getMeasuresClassification.
-  #This table will have 6 columns in the regression case, 6 in the 2-class case, and n+2 in the n class case when n>2.
-  if (config$regression) {
-    nMeasuresCols <- 8
-    colNames <- c("Model", "Trial", "Fold", "Correlation", "RMSE", "MAE", "MPE", "MAPE")
-  } else if (length(myLevels) == 2) {
-    nMeasuresCols <- 8
-    colNames <- c("Model", "Trial", "Fold", "Overall_Accuracy", paste0("Accuracy_Class_", myLevels[[1]]), paste0("Accuracy_Class_", myLevels[[2]]), "F1", "AUC")
-  } else {
-    nMeasuresCols <- 4 + length(myLevels)
-    pasteNames <- function(names) {
-      paste0("Class_", names)
-    }
-    colNames <- sapply(X = unlist(myLevels), FUN = pasteNames, simplify = TRUE)
-    colNames <- c("Model", "Trial", "Fold", "Overall Accuracy", colNames)
-  }
-  getMeasuresOut <- as.data.frame(matrix(vector(length = (nMeasuresCols * length(models) * (config$numberTrials) * (config$numberFolds))), ncol = nMeasuresCols))
-  colnames(getMeasuresOut) <- colNames
-  
-  for (i in 1:length(models)) {
-    #Make sure the predictors in the data are in the same order as they are in the current model
-    fullData <- data[,getXVars(models[[i]])]
-    #Now we have target|Predictor 1|...|Predictor n
-    fullData <- cbind(data[,1], fullData)
-    colnames(fullData)[1] <- colnames(data)[1]
-    #We can initialize currentCall here, since we're not evaluating it until the innermost loop, where the.data is updated.
-    currentBigModel <- models[[i]]
-    currentCall <- currentBigModel$call
-    #We need to intialize the row of fullTable to 1 everytime we increment i, since that means we're moving on to the next column of the table
-    startRow <- 1
-    #The number of rows in the table from previous models is the total number of records * the number of previous trials * the number of previous models
-    #Indexing these rows here makes it easier to index the trials within the j loop.
-    
-    for (j in 1:(config$numberTrials)) {
-      #Clear out the old values of fullScoredData and fullActualData
-      #I THINK WE ONLY NEED THESE IN THE BINOMIAL CLASSIFICATION CASE! COME BACK AND CHECK!
-      if (i == 1) {
-        #Append trial number indicator
-        #Only need to update during the first model
-        rowStartCurrentTrial <- 1 + (j - 1) * NROW(data)
-        rowEndCurrentTrial <- NROW(data) * j
-        fullTable[rowStartCurrentTrial:rowEndCurrentTrial,NCOL(fullTable)] <- j
-      }
-      
-      currentFolds <- allFolds[[j]]
-      #When we increment j, we need to re-increment startRow to start on the next section of fullTable that corresponds to the current trial.
-      startRow <- 1 + ((j - 1) * NROW(data))
-      for (k in 1:(config$numberFolds)) {
-        #Define the first and last rows of fullTable that we'll be updating for this value of k
-        if (k > 1) {
-          #In the k > 1 case, we need update the value of startRow to be 1 more than the previous value of endRow
-          startRow <- endRow + 1
-        }
-        endRow <- startRow + length(currentFolds[[k]]) - 1
-        currentTestRows <- currentFolds[[k]]
-        #As of August 2016, our new style guidelines encourage the use of camel case over dots. But defining the training data as the.data allows us to use 
-        #the model's call directly, since all of the existing Predictive tools use the.data in their calls. 
-        #However, if we re-name the.data as something else as part of the Predictive Refresh, we will also have to rename accordingly here.
-        the.data <- fullData[-currentTestRows, ]
-        
-        #New approach: Use update
-        trainingData <- fullData[-currentTestRows, ]
-        testData <- fullData[currentTestRows, ]
-        currentTrueData <- testData[, 1]
-        
-        #We need to define the "Actual" column of fullTable when i == 1
-        if (i == 1) {
-          if (config$classification) {
-            fullTable[startRow:endRow, 1] <- myLevels[currentTrueData]
-          } else {
-            fullTable[startRow:endRow, 1] <- currentTrueData
-          }
-        }
-        #Now that we've updated the.data and testData, we can define currentModel
-        #currentModel <- eval(currentCall)
-        wd = "%Engine.WorkflowDirectory%"
-        #         saveRDS(models[[i]], file.path(wd, "nb.RDS"))
-        #         saveRDS(trainingData, file.path(wd, "trainingdata.RDS"))
-        currentModel <- update(models[[i]], data = trainingData)
-        #The Alteryx Boosted Model tool adds an attribute called best.trees to the gbm model object. 
-        #best.trees is the optimal number of trees according to the user selected test (either cross-validation, a single test/training split, or out of bag estimates).
-        #We need to add the attribute best.trees to this.model in order for scoreModel to work correctly, since scoreModel expects best.trees and will error without it.
-        if ("gbm" %in% class(currentModel)) {
-          if (currentModel$cv.folds > 1) {
-            assess.string <- 'gbm.perf(currentModel, method = "cv")'
-          }
-          else if (currentModel$train.fraction < 1) {
-            assess.string <- 'gbm.perf(currentModel, method = "test")'
-          }
-          else {
-            assess.string <- 'gbm.perf(currentModel, method = "OOB")'
-          }
-          currentModel$best.trees <- eval(parse(text = assess.string))
-        }
-        scoredData <- scoreModel(currentModel, new.data = testData)
-        if (config$classification) {
-          #In the classification case, we need to take the class with the highest probability
-          #So taking the maximum of each row gives us the desired result
-          #For now, I have a suspicion that we might want to create a giant table of all the scoredData pieces together. 
-          #Thus, I'm creating another new variable rather than re-defining scoredData.
-          scoredOutput <- apply(scoredData, MARGIN = 1, FUN = which.max)
-          scoredOutput <- myLevels[scoredOutput]
-        } else {
-          #scoreModel always outputs a column of predicted values in the regression case
-          scoredOutput <- scoredData
-        }
-        #Since the first column is the actual data, we need to update column i+1 instead of column i
-        fullTable[startRow:endRow, i + 1] <- unlist(scoredOutput)
-        if ((config$classification)) {
-          if (length(myLevels) == 2) {
-            posClassInput <- posClass
-          } else {
-            posClassInput <- 0
-          }
-          tempOutMeasures <- getMeasuresClassification(actual = currentTrueData, scoredData = scoredData, scoredOutput = scoredOutput, posClass = posClassInput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
-          outMeasures <- tempOutMeasures[[1]]
-          if (j == 1) {
-            listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- tempOutMeasures
-          } else {
-            listOutMeasures[[(((i - 1) * config$numberTrials) + j)]] <- c(listOutMeasures[[(((i - 1) * config$numberTrials) + j)]], tempOutMeasures)
-          }
-          
-        } else {
-          outMeasures <- getMeasuresRegression(actual = currentTrueData, predicted = scoredOutput, modelIndic = i, trialIndic = j, foldIndic = k, modelNames = modelNames)
-        }
-        currentOMRow <- (i - 1) * (config$numberTrials) * (config$numberFolds) + (j - 1) * config$numberFolds + k
-        getMeasuresOut[currentOMRow,] <- outMeasures
-      }
-    }
-    #Get the rows belonging to the current model
-    currentRows <- which(getMeasuresOut[,1] == modelNames[i])
-    histList[[i]] <- generateHists(fitMeasures = getMeasuresOut[currentRows,4:NCOL(getMeasuresOut)], config = config, nLevels = length(myLevels))
-    #invisible(dev.off())
-  }
-  write.Alteryx2(getMeasuresOut, 2)
-  write.Alteryx2(as.data.frame(fullTable), 3)
-  #write.Alteryx(as.data.frame(fullTable), 3)
-  #Now that we have the appropriate table, it's time to move on to the different fit measures that vary by problem type.
-  #Check if the problem is classification or regression.
-  if (config$classification) {
-    
-    #Create the confusion matrices in "one giant matrix" using key-value pairs
-    confMat <- matrix(0, nrow = (length(models) * (config$numberTrials) * length(myLevels)), ncol = 3 + length(myLevels))
-    #Name the columns
-    columnNames <- vector(mode = "character", length = length(myLevels))
-    for (i in 1:length(myLevels)) {
-      columnNames[i] <- paste0("Class ", myLevels[[i]])
-    }
-    columnNames <- c("Model", "Trial","Predicted_class", columnNames)
-    colnames(confMat) <- columnNames
-    #Define the first two columns
-    for (i in 1: length(models)) {
-      #The number of rows that have already been done by previous models is (i - 1)*length(myLevels) * (config$numberTrials)
-      confMatstartRow <- (i - 1)*length(myLevels) * (config$numberTrials) + 1
-      confMatendRow <- i * length(myLevels) * (config$numberTrials)
-      confMat[confMatstartRow:confMatendRow, 1] <- as.character((inputs$modelNames)[i])
-      for (j in 1: (config$numberTrials)) {
-        #The number of rows that have been done by different trials in the same level is confMatstartRow + (j - 1) * length(myLevels) - 1
-        trialStart <- confMatstartRow + (j - 1) * length(myLevels)
-        trialEnd <- trialStart  + length(myLevels) - 1
-        confMat[trialStart:trialEnd, 2] <- j
-        #We only want the rows of the table corresponding to trial j and the columns corresponding to the actual result and the current model
-        fullTableRows <- which(fullTable[,NCOL(fullTable)] == j)
-        subTable <- fullTable[fullTableRows,c(1, 1 + i)]
-        for (k in 1:length(myLevels)) {
-          #Iterate over the records that actually belong to class k
-          modelKRows <- which(subTable[,1] == myLevels[[k]])
-          #Define the vector containing all records from model i, trial j that were actually in class k
-          currentActuals <- subTable[modelKRows,2]
-          for (l in 1:length(myLevels)) {
-            #How many records actually in class k are predicted as class l?
-            confMat[(trialStart + l  - 1),(k + 3)] <- length(which(currentActuals == myLevels[[l]]))
-            #Update the Predicted_class column as well
-            confMat[(trialStart + l  - 1),3] <- myLevels[[l]]
-          }
-        }
-      }
-    }
-    #Write out the confusion matrix to output #1
-    dfConfMat <- as.data.frame(confMat)
-    write.Alteryx2(dfConfMat, 1)
-  } 
-  if ((config$classification) && (length(myLevels) == 2)) {
-    print("listOutMeasures is:")
-    print(listOutMeasures)
-  }
-  #write.Alteryx(as.data.frame(measuresMatrix), 2)
-  #saveRDS(histList, file.path(wd, "histograms.RDS"))
-  #AlteryxGraph(4)
-  #lapply(histList, sapply, plot)
-  #Unfortunately I think the nested *apply approach won't work because the labels need to be updated correctly for each round
-  makePlots <- function(){
-    for (i in 1:length(histList)) {
-      for (j in 1:length(histList[[1]])) {
-        plot((histList[[i]])[[j]], main = paste0("Histogram of ", names(histList[[i]])[[j]], " ", modelNames[i]), xlab = names(histList[[i]])[[j]])
-      }
-    }
-    
-    if (config$regression) {
-      xvals <- fullTable[,1]
-      for (i in 1:NROW(models)) {
-        yvals <- fullTable[,i+1]
-        for (j in 1:config$numberTrials) {
-          xvals_current_trial <- xvals[which(fullTable[,NCOL(fullTable)] == j)]
-          yvals_current_trial <- yvals[which(fullTable[,NCOL(fullTable)] == j)]
-          main_title <- paste("Plot of Actuals and Predicted values for Model", modelNames[i], " Trial ", j)
-          plot(c(min(c(xvals, yvals)), max(c(xvals, yvals))), c(min(c(xvals, yvals)), max(c(xvals, yvals))), type = "n", xlab = "Actual", ylab = "Predicted", main = main_title)
-          points(xvals_current_trial, yvals_current_trial, col = j)
-        }
-      }
-    } else if (length(myLevels) == 2) {
-      print("listOutMeasures is:")
-      print(listOutMeasures)
-    }
-  }
-  if (inAlteryx()){
-    AlteryxGraph(4)
-    makePlots()
-    invisible(dev.off())
-  } else {
-    makePlots() 
+    confMats <- generateOutput1(dataOutput3, extras)
+    write.Alteryx2(confMats, 1)
   }
 }
 
-
-cvResults(config = config, data = inputs$data, models = inputs$models, modelNames = inputs$modelNames)
+runCrossValidation(inputs, config)
