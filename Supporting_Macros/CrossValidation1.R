@@ -468,9 +468,6 @@ runCrossValidation <- function(inputs, config){
   library("vioplot")
 
   yVar <- getYvars(inputs$data, inputs$models)
-  # For some reason, length(config$posClass) is still 1 even when posClass
-  # isn't give However, appending a single character to it when it's empty will
-  # result in a string of length 1
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
       config$posClass <- as.character(getPosClass(config, levels(yVar)))
