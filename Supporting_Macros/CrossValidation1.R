@@ -2,6 +2,37 @@
 #' title: Cross Validation Macro
 #' author: Bridget Toomey
 #' ---
+#' 
+#' 
+#' This is a utility function to check to see if the necessary packages are
+#' installed and install them if they're not.
+
+checkInstalls <- function(packages) {
+  # See if the desired packages are installed, and install if they're not
+  if (!all(packages %in% row.names(installed.packages()))) {
+    # Use the IE based "Internet2" since it is most reliable for this action,
+    # it will be switched back at the end
+    setInternet2(use = TRUE)
+    # Make sure the path to the users library is in place and create it if it
+    # is not
+    minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
+    R_ver <- paste(R.Version()$major, minor_ver, sep = ".")
+    the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
+    # Create the user's personal folder if it doesn't already exist
+    if (!dir.exists(the_path)) {
+      dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
+    }
+    # The set of possible repositories to use
+    repos <- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
+    # Select a particular repository
+    repo <- sample(repos, 1)
+    missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
+    install.packages(missingPackages, lib = the_path, repos = repo)
+    setInternet2(use = FALSE)
+  }
+}
+checkInstalls(c("AlteryxPredictive", "ROCR", "plyr", "TunePareto", "sm", "vioplot"))
+#' ---
 
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
@@ -423,9 +454,13 @@ generateOutput3 <- function(inputs, config, extras){
   mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
 }
 
+
+
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
+  
+  
   library(ROCR)
   library(plyr)
   library("TunePareto")
