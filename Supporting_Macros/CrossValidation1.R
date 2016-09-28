@@ -254,12 +254,12 @@ getActualandResponse <- function(model, data, testIndices, extras){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
-  actual <- as.character(testData[[extras$yVar]])
+  actual <- testData[[extras$yVar]]
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
     return(data.frame(response = response, actual = actual, pred))
   } else {
-    response <- pred
+    response <- pred$Score
     return(data.frame(response = response, actual = actual))
   }
 }
@@ -308,7 +308,9 @@ getMeasuresRegression <- function(outData, extras) {
     mpe <- 100*mean(err/actual)
     mape <- 100*mean(abs(err/actual))
   }
-  c(as.character(modelIndic), trialIndic, foldIndic, cor(predicted, actual), rmse, mae, mpe, mape)
+  data.frame(
+    cor = cor(predicted, actual), rmse = rmse, mae = mae, mpe= mpe, mape = mape
+  )
 }
 
 #Get the necessary measures in the classification case
@@ -400,7 +402,7 @@ generateOutput1 <- function(data, extras) {
 }
 
 generateOutput2 <- function(data, extras) {
-  fun <- if (config$regression) {
+  fun <- if (is.null(extras$levels)) {
     getMeasuresRegression 
   } else {
     getMeasuresClassification
