@@ -454,6 +454,46 @@ generateOutput3 <- function(inputs, config, extras){
   mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
 }
 
+computeBinaryMetrics <- function(pred_prob, actual, threshold){
+  #Pred_prob gives the predicted probability of belonging to the positive class
+  #Actual is true if the record belongs to the positive class and negative if not
+  actualPosIndic <- which(actual == TRUE)
+  nActualPos <- length(actualPosIndic)
+  thresholdedPredictions <- (pred_prob >= actual)
+  nCorrectPos <- sum(thresholdedPredictions[actualPosIndic])
+  nPredPos <- sum(thresholdedPredictions)
+  overallAcc <- sum(thresholdedPredictions == actual)/length(actual)
+  PosAcc <- sum(thresholdedPredictions == TRUE)/length(which(actual))
+  NegAcc <- sum(thresholdedPredictions == FALSE)/sum(actual == FALSE)
+  precision <- nCorrectPos/nPredPos
+  recall <- nCorrectPos/nActualPos
+  F1 <- 2*(precision*recall)/(precision + recall)
+  probPredPos <- nPredPos/length(pred_prob)
+  sizeIntersectPredAndActualPos <- length(intersect(which(actual == TRUE), which(pred_prob >= actual)))
+  lift <- sizeIntersectPredAndActualPos/nActualPos
+  rpp <- nPredPos/length(pred_prob)
+  tpr <- nActualPos/length(pred_prob)
+  fpr <- (nPredPos - nCorrectPos)/length(pred_prob)
+  pred <- prediction(predictions = pred_prob, labels = actual)
+  auc <- performance(pred, "auc")
+  auc <- unlist(auc@y.values)
+  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
+}
+
+generateDataForPlots <- function(d, extras, config){
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      thresholds <- seq(0, 1, 0.05)
+      ldply(thresholds, computeBinaryMetrics, 
+            actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
+            pred_prob = d[[paste0('Score_', extras$posClass)]]
+      )
+    } else {
+      data.frame(response = d$response, actual = d$actual)
+    }
+  }
+}
+
 
 
 # Helper Functions End ----
@@ -497,6 +537,8 @@ runCrossValidation <- function(inputs, config){
     confMats <- generateOutput1(dataOutput3, extras)
     write.Alteryx2(confMats, 1)
   }
+  
+  ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, extras = extras, config = config)
 }
 
 runCrossValidation(inputs, config)
