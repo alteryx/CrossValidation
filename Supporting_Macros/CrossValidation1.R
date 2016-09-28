@@ -2,6 +2,37 @@
 #' title: Cross Validation Macro
 #' author: Bridget Toomey
 #' ---
+#' 
+#' 
+#' This is a utility function to check to see if the necessary packages are
+#' installed and install them if they're not.
+
+checkInstalls <- function(packages) {
+  # See if the desired packages are installed, and install if they're not
+  if (!all(packages %in% row.names(installed.packages()))) {
+    # Use the IE based "Internet2" since it is most reliable for this action,
+    # it will be switched back at the end
+    setInternet2(use = TRUE)
+    # Make sure the path to the users library is in place and create it if it
+    # is not
+    minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
+    R_ver <- paste(R.Version()$major, minor_ver, sep = ".")
+    the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
+    # Create the user's personal folder if it doesn't already exist
+    if (!dir.exists(the_path)) {
+      dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
+    }
+    # The set of possible repositories to use
+    repos <- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
+    # Select a particular repository
+    repo <- sample(repos, 1)
+    missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
+    install.packages(missingPackages, lib = the_path, repos = repo)
+    setInternet2(use = FALSE)
+  }
+}
+checkInstalls(c("AlteryxPredictive", "ROCR", "plyr", "TunePareto", "sm", "vioplot"))
+#' ---
 
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
@@ -443,9 +474,53 @@ generateOutput3 <- function(inputs, config, extras){
   mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
 }
 
+computeBinaryMetrics <- function(pred_prob, actual, threshold){
+  #Pred_prob gives the predicted probability of belonging to the positive class
+  #Actual is true if the record belongs to the positive class and negative if not
+  actualPosIndic <- which(actual == TRUE)
+  nActualPos <- length(actualPosIndic)
+  thresholdedPredictions <- (pred_prob >= actual)
+  nCorrectPos <- sum(thresholdedPredictions[actualPosIndic])
+  nPredPos <- sum(thresholdedPredictions)
+  overallAcc <- sum(thresholdedPredictions == actual)/length(actual)
+  PosAcc <- sum(thresholdedPredictions == TRUE)/length(which(actual))
+  NegAcc <- sum(thresholdedPredictions == FALSE)/sum(actual == FALSE)
+  precision <- nCorrectPos/nPredPos
+  recall <- nCorrectPos/nActualPos
+  F1 <- 2*(precision*recall)/(precision + recall)
+  probPredPos <- nPredPos/length(pred_prob)
+  sizeIntersectPredAndActualPos <- length(intersect(which(actual == TRUE), which(pred_prob >= actual)))
+  lift <- sizeIntersectPredAndActualPos/nActualPos
+  rpp <- nPredPos/length(pred_prob)
+  tpr <- nActualPos/length(pred_prob)
+  fpr <- (nPredPos - nCorrectPos)/length(pred_prob)
+  pred <- prediction(predictions = pred_prob, labels = actual)
+  auc <- performance(pred, "auc")
+  auc <- unlist(auc@y.values)
+  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
+}
+
+generateDataForPlots <- function(d, extras, config){
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      thresholds <- seq(0, 1, 0.05)
+      ldply(thresholds, computeBinaryMetrics, 
+            actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
+            pred_prob = d[[paste0('Score_', extras$posClass)]]
+      )
+    } else {
+      data.frame(response = d$response, actual = d$actual)
+    }
+  }
+}
+
+
+
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
+  
+  
   library(ROCR)
   library(plyr)
   library("TunePareto")
@@ -453,9 +528,6 @@ runCrossValidation <- function(inputs, config){
   library("vioplot")
 
   yVar <- getYvars(inputs$data, inputs$models)
-  # For some reason, length(config$posClass) is still 1 even when posClass
-  # isn't give However, appending a single character to it when it's empty will
-  # result in a string of length 1
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
       config$posClass <- as.character(getPosClass(config, levels(yVar)))
@@ -485,6 +557,8 @@ runCrossValidation <- function(inputs, config){
     confMats <- generateOutput1(dataOutput3, extras)
     write.Alteryx2(confMats, 1)
   }
+  
+  ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, extras = extras, config = config)
 }
 
 runCrossValidation(inputs, config)
