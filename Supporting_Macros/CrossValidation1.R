@@ -23,12 +23,15 @@ options(alteryx.debug = config$debug)
 
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
-macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
-dataDir <- file.path(macroDirectory, "Data")
-defaults <- list(
-  data = readRDS(file.path(dataDir, "data.rds")),
-  models = readRDS(file.path(dataDir, "models.rds"))
-)
+if (!inAlteryx()){
+  macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
+  dataDir <- file.path(macroDirectory, "Data")
+  defaults <- list(
+    data = readRDS(file.path(dataDir, "data.rds")),
+    models = readRDS(file.path(dataDir, "models.rds"))
+  )
+}
+
 
 #' ### Inputs
 #' 
@@ -43,6 +46,23 @@ inputs <- list(
 #' ### Helper Functions
 areIdentical <- function(v1, v2){
   identical(sort(v1), sort(v2))
+}
+
+#' Helper Functions For Tests
+makePayload <- function(csvFile, modelsFile, targetVar){
+  test_data <- read.csv(csvFile)
+  list(
+    data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
+    models = AlteryxPredictive::readModelObjects("2", readRDS(modelsFile))
+  )
+}
+
+runTest <- function(modelName, payload){
+  inputs <- list(data = payload$data, models = payload$models[modelName])
+  message(paste(modelName, 'passes'))
+  test_that(paste(modelName, 'passes'), {
+    expect_that(invisible(runCrossValidation(inputs, config)), throws_error(NA) )
+  })
 }
 
 #' ## Check predictor variables
