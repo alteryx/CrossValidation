@@ -4040,6 +4040,7 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
   rpp <- nPredPos/length(pred_prob)
   tpr <- nActualPos/length(pred_prob)
   fpr <- (nPredPos - nCorrectPos)/length(pred_prob)
+  pred <- prediction(predictions = pred_prob, labels = actual)
   auc <- performance(pred, "auc")
   auc <- unlist(auc@y.values)
   data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
@@ -4054,11 +4055,9 @@ generateDataForPlots <- function(d, extras, config){
             pred_prob = d[[paste0('Score_', extras$posClass)]]
       )
     } else {
-      
+      data.frame(response = d$response, actual = d$actual)
     }
   }
-  
-
 }
 
 
@@ -4104,6 +4103,8 @@ runCrossValidation <- function(inputs, config){
     confMats <- generateOutput1(dataOutput3, extras)
     write.Alteryx2(confMats, 1)
   }
+  
+  ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, extras = extras, config = config)
 }
 
 runCrossValidation(inputs, config)
