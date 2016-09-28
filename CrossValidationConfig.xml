@@ -10,7 +10,6 @@
       <Connection Name="Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
       <Connection Name="Measures" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
       <Connection Name="Output49" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
-      <Connection Name="Output55" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
     </OutputConnections>
   </GuiSettings>
   <Properties>
@@ -27,6 +26,7 @@
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
       <DescriptionLink></DescriptionLink>
+      <Example></Example>
     </MetaInfo>
   </Properties>
 </AlteryxJavaScriptPlugin>
