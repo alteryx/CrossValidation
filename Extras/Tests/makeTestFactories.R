@@ -2,25 +2,8 @@ library(testthat)
 library(plyr)
 source('Supporting_Macros/CrossValidation1.r')
 
-config <- list(
-  `classification` = TRUE,
-  `displayGraphs` = FALSE,
-  `numberFolds` = 5,
-  `numberTrials` = 1,
-  `posClass` = "",
-  `regression` = FALSE,
-  `stratified` = FALSE,
-  `targetField` = 'smoker'
-)
-
-runTest <- function(inputs, config, msg){
-  message('Testing model ', msg)
-  test_that(paste(modelName, 'passes'), {
-    expect_that(runCrossValidation(inputs, config), throws_error(NA) )
-  })
-}
-
-makeInputs <- function(csvFile, modelsFile, targetVar){
+#' Helper Functions to Make Tests
+makePayload <- function(csvFile, modelsFile, targetVar){
   test_data <- read.csv(csvFile)
   list(
     data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
@@ -36,7 +19,21 @@ runTest <- function(modelName, payload){
   })
 }
 
-payload <- makeInputs(
+#' ### Classification Model Tests
+config <- list(
+  `classification` = TRUE,
+  `displayGraphs` = FALSE,
+  `numberFolds` = 5,
+  `numberTrials` = 1,
+  `posClass` = "",
+  `regression` = FALSE,
+  `stratified` = FALSE,
+  `targetField` = 'smoker'
+)
+
+
+
+payload <- makePayload(
   'Extras/Tests/jp_test.csv', 
   'Supporting_Macros/Data/classificationModels.rds',
   config$targetField
@@ -44,7 +41,17 @@ payload <- makeInputs(
 
 l_ply(names(payload$models[-1]), failwith(f = runTest), payload = payload)
 
+#' ### Regression Model Tests
+config <- modifyList(config, list(regression = TRUE, classification = FALSE, 
+  targetField = "charges"
+))
 
 
+payload <- makePayload(
+  'Extras/Tests/jp_test.csv', 
+  'Supporting_Macros/Data/regressionModels.rds',
+  config$targetField
+)
 
 
+l_ply(names(payload$models[-1]), failwith(f = runTest), payload = payload)
