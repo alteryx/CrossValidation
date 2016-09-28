@@ -453,11 +453,11 @@ runCrossValidation <- function(inputs, config){
   # FIXME: clean up hardcoded values
   dataOutput3 <- generateOutput3(inputs, config, extras)
   write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
-  print(head(dataOutput3[,1:5]))
+  #print(head(dataOutput3[,1:5]))
   
   dataOutput2 <- generateOutput2(dataOutput3, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
-  print(head(dataOutput2))
+  #print(head(dataOutput2))
   
   if (config$classification) {
     confMats <- generateOutput1(dataOutput3, extras)
