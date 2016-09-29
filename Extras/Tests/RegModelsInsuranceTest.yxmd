@@ -35,8 +35,6 @@
           <Value name="numberFolds">5</Value>
           <Value name="classification">False</Value>
           <Value name="regression">True</Value>
-          <Value name="targetField">charges</Value>
-          <Value name="predFields">"age","sex","bmi","children","smoker","region"</Value>
           <Value name="stratified">False</Value>
           <Value name="posClass" />
           <Value name="displayGraphs">False</Value>
@@ -46,6 +44,9 @@
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
       </Properties>
       <EngineSettings Macro="..\..\Supporting_Macros\CrossValidation.yxmc" />
     </Node>
@@ -55,7 +56,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6460_8ee76a32f8de4b6ca9e2fd9aa1df55b7_\Engine_4244_24f629afadd2492c9580eb4131377497_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3088_fd9cd0e07ec046848bc49c9b6fdcd989_\Engine_4244_367cc4ad00b349859372c5c9faa7e6a0_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -78,7 +79,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6460_8ee76a32f8de4b6ca9e2fd9aa1df55b7_\Engine_4244_556e5e0319e94a4f9b5b24bc3f268b11_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3088_fd9cd0e07ec046848bc49c9b6fdcd989_\Engine_4244_691b1e18eaf34fa88921757a647129ef_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -101,7 +102,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6460_8ee76a32f8de4b6ca9e2fd9aa1df55b7_\Engine_4244_f328b17ce92547e7a12c5176ad910543_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3088_fd9cd0e07ec046848bc49c9b6fdcd989_\Engine_4244_642fd7dfd88648ca8c4bae20abbb497f_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
