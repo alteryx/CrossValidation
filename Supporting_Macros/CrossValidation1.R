@@ -103,7 +103,7 @@ checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
   modelXVars <- lapply(inputs$models, getXVars)
-  dataXVars <- names(inputs$data[,-1])
+  dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
     for (i in 1:(numModels - 1)){
@@ -115,6 +115,10 @@ checkXVars <- function(inputs){
         stopMsg <- "Please ensure all models were created using the same predictors."
       } 
       else if (!all(mvars1 %in% dataXVars)){
+        print("mvars1 are:")
+        print(mvars1)
+        print("dataXVars are:")
+        print(dataXVars)
         errorMsg <- paste("Model ", modelNames[i], 
                           "used predictor variables which were not contained in the input data.")
         stopMsg <- paste("Please ensure input data contains all the data",
@@ -294,7 +298,11 @@ getActualandResponse <- function(model, data, testIndices, extras){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
-  actual <- testData[[extras$yVar]]
+  actual <- (extras$yVar)[testIndices]
+  print("head(testData) is:")
+  print(head(testData))
+  print("extras$yVar is:")
+  print(extras$yVar)
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
     return(data.frame(response = response, actual = actual, pred))
@@ -310,7 +318,11 @@ getCrossValidatedResults <- function(inputs, allFolds, extras){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
     out <- (getActualandResponse(model, inputs$data, testIndices, extras))
+    print("out before the cbind is:")
+    print(head(out))
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
+    print("out after the cbind is:")
+    print(head(out))
     return(out)
   }
 }
@@ -355,10 +367,11 @@ getMeasuresRegression <- function(outData, extras) {
 
 #Get the necessary measures in the classification case
 getMeasuresClassification <- function(outData, extras) {
+  print("head of outdata is:")
+  print(head(outData))
   actual <- outData$actual
   scoredData <- outData[,6:7]
   scoredOutput <- outData$response
-  #I know this isn't ideal, but I'm not sure how to get around it if we're using ddply (so we only want to have a single data.frame argument)
   posClass <- extras$posClass
   modelIndic <- unique(outData$mid)
   trialIndic <- unique(outData$trial)
@@ -370,6 +383,14 @@ getMeasuresClassification <- function(outData, extras) {
     posClassCol <- which((extras$levels) == posClass)
     negClassCol <- which((extras$levels) != posClass)
     predictions <- scoredData[,posClassCol]
+    print("length of predictions is:")
+    print(length(predictions))
+    print("length of actual is:")
+    print(length(actual))
+    print("length of unique actual is:")
+    print(length(unique(actual)))
+    print("unique actual is:")
+    print(unique(actual))
     predictionObj <- prediction(predictions = predictions, labels = actual)
     
     # =================================================================
@@ -524,10 +545,10 @@ runCrossValidation <- function(inputs, config){
   }
   
   inputs$modelNames = names(inputs$models)
-  #checkXVars(inputs)
+  checkXVars(inputs)
   
   extras <- list(
-    yVar = colnames(inputs$data)[1],
+    yVar = yVar,
     posClass = config$posClass,
     allFolds = createFolds(data = inputs$data, config = config),
     levels = if (config$classification) levels(yVar) else NULL
