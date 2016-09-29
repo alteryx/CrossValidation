@@ -103,7 +103,7 @@ checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
   modelXVars <- lapply(inputs$models, getXVars)
-  dataXVars <- names(inputs$data[,-1])
+  dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
     for (i in 1:(numModels - 1)){
@@ -294,7 +294,7 @@ getActualandResponse <- function(model, data, testIndices, extras){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
-  actual <- testData[[extras$yVar]]
+  actual <- (extras$yVar)[testIndices]
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
     return(data.frame(response = response, actual = actual, pred))
@@ -358,7 +358,6 @@ getMeasuresClassification <- function(outData, extras) {
   actual <- outData$actual
   scoredData <- outData[,6:7]
   scoredOutput <- outData$response
-  #I know this isn't ideal, but I'm not sure how to get around it if we're using ddply (so we only want to have a single data.frame argument)
   posClass <- extras$posClass
   modelIndic <- unique(outData$mid)
   trialIndic <- unique(outData$trial)
@@ -468,7 +467,7 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
   #Actual is true if the record belongs to the positive class and negative if not
   actualPosIndic <- which(actual == TRUE)
   nActualPos <- length(actualPosIndic)
-  thresholdedPredictions <- (pred_prob >= actual)
+  thresholdedPredictions <- (pred_prob >= threshold)
   nCorrectPos <- sum(thresholdedPredictions[actualPosIndic])
   nPredPos <- sum(thresholdedPredictions)
   overallAcc <- sum(thresholdedPredictions == actual)/length(actual)
@@ -524,10 +523,10 @@ runCrossValidation <- function(inputs, config){
   }
   
   inputs$modelNames = names(inputs$models)
-  #checkXVars(inputs)
+  checkXVars(inputs)
   
   extras <- list(
-    yVar = colnames(inputs$data)[1],
+    yVar = yVar,
     posClass = config$posClass,
     allFolds = createFolds(data = inputs$data, config = config),
     levels = if (config$classification) levels(yVar) else NULL
@@ -536,12 +535,10 @@ runCrossValidation <- function(inputs, config){
   # FIXME: clean up hardcoded values
   dataOutput3 <- generateOutput3(inputs, config, extras)
   write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
-  #print(head(dataOutput3[,1:5]))
-  
+
   dataOutput2 <- generateOutput2(dataOutput3, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
-  #print(head(dataOutput2))
-  
+
   if (config$classification) {
     confMats <- generateOutput1(dataOutput3, extras)
     write.Alteryx2(confMats, 1)

@@ -3,37 +3,37 @@
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59"/>
+        <Position x="0" y="0" width="59" height="59" />
       </GuiSettings>
       <Properties>
-        <Configuration/>
+        <Configuration />
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="54" y="409"/>
+        <Position x="54" y="409" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="False"/>
+          <UseFileInput value="False" />
           <Name>Input3</Name>
           <Abbrev>D</Abbrev>
-          <ShowFieldMap value="False"/>
-          <Optional value="False"/>
+          <ShowFieldMap value="False" />
+          <Optional value="False" />
           <TextInput>
             <Configuration>
-              <NumRows value="500"/>
+              <NumRows value="500" />
               <Fields>
-                <Field name="MonthGive"/>
-                <Field name="Region"/>
-                <Field name="AveDonAmt"/>
-                <Field name="LastDonAmt"/>
-                <Field name="DonPerYear"/>
+                <Field name="MonthGive" />
+                <Field name="Region" />
+                <Field name="AveDonAmt" />
+                <Field name="LastDonAmt" />
+                <Field name="DonPerYear" />
               </Fields>
               <Data>
                 <r>
@@ -3543,27 +3543,28 @@
         <Annotation DisplayMode="0">
           <Name>Text Input (1)</Name>
           <AnnotationText>__Input:__ Specify a data input</AnnotationText>
-          <DefaultAnnotationText/>
-          <Left value="True"/>
+          <DefaultAnnotationText />
+          <Left value="True" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
-            <Field name="Region" size="2" source="TextInput:" type="String"/>
-            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
-            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
-            <Field name="DonPerYear" source="TextInput:" type="Double"/>
+            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
+            <Field name="Region" size="2" source="TextInput:" type="String" />
+            <Field name="AveDonAmt" source="TextInput:" type="Double" />
+            <Field name="LastDonAmt" source="TextInput:" type="Double" />
+            <Field name="DonPerYear" source="TextInput:" type="Double" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="750" y="469"/>
+        <Position x="750" y="469" />
       </GuiSettings>
       <Properties>
-        <Configuration><RScript>#' ---
+        <Configuration>
+          <RScript><![CDATA[#' ---
 #' title: Cross Validation Macro
 #' author: Bridget Toomey
 #' ---
@@ -3572,7 +3573,7 @@
 #' This is a utility function to check to see if the necessary packages are
 #' installed and install them if they're not.
 
-checkInstalls &lt;- function(packages) {
+checkInstalls <- function(packages) {
   # See if the desired packages are installed, and install if they're not
   if (!all(packages %in% row.names(installed.packages()))) {
     # Use the IE based "Internet2" since it is most reliable for this action,
@@ -3580,18 +3581,18 @@ checkInstalls &lt;- function(packages) {
     setInternet2(use = TRUE)
     # Make sure the path to the users library is in place and create it if it
     # is not
-    minor_ver &lt;- strsplit(R.Version()$minor, "\\.")[[1]][1]
-    R_ver &lt;- paste(R.Version()$major, minor_ver, sep = ".")
-    the_path &lt;- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
+    minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
+    R_ver <- paste(R.Version()$major, minor_ver, sep = ".")
+    the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
     # Create the user's personal folder if it doesn't already exist
     if (!dir.exists(the_path)) {
       dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
     }
     # The set of possible repositories to use
-    repos &lt;- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
+    repos <- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
     # Select a particular repository
-    repo &lt;- sample(repos, 1)
-    missingPackages &lt;- packages[which(!(packages %in% row.names(installed.packages())))]
+    repo <- sample(repos, 1)
+    missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
     install.packages(missingPackages, lib = the_path, repos = repo)
     setInternet2(use = FALSE)
   }
@@ -3602,7 +3603,7 @@ checkInstalls(c("AlteryxPredictive", "ROCR", "plyr", "TunePareto", "sm", "vioplo
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 suppressWarnings(library(AlteryxPredictive))
-config &lt;- list(
+config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
   `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
@@ -3620,9 +3621,9 @@ options(alteryx.debug = config$debug)
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
 if (!inAlteryx()){
-  macroDirectory &lt;- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
-  dataDir &lt;- file.path(macroDirectory, "Data")
-  defaults &lt;- list(
+  macroDirectory <- textInput('%Engine.WorkflowDirectory%', "Supporting_Macros")
+  dataDir <- file.path(macroDirectory, "Data")
+  defaults <- list(
     data = readRDS(file.path(dataDir, "data.rds")),
     models = readRDS(file.path(dataDir, "models.rds"))
   )
@@ -3632,7 +3633,7 @@ if (!inAlteryx()){
 #' ### Inputs
 #' 
 #' This is a named list of all inputs that stream into the R tool.
-inputs &lt;- list(
+inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
@@ -3640,21 +3641,21 @@ inputs &lt;- list(
 ##---- Inputs/Config Complete
 
 #' ### Helper Functions
-areIdentical &lt;- function(v1, v2){
+areIdentical <- function(v1, v2){
   identical(sort(v1), sort(v2))
 }
 
 #' Helper Functions For Tests
-makePayload &lt;- function(csvFile, modelsFile, targetVar){
-  test_data &lt;- read.csv(csvFile)
+makePayload <- function(csvFile, modelsFile, targetVar){
+  test_data <- read.csv(csvFile)
   list(
     data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
     models = AlteryxPredictive::readModelObjects("2", readRDS(modelsFile))
   )
 }
 
-runTest &lt;- function(modelName, payload){
-  inputs &lt;- list(data = payload$data, models = payload$models[modelName])
+runTest <- function(modelName, payload){
+  inputs <- list(data = payload$data, models = payload$models[modelName])
   message(paste(modelName, 'passes'))
   test_that(paste(modelName, 'passes'), {
     expect_that(invisible(runCrossValidation(inputs, config)), throws_error(NA) )
@@ -3664,25 +3665,25 @@ runTest &lt;- function(modelName, payload){
 #' ## Check predictor variables
 #' 
 #' Check if predictor variables in the models and input data are identical.
-checkXVars &lt;- function(inputs){
-  numModels &lt;- length(inputs$models)
-  modelNames &lt;- names(inputs$models)
-  modelXVars &lt;- lapply(inputs$models, getXVars)
-  dataXVars &lt;- names(inputs$data[,-1])
-  errorMsg &lt;- NULL
-  if (numModels &gt; 1) {
+checkXVars <- function(inputs){
+  numModels <- length(inputs$models)
+  modelNames <- names(inputs$models)
+  modelXVars <- lapply(inputs$models, getXVars)
+  dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
+  errorMsg <- NULL
+  if (numModels > 1) {
     for (i in 1:(numModels - 1)){
-      mvars1 &lt;- modelXVars[[i]]
-      mvars2 &lt;- modelXVars[[i + 1]]
+      mvars1 <- modelXVars[[i]]
+      mvars2 <- modelXVars[[i + 1]]
       if (!areIdentical(mvars1, mvars2)){
-        errorMsg &lt;- paste("Models", modelNames[i] , "and", modelNames[i + 1],
+        errorMsg <- paste("Models", modelNames[i] , "and", modelNames[i + 1],
                           "were created using different predictor variables.")
-        stopMsg &lt;- "Please ensure all models were created using the same predictors."
+        stopMsg <- "Please ensure all models were created using the same predictors."
       } 
       else if (!all(mvars1 %in% dataXVars)){
-        errorMsg &lt;- paste("Model ", modelNames[i], 
+        errorMsg <- paste("Model ", modelNames[i], 
                           "used predictor variables which were not contained in the input data.")
-        stopMsg &lt;- paste("Please ensure input data contains all the data",
+        stopMsg <- paste("Please ensure input data contains all the data",
                          "used to create the models and try again.")
       }
       if (!is.null(errorMsg)){
@@ -3691,11 +3692,11 @@ checkXVars &lt;- function(inputs){
       }
     }
   } else {
-    mvars1 &lt;- modelXVars[[1]]
+    mvars1 <- modelXVars[[1]]
     if (!all(mvars1 %in% dataXVars)){
-      errorMsg &lt;- paste("Model ", modelNames[1], 
+      errorMsg <- paste("Model ", modelNames[1], 
                         "used predictor variables which were not contained in the input data.")
-      stopMsg &lt;- paste("Please ensure input data contains all the data",
+      stopMsg <- paste("Please ensure input data contains all the data",
                        "used to create the models and try again.")
     }
     if (!is.null(errorMsg)){
@@ -3707,7 +3708,7 @@ checkXVars &lt;- function(inputs){
 
 #' Given a factor variable and a set of records in a fixed trial and fold,
 #' return the list of classes not present in that trial and fold.
-getMissingClasses &lt;- function(currentClasses, currentRecords) {
+getMissingClasses <- function(currentClasses, currentRecords) {
   currentClasses[(!(currentClasses %in% currentRecords))]
 }
 
@@ -3715,48 +3716,48 @@ getMissingClasses &lt;- function(currentClasses, currentRecords) {
 #' If not, error out with an informative message.
 #' 
 
-checkFactorVars &lt;- function(data, folds, config) {
+checkFactorVars <- function(data, folds, config) {
   #All of the discrete variables will be some type of string in Alteryx. So they'll be read as factors, since stringsAsFactors is TRUE in read.Alteryx.
-  factorVars &lt;- data[,sapply(data, FUN = is.factor), drop = FALSE]
+  factorVars <- data[,sapply(data, FUN = is.factor), drop = FALSE]
   #We only need to check if there's at least one factor variable. If all variables are continuous, we don't need to do anything.
-  if (NCOL(factorVars) &gt; 0) {
+  if (NCOL(factorVars) > 0) {
     for (k in 1:NCOL(factorVars)) {
-      uniqueClasses &lt;- unique(factorVars[,k])
-      currentVar &lt;- factorVars[,k]
+      uniqueClasses <- unique(factorVars[,k])
+      currentVar <- factorVars[,k]
       #We want to check if one of the folds on one of the trials is missing any classes.
       #If a class is missing from a fold, we output a warning suggesting that the user check their data/try to collect more data.
       #If a training set is missing a class, we output a fatal error telling the user they must ensure
       #that each training set contains all classes.
       for (i in 1: (config$numberTrials)) {
         for (j in 1:(config$numberFolds)) {
-          currentTestRecords &lt;- currentVar[unlist(folds[[i]][j])]
-          currentTrainingRecords &lt;- currentVar[unlist(folds[[i]][-j])]
-          missingTestClasses &lt;- getMissingClasses(currentClasses = uniqueClasses, currentRecords = currentTestRecords)
-          missingTrainingClasses &lt;- getMissingClasses(currentClasses = uniqueClasses, currentRecords = currentTrainingRecords)
+          currentTestRecords <- currentVar[unlist(folds[[i]][j])]
+          currentTrainingRecords <- currentVar[unlist(folds[[i]][-j])]
+          missingTestClasses <- getMissingClasses(currentClasses = uniqueClasses, currentRecords = currentTestRecords)
+          missingTrainingClasses <- getMissingClasses(currentClasses = uniqueClasses, currentRecords = currentTrainingRecords)
           #testing if all classes are represented in trial i, fold j
-          if (length(missingTestClasses) &gt; 0) {
-            currentColumnName &lt;- colnames(factorVars)[k]
-            if (length(missingTestClasses) &gt; 1) {
-              warningMessage1 &lt;- paste0("Classes ", missingTestClasses, " were not present in variable ", currentColumnName, " of the test set.")
-              warningMessage2 &lt;- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
+          if (length(missingTestClasses) > 0) {
+            currentColumnName <- colnames(factorVars)[k]
+            if (length(missingTestClasses) > 1) {
+              warningMessage1 <- paste0("Classes ", missingTestClasses, " were not present in variable ", currentColumnName, " of the test set.")
+              warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
             } else {
-              warningMessage1 &lt;- paste0("Class ", missingTestClasses, " was not present in variable ", currentColumnName, " of the test set.")
-              warningMessage2 &lt;- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
+              warningMessage1 <- paste0("Class ", missingTestClasses, " was not present in variable ", currentColumnName, " of the test set.")
+              warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
             }
             AlteryxMessage2(warningMessage1)
             AlteryxMessage2(warningMessage2)
           }
           #testing if all classes are represented in the training set when trial i, fold j is the test set. 
           #So the training set here is trial i, all folds except fold j.
-          if (length(missingTrainingClasses) &gt; 0) {
-            if (length(missingTrainingClasses) &gt; 1) {
-              warningMessage1 &lt;- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
-              warningMessage2 &lt;- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
-              errorMessage &lt;- "It is very difficult to create an accurate model when the training set is missing a class."
+          if (length(missingTrainingClasses) > 0) {
+            if (length(missingTrainingClasses) > 1) {
+              warningMessage1 <- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
+              warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing a class."
             } else {
-              warningMessage1 &lt;- paste0("Class ", missingTrainingClasses, " was not present in variable ", currentColumnName, " of the training set.")
-              warningMessage2 &lt;- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
-              errorMessage &lt;- "It is very difficult to create an accurate model when the training set is missing classes."
+              warningMessage1 <- paste0("Class ", missingTrainingClasses, " was not present in variable ", currentColumnName, " of the training set.")
+              warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on this class."
+              errorMessage <- "It is very difficult to create an accurate model when the training set is missing classes."
             }
             AlteryxMessage2(warningMessage1)
             AlteryxMessage2(warningMessage2)
@@ -3769,9 +3770,9 @@ checkFactorVars &lt;- function(data, folds, config) {
 }
 
 #Create the list of cross-validation folds and output warnings/errors as appropriate
-createFolds &lt;- function(data, config) {
-  target &lt;- data[, 1]
-  foldList &lt;- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
+createFolds <- function(data, config) {
+  target <- data[, 1]
+  foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
   checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
 }
@@ -3779,9 +3780,9 @@ createFolds &lt;- function(data, config) {
 
 #Get a single y variable using a model call. This function will be used as a helper function in getYvars, which obtains
 #the Y variable from each model and checks them against each other and the Y variable from the input data.
-getOneYVar &lt;- function(model) {
+getOneYVar <- function(model) {
   if (inherits(model, "naiveBayes")) {
-    bayes_yvar &lt;- model$yvars
+    bayes_yvar <- model$yvars
     return(as.character(bayes_yvar))
   } else {
     return(as.character(formula(model$call))[2])
@@ -3789,26 +3790,26 @@ getOneYVar &lt;- function(model) {
 }
 #Check if response variable is the same in the pre-built model(s) and the input data.
 #If so, output this variable.
-getYvars &lt;- function(data, models) {
+getYvars <- function(data, models) {
   # Get the names of the target fields and make sure they are all same. If not,
   # throw an error.
-  y_names &lt;- sapply(models, getOneYVar)
+  y_names <- sapply(models, getOneYVar)
   if (!all(y_names == y_names[1])) {
     stop.Alteryx2("More than one target variable are present in the provided models")
   } else if (!(y_names[1] %in% colnames(data))) {
     stop.Alteryx2("The target variable from the models is different than the target chosen in the configuration. Please check your configuration settings and try again.")
   }
   # get the target variable name
-  y_name &lt;- y_names[1]
+  y_name <- y_names[1]
   # Get the target variable
   return(data[[y_name]])
 }
 
 #In the 2-class classification case, get the positive class. Otherwise, do nothing.
-getPosClass &lt;- function(config, yVar) {
+getPosClass <- function(config, yVar) {
 
       #Use the function from the Model Comparison tool to get/set positive class:
-      setPositiveClass &lt;- function(tar_lev) {
+      setPositiveClass <- function(tar_lev) {
         # Set the postive class for two-class classification.
         # The setPositiveClass function is only triggered if the user leaves the
         # question on positive class (target level) blank.
@@ -3823,8 +3824,8 @@ getPosClass &lt;- function(config, yVar) {
         # Returns:
         #   no_name: a string, the name of the positive class.
         
-        yes_id &lt;- match("yes", tolower(tar_lev))
-        true_id &lt;- match("true", tolower(tar_lev))
+        yes_id <- match("yes", tolower(tar_lev))
+        true_id <- match("true", tolower(tar_lev))
         if (!is.na(yes_id)) {
         return (tar_lev[yes_id])
       } else if (!is.na(true_id)) {
@@ -3836,52 +3837,52 @@ getPosClass &lt;- function(config, yVar) {
     return(setPositiveClass(yVar))
 }
 
-adjustGbmModel &lt;- function(model){
-  method &lt;- if (model$cv.folds &gt; 1){
+adjustGbmModel <- function(model){
+  method <- if (model$cv.folds > 1){
    "cv"
-  } else if (model$train.function &lt; 1){
+  } else if (model$train.function < 1){
     "test"
   } else {
     "OOB"
   }
-  model$best.trees &lt;- gbm.perf(model, method = method)
+  model$best.trees <- gbm.perf(model, method = method)
   return(model)
 }
 
 
 
 #' Given a model, a dataset and index of test cases, return actual and response
-getActualandResponse &lt;- function(model, data, testIndices, extras){
+getActualandResponse <- function(model, data, testIndices, extras){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
-  currentModel &lt;- update(model, data = trainingData)
+  currentModel <- update(model, data = trainingData)
   if (inherits(currentModel, 'gbm')){
-    currentModel &lt;- adjustGbmModel(currentModel)
+    currentModel <- adjustGbmModel(currentModel)
   }
-  pred &lt;- scoreModel(currentModel, new.data = testData)
-  actual &lt;- testData[[extras$yVar]]
+  pred <- scoreModel(currentModel, new.data = testData)
+  actual <- (extras$yVar)[testIndices]
   if (config$classification) {
-    response &lt;- gsub("Score_", "", names(pred)[max.col(pred)])
+    response <- gsub("Score_", "", names(pred)[max.col(pred)])
     return(data.frame(response = response, actual = actual, pred))
   } else {
-    response &lt;- pred$Score
+    response <- pred$Score
     return(data.frame(response = response, actual = actual))
   }
 }
 
 #' 
-getCrossValidatedResults &lt;- function(inputs, allFolds, extras){
+getCrossValidatedResults <- function(inputs, allFolds, extras){
   function(mid, trial, fold){
-    model &lt;- inputs$models[[mid]]
-    testIndices &lt;- allFolds[[trial]][[fold]]
-    out &lt;- (getActualandResponse(model, inputs$data, testIndices, extras))
-    out &lt;- cbind(trial = trial, fold = fold, mid = mid, out)
+    model <- inputs$models[[mid]]
+    testIndices <- allFolds[[trial]][[fold]]
+    out <- (getActualandResponse(model, inputs$data, testIndices, extras))
+    out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
 }
 
-getPkgListForModels &lt;- function(models){
-  modelClasses &lt;- unlist(lapply(models, class))
+getPkgListForModels <- function(models){
+  modelClasses <- unlist(lapply(models, class))
   pkgMap = list(
     gbm = "gbm", rpart = "rpart", svm.formula = "e1071", svm = "e1071",
     naiveBayes = "e1071", svyglm = "survey", nnet.formula = "nnet",
@@ -3894,24 +3895,24 @@ getPkgListForModels &lt;- function(models){
 
 
 #Get the necessary measures in the regression case
-getMeasuresRegression &lt;- function(outData, extras) {
-  actual &lt;- unlist(outData$actual)
-  predicted &lt;- unlist(outData$response)
-  modelIndic &lt;- outData$mid
-  trialIndic &lt;- outData$trial
-  foldIndic &lt;- outData$fold
-  err &lt;- actual - predicted
-  rmse &lt;- sqrt(mean(err*err))
-  mae &lt;- mean(abs(err))
+getMeasuresRegression <- function(outData, extras) {
+  actual <- unlist(outData$actual)
+  predicted <- unlist(outData$response)
+  modelIndic <- outData$mid
+  trialIndic <- outData$trial
+  foldIndic <- outData$fold
+  err <- actual - predicted
+  rmse <- sqrt(mean(err*err))
+  mae <- mean(abs(err))
   # When there are values near 0 in the target variable, it can lead to an attempt to divide by 0
   # In this case, use the weighted version.
-  if (any(abs(actual) &lt; 0.001)) {
+  if (any(abs(actual) < 0.001)) {
     AlteryxMessage("The target variable contains values very close to 0 (-0.001, 0.001). WPE and WAPE are being used instead of MPE and MAPE.", iType = 2, iPriority = 3)
-    mpe &lt;- 100 * sum(err) / sum(actual)
-    mape &lt;- 100 * sum(abs(err)) / sum(actual)
+    mpe <- 100 * sum(err) / sum(actual)
+    mape <- 100 * sum(abs(err)) / sum(actual)
   } else {
-    mpe &lt;- 100*mean(err/actual)
-    mape &lt;- 100*mean(abs(err/actual))
+    mpe <- 100*mean(err/actual)
+    mape <- 100*mean(abs(err/actual))
   }
   data.frame(
     cor = cor(predicted, actual), rmse = rmse, mae = mae, mpe= mpe, mape = mape
@@ -3919,23 +3920,22 @@ getMeasuresRegression &lt;- function(outData, extras) {
 }
 
 #Get the necessary measures in the classification case
-getMeasuresClassification &lt;- function(outData, extras) {
-  actual &lt;- outData$actual
-  scoredData &lt;- outData[,6:7]
-  scoredOutput &lt;- outData$response
-  #I know this isn't ideal, but I'm not sure how to get around it if we're using ddply (so we only want to have a single data.frame argument)
-  posClass &lt;- extras$posClass
-  modelIndic &lt;- unique(outData$mid)
-  trialIndic &lt;- unique(outData$trial)
-  foldIndic &lt;- unique(outData$fold)
-  overallAcc &lt;- sum(actual == scoredOutput)/length(actual)
+getMeasuresClassification <- function(outData, extras) {
+  actual <- outData$actual
+  scoredData <- outData[,6:7]
+  scoredOutput <- outData$response
+  posClass <- extras$posClass
+  modelIndic <- unique(outData$mid)
+  trialIndic <- unique(outData$trial)
+  foldIndic <- unique(outData$fold)
+  overallAcc <- sum(actual == scoredOutput)/length(actual)
   if (length(extras$levels) == 2) {
-    true_y &lt;- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
+    true_y <- factor(TRUE*(actual == posClass)) # if levels are strings rather than TRUE/FALSE
     #We need to know which column of scoredData corresponds to the positive class in order to set up the needed intermediate steps for obtaining the AUC
-    posClassCol &lt;- which((extras$levels) == posClass)
-    negClassCol &lt;- which((extras$levels) != posClass)
-    predictions &lt;- scoredData[,posClassCol]
-    predictionObj &lt;- prediction(predictions = predictions, labels = actual)
+    posClassCol <- which((extras$levels) == posClass)
+    negClassCol <- which((extras$levels) != posClass)
+    predictions <- scoredData[,posClassCol]
+    predictionObj <- prediction(predictions = predictions, labels = actual)
     
     # =================================================================
     # Quick Reference:
@@ -3946,81 +3946,81 @@ getMeasuresClassification &lt;- function(outData, extras) {
     #              f1 = 2 * precision * recall / (precision + recall)
     # ==================================================================
     
-    #     perf_acc &lt;- performance(predictionObj, "acc", "cutoff")
-    #     perf_lift &lt;- performance(predictionObj, "lift", "rpp")
-    #     perf_gain &lt;- performance(predictionObj, "tpr", "rpp")
-    #     perf_roc &lt;- performance(predictionObj, "tpr", "fpr")
-    #     perf_pr &lt;- performance(predictionObj, "prec", "rec")
-    actualPosIndic &lt;- which(actual == posClass)
-    nActualPos &lt;- length(actualPosIndic)
-    nCorrectPos &lt;- sum(scoredOutput[actualPosIndic] == posClass)
-    nPredPos &lt;- sum(scoredOutput == posClass)
-    precision &lt;- nCorrectPos/nPredPos
-    recall &lt;- nCorrectPos/nActualPos
-    F1 &lt;- 2*(precision*recall)/(precision + recall)
-    #F1 &lt;- performance(predictionObj, "f")
-    #F1 &lt;- unlist(F1@y.values) # converting S4 class to scalar
+    #     perf_acc <- performance(predictionObj, "acc", "cutoff")
+    #     perf_lift <- performance(predictionObj, "lift", "rpp")
+    #     perf_gain <- performance(predictionObj, "tpr", "rpp")
+    #     perf_roc <- performance(predictionObj, "tpr", "fpr")
+    #     perf_pr <- performance(predictionObj, "prec", "rec")
+    actualPosIndic <- which(actual == posClass)
+    nActualPos <- length(actualPosIndic)
+    nCorrectPos <- sum(scoredOutput[actualPosIndic] == posClass)
+    nPredPos <- sum(scoredOutput == posClass)
+    precision <- nCorrectPos/nPredPos
+    recall <- nCorrectPos/nActualPos
+    F1 <- 2*(precision*recall)/(precision + recall)
+    #F1 <- performance(predictionObj, "f")
+    #F1 <- unlist(F1@y.values) # converting S4 class to scalar
     
-    AUC &lt;- performance(prediction.obj = predictionObj, measure = "auc")
-    AUC &lt;- unlist(AUC@y.values)
-    #     rocrMeasures &lt;- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
+    AUC <- performance(prediction.obj = predictionObj, measure = "auc")
+    AUC <- unlist(AUC@y.values)
+    #     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
     #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
-    percentClass1Right &lt;- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
-    percentClass2Right &lt;- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
-    outVec &lt;- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
-    #outList &lt;- list(outVec, rocrMeasures)
+    percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
+    percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
+    #outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
-    outVec &lt;- vector(length = length((extras$levels)))
+    outVec <- vector(length = length((extras$levels)))
     for (l in 1:length((extras$levels))) {
-      tempPred &lt;- scoredOutput[actual == (extras$levels)[[l]]]
-      nCorrect &lt;- sum(temppred == (extras$levels)[[l]])
-      thisAcc &lt;- nCorrect/sum(actual == (extras$levels)[[l]])
-      outVec[l] &lt;- thisAcc
-      names(outVec)[l] &lt;- paste0("Accuracy_Class_", l)
+      tempPred <- scoredOutput[actual == (extras$levels)[[l]]]
+      nCorrect <- sum(temppred == (extras$levels)[[l]])
+      thisAcc <- nCorrect/sum(actual == (extras$levels)[[l]])
+      outVec[l] <- thisAcc
+      names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
-    outVec &lt;- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
-    #outList &lt;- list(outvec)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
+    #outList <- list(outvec)
   }
   return(outVec)
 }
 
 #' ### Functions to Generate Output
 #' 
-generateConfusionMatrices &lt;- function(outData, extras) {
-  outvec &lt;- vector(length = length(extras$levels))
-  pasteClass &lt;- function(nameOfClass) {
+generateConfusionMatrices <- function(outData, extras) {
+  outvec <- vector(length = length(extras$levels))
+  pasteClass <- function(nameOfClass) {
     paste0("Class_", nameOfClass)
   }
-  names(outvec) &lt;- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
+  names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
   for (i in 1:length(extras$levels)) {
-    outvec[i] &lt;- length(which((outData[,3+i]) == ((extras$levels)[i])))
+    outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
   }
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = unique(outData$response), outvec))
 }
 
-generateOutput1 &lt;- function(data, extras) {
-  d &lt;- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
+generateOutput1 <- function(data, extras) {
+  d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
   reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
 }
 
-generateOutput2 &lt;- function(data, extras) {
-  fun &lt;- if (is.null(extras$levels)) {
+generateOutput2 <- function(data, extras) {
+  fun <- if (is.null(extras$levels)) {
     getMeasuresRegression 
   } else {
     getMeasuresClassification
   }
-  d &lt;- ddply(data, .(trial, fold, mid), fun, extras = extras)
+  d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
   reshape2::melt(d, id = c('trial', 'fold', 'mid'))
 }
 
-generateOutput3 &lt;- function(inputs, config, extras){
-  pkgsToLoad &lt;- getPkgListForModels(inputs$models)
+generateOutput3 <- function(inputs, config, extras){
+  pkgsToLoad <- getPkgListForModels(inputs$models)
   for (pkg in pkgsToLoad) library(pkg, character.only = TRUE)
-  allFolds &lt;- extras$allFolds
-  g &lt;- expand.grid(
+  allFolds <- extras$allFolds
+  g <- expand.grid(
     mid = seq_along(inputs$models),
     trial = seq_along(allFolds),
     fold = seq_along(allFolds[[1]])
@@ -4028,36 +4028,36 @@ generateOutput3 &lt;- function(inputs, config, extras){
   mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
 }
 
-computeBinaryMetrics &lt;- function(pred_prob, actual, threshold){
+computeBinaryMetrics <- function(pred_prob, actual, threshold){
   #Pred_prob gives the predicted probability of belonging to the positive class
   #Actual is true if the record belongs to the positive class and negative if not
-  actualPosIndic &lt;- which(actual == TRUE)
-  nActualPos &lt;- length(actualPosIndic)
-  thresholdedPredictions &lt;- (pred_prob &gt;= actual)
-  nCorrectPos &lt;- sum(thresholdedPredictions[actualPosIndic])
-  nPredPos &lt;- sum(thresholdedPredictions)
-  overallAcc &lt;- sum(thresholdedPredictions == actual)/length(actual)
-  PosAcc &lt;- sum(thresholdedPredictions == TRUE)/length(which(actual))
-  NegAcc &lt;- sum(thresholdedPredictions == FALSE)/sum(actual == FALSE)
-  precision &lt;- nCorrectPos/nPredPos
-  recall &lt;- nCorrectPos/nActualPos
-  F1 &lt;- 2*(precision*recall)/(precision + recall)
-  probPredPos &lt;- nPredPos/length(pred_prob)
-  sizeIntersectPredAndActualPos &lt;- length(intersect(which(actual == TRUE), which(pred_prob &gt;= actual)))
-  lift &lt;- sizeIntersectPredAndActualPos/nActualPos
-  rpp &lt;- nPredPos/length(pred_prob)
-  tpr &lt;- nActualPos/length(pred_prob)
-  fpr &lt;- (nPredPos - nCorrectPos)/length(pred_prob)
-  pred &lt;- prediction(predictions = pred_prob, labels = actual)
-  auc &lt;- performance(pred, "auc")
-  auc &lt;- unlist(auc@y.values)
+  actualPosIndic <- which(actual == TRUE)
+  nActualPos <- length(actualPosIndic)
+  thresholdedPredictions <- (pred_prob >= threshold)
+  nCorrectPos <- sum(thresholdedPredictions[actualPosIndic])
+  nPredPos <- sum(thresholdedPredictions)
+  overallAcc <- sum(thresholdedPredictions == actual)/length(actual)
+  PosAcc <- sum(thresholdedPredictions == TRUE)/length(which(actual))
+  NegAcc <- sum(thresholdedPredictions == FALSE)/sum(actual == FALSE)
+  precision <- nCorrectPos/nPredPos
+  recall <- nCorrectPos/nActualPos
+  F1 <- 2*(precision*recall)/(precision + recall)
+  probPredPos <- nPredPos/length(pred_prob)
+  sizeIntersectPredAndActualPos <- length(intersect(which(actual == TRUE), which(pred_prob >= actual)))
+  lift <- sizeIntersectPredAndActualPos/nActualPos
+  rpp <- nPredPos/length(pred_prob)
+  tpr <- nActualPos/length(pred_prob)
+  fpr <- (nPredPos - nCorrectPos)/length(pred_prob)
+  pred <- prediction(predictions = pred_prob, labels = actual)
+  auc <- performance(pred, "auc")
+  auc <- unlist(auc@y.values)
   data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
 }
 
-generateDataForPlots &lt;- function(d, extras, config){
+generateDataForPlots <- function(d, extras, config){
   if (config$classification) {
     if (length(extras$levels) == 2) {
-      thresholds &lt;- seq(0, 1, 0.05)
+      thresholds <- seq(0, 1, 0.05)
       ldply(thresholds, computeBinaryMetrics, 
             actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
             pred_prob = d[[paste0('Score_', extras$posClass)]]
@@ -4072,7 +4072,7 @@ generateDataForPlots &lt;- function(d, extras, config){
 
 # Helper Functions End ----
 
-runCrossValidation &lt;- function(inputs, config){
+runCrossValidation <- function(inputs, config){
   
   
   library(ROCR)
@@ -4081,85 +4081,53 @@ runCrossValidation &lt;- function(inputs, config){
   library("sm")
   library("vioplot")
 
-  yVar &lt;- getYvars(inputs$data, inputs$models)
-  if ((config$classification) &amp;&amp; (length(unique(yVar)) == 2)) {
+  yVar <- getYvars(inputs$data, inputs$models)
+  if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
-      config$posClass &lt;- as.character(getPosClass(config, levels(yVar)))
+      config$posClass <- as.character(getPosClass(config, levels(yVar)))
     }
   }
   
   inputs$modelNames = names(inputs$models)
-  #checkXVars(inputs)
+  checkXVars(inputs)
   
-  extras &lt;- list(
-    yVar = colnames(inputs$data)[1],
+  extras <- list(
+    yVar = yVar,
     posClass = config$posClass,
     allFolds = createFolds(data = inputs$data, config = config),
     levels = if (config$classification) levels(yVar) else NULL
   )
   
   # FIXME: clean up hardcoded values
-  dataOutput3 &lt;- generateOutput3(inputs, config, extras)
+  dataOutput3 <- generateOutput3(inputs, config, extras)
   write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
-  #print(head(dataOutput3[,1:5]))
-  
-  dataOutput2 &lt;- generateOutput2(dataOutput3, extras)
+
+  dataOutput2 <- generateOutput2(dataOutput3, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
-  #print(head(dataOutput2))
-  
+
   if (config$classification) {
-    confMats &lt;- generateOutput1(dataOutput3, extras)
+    confMats <- generateOutput1(dataOutput3, extras)
     write.Alteryx2(confMats, 1)
   }
   
   ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, extras = extras, config = config)
 }
 
-runCrossValidation(inputs, config) 
-</RScript>
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; 568cf7b0871f6e9286768343e26a51c99097371e
-          <UseFullUpdate value="False"/>
+runCrossValidation(inputs, config)
+]]></RScript>
+          <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
-        <MetaInfo connection="Output3">
-          <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Int32"/>
-            <Field name="fold" source="R-DATA:" type="Int32"/>
-            <Field name="mid" source="R-DATA:" type="Int32"/>
-            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString"/>
-            <Field name="actual" size="1073741823" source="R-DATA:" type="V_WString"/>
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output2">
-          <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Double"/>
-            <Field name="fold" source="R-DATA:" type="Double"/>
-            <Field name="mid" source="R-DATA:" type="Double"/>
-            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString"/>
-            <Field name="value" source="R-DATA:" type="Double"/>
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output1">
-          <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Int32"/>
-            <Field name="fold" source="R-DATA:" type="Int32"/>
-            <Field name="mid" source="R-DATA:" type="Int32"/>
-            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString"/>
-            <Field name="Predicted_class" source="R-DATA:" type="Int32"/>
-            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString"/>
-            <Field name="value" source="R-DATA:" type="Int32"/>
-          </RecordInfo>
-        </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR"/>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="846" y="397"/>
+        <Position x="846" y="397" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4167,76 +4135,76 @@ runCrossValidation(inputs, config)
           <Abbrev>D</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
+          <Name />
           <AnnotationText>__Output:__ This provides a data output</AnnotationText>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59"/>
+        <Position x="0" y="0" width="59" height="59" />
       </GuiSettings>
       <Properties>
-        <Configuration/>
+        <Configuration />
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.LabelGroup.LabelGroup">
-        <Position x="0" y="0" width="59" height="59"/>
+        <Position x="0" y="0" width="59" height="59" />
       </GuiSettings>
       <Properties>
-        <Configuration/>
+        <Configuration />
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="90" y="582"/>
+        <Position x="90" y="582" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="True"/>
+          <UseFileInput value="True" />
           <Name>Input28</Name>
           <Abbrev>M</Abbrev>
-          <ShowFieldMap value="False"/>
-          <Optional value="False"/>
+          <ShowFieldMap value="False" />
+          <Optional value="False" />
           <FileInput>
             <Configuration>
-              <Passwords/>
+              <Passwords />
               <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">./Data/Models.yxdb</File>
-              <FormatSpecificOptions/>
+              <FormatSpecificOptions />
             </Configuration>
           </FileInput>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
+          <Name />
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
-          <Left value="True"/>
+          <Left value="True" />
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString"/>
-            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob"/>
+            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="846" y="457"/>
+        <Position x="846" y="457" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4244,140 +4212,140 @@ runCrossValidation(inputs, config)
           <Abbrev>M</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="858" y="517"/>
+        <Position x="858" y="517" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Name>Output49</Name>
-          <Abbrev/>
+          <Abbrev />
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="114" y="54" width="621" height="196"/>
+        <Position x="114" y="54" width="621" height="196" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>INTERFACE</Caption>
-          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10"/>
-          <Disabled value="False"/>
-          <Folded value="False"/>
+          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10" />
+          <Disabled value="False" />
+          <Folded value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name/>
-          <DefaultAnnotationText/>
-          <Left value="False"/>
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
         </Annotation>
       </Properties>
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="124" y="88.00003" width="59" height="59"/>
+            <Position x="124" y="88.00003" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>numberTrials</Name>
               <AnnotationText>This configuration option allows the user to choose the number of trials.</AnnotationText>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="210" y="83" width="59" height="59"/>
+            <Position x="210" y="83" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>numberFolds</Name>
               <AnnotationText>This configuration option allows the user to choose the number of folds used in each trial. Typically, cross-validation is done with either five or ten folds.</AnnotationText>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="270" y="83" width="59" height="59"/>
+            <Position x="270" y="83" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>classification</Name>
               <AnnotationText>The user should check this option if their models are for a classification problem.</AnnotationText>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="390" y="96.99998" width="59" height="59"/>
+            <Position x="390" y="96.99998" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>regression</Name>
               <AnnotationText>The user should check this option if their models are for a regression problem.</AnnotationText>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="594" y="84.99998" width="59" height="59"/>
+            <Position x="594" y="84.99998" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>stratified</Name>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="282" y="181" width="59" height="59"/>
+            <Position x="282" y="181" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>posClass</Name>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="666" y="84.99998" width="59" height="59"/>
+            <Position x="666" y="84.99998" width="59" height="59" />
           </GuiSettings>
           <Properties>
-            <Configuration/>
+            <Configuration />
             <Annotation DisplayMode="0">
               <Name>displayGraphs</Name>
-              <DefaultAnnotationText/>
-              <Left value="False"/>
+              <DefaultAnnotationText />
+              <Left value="False" />
             </Annotation>
           </Properties>
         </Node>
@@ -4386,173 +4354,169 @@ runCrossValidation(inputs, config)
   </Nodes>
   <Connections>
     <Connection name="#1">
-      <Origin ToolID="3" Connection="Output"/>
-      <Destination ToolID="4" Connection="Input"/>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
     </Connection>
     <Connection name="#2">
-      <Origin ToolID="28" Connection="Output"/>
-      <Destination ToolID="4" Connection="Input"/>
+      <Origin ToolID="28" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output1"/>
-      <Destination ToolID="5" Connection="Input"/>
+      <Origin ToolID="4" Connection="Output1" />
+      <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2"/>
-      <Destination ToolID="48" Connection="Input"/>
+      <Origin ToolID="4" Connection="Output2" />
+      <Destination ToolID="48" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output3"/>
-      <Destination ToolID="49" Connection="Input"/>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="49" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
-    <Memory default="True"/>
-    <GlobalRecordLimit value="0"/>
-    <TempFiles default="True"/>
-    <Annotation on="False" includeToolName="False"/>
-    <ConvErrorLimit value="10"/>
-    <ConvErrorLimit_Stop value="False"/>
-    <CancelOnError value="False"/>
-    <DisableBrowse value="False"/>
-    <EnablePerformanceProfiling value="False"/>
-    <DisableAllOutput value="False"/>
-    <ShowAllMacroMessages value="False"/>
-    <ShowConnectionStatusIsOn value="True"/>
-    <ShowConnectionStatusOnlyWhenRunning value="True"/>
-    <ZoomLevel value="0"/>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="False" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
     <LayoutType>Horizontal</LayoutType>
     <Constants>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberTrials</Name>
-        <Value/>
-        <IsNumeric value="True"/>
+        <Value />
+        <IsNumeric value="True" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberFolds</Name>
-        <Value/>
-        <IsNumeric value="True"/>
+        <Value />
+        <IsNumeric value="True" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>classification</Name>
         <Value>True</Value>
-        <IsNumeric value="False"/>
+        <IsNumeric value="False" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>regression</Name>
         <Value>False</Value>
-        <IsNumeric value="False"/>
+        <IsNumeric value="False" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>stratified</Name>
-        <Value/>
-        <IsNumeric value="False"/>
+        <Value />
+        <IsNumeric value="False" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>posClass</Name>
-        <Value/>
-        <IsNumeric value="False"/>
+        <Value />
+        <IsNumeric value="False" />
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>displayGraphs</Name>
-        <Value/>
-        <IsNumeric value="False"/>
+        <Value />
+        <IsNumeric value="False" />
       </Constant>
     </Constants>
     <MetaInfo>
-      <NameIsFileName value="False"/>
+      <NameIsFileName value="False" />
       <Name>Cross Validation</Name>
       <Description>Benchmark multiple models using cross validation.</Description>
-      <RootToolName/>
-      <ToolVersion/>
-      <ToolInDb value="False"/>
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
       <CategoryName>Predictive Refresh</CategoryName>
-      <SearchTags/>
+      <SearchTags />
       <Author>Advanced Analytics</Author>
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
-      <DescriptionLink actual="" displayed=""/>
-      <Example>
-        <Description/>
-        <File/>
-      </Example>
+      <DescriptionLink actual="" displayed="" />
     </MetaInfo>
     <Events>
-      <Enabled value="True"/>
+      <Enabled value="True" />
     </Events>
     <RuntimeProperties>
-      <Actions/>
+      <Actions />
       <Questions>
         <Question>
           <Type>Tab</Type>
           <Description>Questions</Description>
           <Name>Tab (2)</Name>
-          <ToolId value="2"/>
+          <ToolId value="2" />
           <Questions>
             <Question>
               <Type>MacroInput</Type>
               <Description>Text Input (1)</Description>
               <Name>Text Input (1)</Name>
-              <ToolId value="3"/>
+              <ToolId value="3" />
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (5)</Description>
               <Name>Macro Output (5)</Name>
-              <ToolId value="5"/>
+              <ToolId value="5" />
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of trials</Description>
               <Name>numberTrials</Name>
-              <ToolId value="23"/>
-              <Minimum value="1"/>
-              <Maximum value="100"/>
-              <Increment value="1"/>
-              <Default value="3"/>
-              <Decimals value="0"/>
+              <ToolId value="23" />
+              <Minimum value="1" />
+              <Maximum value="100" />
+              <Increment value="1" />
+              <Default value="3" />
+              <Decimals value="0" />
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of folds</Description>
               <Name>numberFolds</Name>
-              <ToolId value="24"/>
-              <Minimum value="1"/>
-              <Maximum value="100"/>
-              <Increment value="1"/>
-              <Default value="5"/>
-              <Decimals value="0"/>
+              <ToolId value="24" />
+              <Minimum value="1" />
+              <Maximum value="100" />
+              <Increment value="1" />
+              <Default value="5" />
+              <Decimals value="0" />
             </Question>
             <Question>
               <Type>LabelGroup</Type>
               <Description>Type of model</Description>
               <Name>LabelGroup (27)</Name>
-              <ToolId value="27"/>
+              <ToolId value="27" />
               <Questions>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Classification</Description>
                   <Name>classification</Name>
-                  <ToolId value="25"/>
-                  <Questions/>
-                  <Default value="False"/>
-                  <Collapsable value="False"/>
+                  <ToolId value="25" />
+                  <Questions />
+                  <Default value="False" />
+                  <Collapsable value="False" />
                 </Question>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Regression</Description>
                   <Name>regression</Name>
-                  <ToolId value="26"/>
-                  <Questions/>
-                  <Default value="False"/>
-                  <Collapsable value="False"/>
+                  <ToolId value="26" />
+                  <Questions />
+                  <Default value="False" />
+                  <Collapsable value="False" />
                 </Question>
               </Questions>
             </Question>
@@ -4560,47 +4524,47 @@ runCrossValidation(inputs, config)
               <Type>MacroInput</Type>
               <Description>Macro Input (28)</Description>
               <Name>Macro Input (28)</Name>
-              <ToolId value="28"/>
+              <ToolId value="28" />
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should stratified cross-validation be used?</Description>
               <Name>stratified</Name>
-              <ToolId value="41"/>
-              <Questions/>
-              <Default value="False"/>
-              <Collapsable value="False"/>
+              <ToolId value="41" />
+              <Questions />
+              <Default value="False" />
+              <Collapsable value="False" />
             </Question>
             <Question>
               <Type>TextBox</Type>
               <Description>Name of the positive class (Optional, only relevant for binary classification)</Description>
               <Name>posClass</Name>
-              <ToolId value="47"/>
-              <Default/>
-              <Password value="False"/>
-              <Multiline value="False"/>
-              <Hidden value="False"/>
+              <ToolId value="47" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (48)</Description>
               <Name>Macro Output (48)</Name>
-              <ToolId value="48"/>
+              <ToolId value="48" />
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (49)</Description>
               <Name>Macro Output (49)</Name>
-              <ToolId value="49"/>
+              <ToolId value="49" />
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should graphs of the fit measures be displayed? (Not recommended if the product of the number of trials and the number of folds is large.)</Description>
               <Name>displayGraphs</Name>
-              <ToolId value="50"/>
-              <Questions/>
-              <Default value="False"/>
-              <Collapsable value="False"/>
+              <ToolId value="50" />
+              <Questions />
+              <Default value="False" />
+              <Collapsable value="False" />
             </Question>
           </Questions>
         </Question>
@@ -4608,29 +4572,29 @@ runCrossValidation(inputs, config)
           <Type>Tab</Type>
           <Description>Debug</Description>
           <Name>Tab (12)</Name>
-          <ToolId value="12"/>
-          <Questions/>
+          <ToolId value="12" />
+          <Questions />
         </Question>
       </Questions>
       <ModuleType>Macro</ModuleType>
-      <MacroCustomHelp value="False"/>
-      <MacroDynamicOutputFields value="False"/>
-      <MacroImageStd value="39"/>
-      <MacroInputs/>
-      <MacroOutputs/>
-      <Wiz_CustomHelp value="False"/>
-      <Wiz_CustomGraphic value="False"/>
-      <Wiz_ShowOutput value="True"/>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="False" />
+      <MacroImageStd value="39" />
+      <MacroInputs />
+      <MacroOutputs />
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
       <Wiz_OpenOutputTools>
-        <Tool ToolId="3" Selected="True"/>
-        <Tool ToolId="5" Selected="True"/>
-        <Tool ToolId="28" Selected="True"/>
-        <Tool ToolId="48" Selected="True"/>
-        <Tool ToolId="49" Selected="True"/>
+        <Tool ToolId="3" Selected="True" />
+        <Tool ToolId="5" Selected="True" />
+        <Tool ToolId="28" Selected="True" />
+        <Tool ToolId="48" Selected="True" />
+        <Tool ToolId="49" Selected="True" />
       </Wiz_OpenOutputTools>
-      <Wiz_OutputMessage/>
-      <Wiz_NoOutputFilesMessage/>
-      <Wiz_ChainRunWizard/>
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
     </RuntimeProperties>
   </Properties>
 </AlteryxDocument>
