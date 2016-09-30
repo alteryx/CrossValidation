@@ -3,12 +3,12 @@
   <EngineSettings EngineDLL="Macro" EngineDLLEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" SDKVersion="10.1"/>
   <GuiSettings Html="CrossValidationGui.html" Icon="CrossValidationIcon.png" SDKVersion="10.1" Help=".htm">
     <InputConnections>
-      <Connection Name="Input3" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
-      <Connection Name="Input28" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
+      <Connection Name="Input_Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
+      <Connection Name="Input_Models" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
     </InputConnections>
     <OutputConnections>
       <Connection Name="Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
-      <Connection Name="Measures" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
+      <Connection Name="Fit Measures" AllowMultiple="False" Optional="False" Type="Connection" Label="F"/>
       <Connection Name="Output49" AllowMultiple="False" Optional="False" Type="Connection" Label=""/>
     </OutputConnections>
   </GuiSettings>

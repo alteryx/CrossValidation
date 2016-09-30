@@ -430,7 +430,7 @@ generateConfusionMatrices <- function(outData, extras) {
   for (i in 1:length(extras$levels)) {
     outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
   }
-  return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = unique(outData$response), outvec))
+  return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
 generateOutput1 <- function(data, extras) {
@@ -535,17 +535,19 @@ runCrossValidation <- function(inputs, config){
   
   # FIXME: clean up hardcoded values
   dataOutput3 <- generateOutput3(inputs, config, extras)
-  write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
+  write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput3, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput1(dataOutput3, extras)
-    write.Alteryx2(confMats, 1)
+    write.Alteryx2(confMats, 3)
   }
   
-  ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, extras = extras, config = config)
+  plotData <- ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, 
+    extras = extras, config = config
+  )
 }
 
 runCrossValidation(inputs, config)
