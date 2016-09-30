@@ -2,7 +2,7 @@
 <legend>Configuration</legend>
 {{ `numberTrials` }}
 {{ `numberFolds` }}
-{{ `LabelGroup (27)` }}
+{{ `modelType` }}
 {{ `stratified` }}
 {{ `posClass` }}
 {{ `displayGraphs` }}
