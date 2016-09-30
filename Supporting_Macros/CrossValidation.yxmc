@@ -4272,7 +4272,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="54" width="525" height="99.99997" />
+        <Position x="56" y="37" width="512" height="122" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4290,13 +4290,13 @@ runCrossValidation(inputs, config)
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="64" y="83" width="59" height="59" />
+            <Position x="78" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
             <Annotation DisplayMode="0">
               <Name>numberTrials</Name>
-              <AnnotationText>This configuration option allows the user to choose the number of trials.</AnnotationText>
+              <AnnotationText>Enter the number of times you would like the cross-validation procedure to be repeated. Choosing a smaller number of trials will speed up the tool, but a larger number will give you a more robust estimate of your models' quality.</AnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
@@ -4304,13 +4304,13 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="138" y="84.99997" width="59" height="59" />
+            <Position x="150" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
             <Annotation DisplayMode="0">
               <Name>numberFolds</Name>
-              <AnnotationText>This configuration option allows the user to choose the number of folds used in each trial. Typically, cross-validation is done with either five or ten folds.</AnnotationText>
+              <AnnotationText>Enter the number of subsets you would like the data split into. An analagous tradeoff to the one for the number of trials also exists for the number of folds.</AnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
@@ -4318,7 +4318,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="210" y="84.99997" width="59" height="59" />
+            <Position x="222" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4332,7 +4332,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="282" y="84.99997" width="59" height="59" />
+            <Position x="294" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4346,12 +4346,13 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="438" y="84.99997" width="59" height="59" />
+            <Position x="426" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
             <Annotation DisplayMode="0">
               <Name>stratified</Name>
+              <AnnotationText>Stratified cross-validation is a special type of cross-validation that creates folds with the same probability distribution as the larger dataset. For example, in a dataset where 80% of the target values are “No,” and 20% are “Yes,” each fold would have roughly 80% “No” responses and 20% “Yes” ones. Stratified cross-validation is frequently recommended when the target variable is imbalanced.</AnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
@@ -4359,12 +4360,13 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="354" y="84.99997" width="59" height="59" />
+            <Position x="366" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
             <Annotation DisplayMode="0">
               <Name>posClass</Name>
+              <AnnotationText>This configuration option is only relevant in binary (two-class) classification. Some of the measures reported for binary classification, such as the F1 score, require a distinction between a positive class (such as “Yes”) and a negative class (such as “no”). However, this configuration option is not required. If you leave it blank when using the tool with binary classification models, the tool will choose one of the classes as the positive one.</AnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
@@ -4372,12 +4374,153 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="510" y="84.99997" width="59" height="59" />
+            <Position x="498" y="90" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
             <Annotation DisplayMode="0">
               <Name>displayGraphs</Name>
+              <AnnotationText>If you wish to view the graphs of the fit measures described in the introduction, you should check this option. If not, you should leave it unchecked, because not creating these graphs will speed up the tool.</AnnotationText>
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="51">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="66" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>numTrials</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="52">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="138" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>numFolds</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="53">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="210" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>classification</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="54">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="282" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>regression</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="55">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="354" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>posClass</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="57">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="414" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>stratified</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="56">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="486" y="66" width="72" height="24" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>displayGraphs</Text>
+              <Font name="Segoe UI" size="8.25" style="0" />
+              <TextColor r="0" g="128" b="192" />
+              <FillColor name="White" />
+              <Shape shape="3" />
+              <Justification Justification="4" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
