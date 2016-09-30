@@ -466,22 +466,23 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
   #Pred_prob gives the predicted probability of belonging to the positive class
   #Actual is true if the record belongs to the positive class and negative if not
   actualPosIndic <- which(actual == TRUE)
+  actualNegIndic <- which(actual == FALSE)
   nActualPos <- length(actualPosIndic)
   thresholdedPredictions <- (pred_prob >= threshold)
   nCorrectPos <- sum(thresholdedPredictions[actualPosIndic])
   nPredPos <- sum(thresholdedPredictions)
+  nPredNeg <- length(actual) - length(nPredPos)
+  nCorrectNeg <- sum(1 - (thresholdedPredictions[-actualPosIndic]))
   overallAcc <- sum(thresholdedPredictions == actual)/length(actual)
-  PosAcc <- sum(thresholdedPredictions == TRUE)/length(which(actual))
-  NegAcc <- sum(thresholdedPredictions == FALSE)/sum(actual == FALSE)
+  PosAcc <- length(intersect(which(thresholdedPredictions == TRUE), actualPosIndic))/length(actualPosIndic)
+  NegAcc <- length(intersect(which(thresholdedPredictions == FALSE), actualNegIndic))/length(actualNegIndic)
   precision <- nCorrectPos/nPredPos
   recall <- nCorrectPos/nActualPos
   F1 <- 2*(precision*recall)/(precision + recall)
-  probPredPos <- nPredPos/length(pred_prob)
-  sizeIntersectPredAndActualPos <- length(intersect(which(actual == TRUE), which(pred_prob >= actual)))
-  lift <- sizeIntersectPredAndActualPos/nActualPos
+  tpr <- recall
   rpp <- nPredPos/length(pred_prob)
-  tpr <- nActualPos/length(pred_prob)
-  fpr <- (nPredPos - nCorrectPos)/length(pred_prob)
+  lift <- tpr/rpp
+  fpr <- (nPredPos - nCorrectPos)/length(actualNegIndic)
   pred <- prediction(predictions = pred_prob, labels = actual)
   auc <- performance(pred, "auc")
   auc <- unlist(auc@y.values)
