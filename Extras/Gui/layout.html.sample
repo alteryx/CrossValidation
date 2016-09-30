@@ -3,8 +3,6 @@
 {{ `numberTrials` }}
 {{ `numberFolds` }}
 {{ `LabelGroup (27)` }}
-{{ `targetField` }}
-{{ `predFields` }}
 {{ `stratified` }}
 {{ `posClass` }}
 {{ `displayGraphs` }}
