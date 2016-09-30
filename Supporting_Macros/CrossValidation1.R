@@ -535,14 +535,14 @@ runCrossValidation <- function(inputs, config){
   
   # FIXME: clean up hardcoded values
   dataOutput3 <- generateOutput3(inputs, config, extras)
-  write.Alteryx2(dataOutput3[,1:5], nOutput = 3)
+  write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput3, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput1(dataOutput3, extras)
-    write.Alteryx2(confMats, 1)
+    write.Alteryx2(confMats, 3)
   }
   
   plotData <- ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, 
