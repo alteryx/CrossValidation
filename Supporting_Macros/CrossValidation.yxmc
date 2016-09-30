@@ -3,37 +3,37 @@
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="66" y="229" />
+        <Position x="66" y="229"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="False" />
+          <UseFileInput value="False"/>
           <Name>Input_Data</Name>
           <Abbrev>D</Abbrev>
-          <ShowFieldMap value="False" />
-          <Optional value="False" />
+          <ShowFieldMap value="False"/>
+          <Optional value="False"/>
           <TextInput>
             <Configuration>
-              <NumRows value="500" />
+              <NumRows value="500"/>
               <Fields>
-                <Field name="MonthGive" />
-                <Field name="Region" />
-                <Field name="AveDonAmt" />
-                <Field name="LastDonAmt" />
-                <Field name="DonPerYear" />
+                <Field name="MonthGive"/>
+                <Field name="Region"/>
+                <Field name="AveDonAmt"/>
+                <Field name="LastDonAmt"/>
+                <Field name="DonPerYear"/>
               </Fields>
               <Data>
                 <r>
@@ -3541,26 +3541,26 @@
           </TextInput>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <AnnotationText><![CDATA[ **D input**: The dataset used to generate the above models.]]></AnnotationText>
-          <DefaultAnnotationText />
-          <Left value="True" />
+          <DefaultAnnotationText/>
+          <Left value="True"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="MonthGive" size="3" source="TextInput:" type="String" />
-            <Field name="Region" size="2" source="TextInput:" type="String" />
-            <Field name="AveDonAmt" source="TextInput:" type="Double" />
-            <Field name="LastDonAmt" source="TextInput:" type="Double" />
-            <Field name="DonPerYear" source="TextInput:" type="Double" />
+            <Field name="MonthGive" size="3" source="TextInput:" type="String"/>
+            <Field name="Region" size="2" source="TextInput:" type="String"/>
+            <Field name="AveDonAmt" source="TextInput:" type="Double"/>
+            <Field name="LastDonAmt" source="TextInput:" type="Double"/>
+            <Field name="DonPerYear" source="TextInput:" type="Double"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="306" y="289" />
+        <Position x="306" y="289"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4118,48 +4118,48 @@ runCrossValidation &lt;- function(inputs, config){
 
 runCrossValidation(inputs, config) 
 </RScript>
-          <UseFullUpdate value="False" />
+          <UseFullUpdate value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
         <MetaInfo connection="Output3">
           <RecordInfo>
-            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString"/>
           </RecordInfo>
         </MetaInfo>
         <MetaInfo connection="Output2">
           <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Double" />
-            <Field name="fold" source="R-DATA:" type="Double" />
-            <Field name="mid" source="R-DATA:" type="Double" />
-            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="value" source="R-DATA:" type="Double" />
+            <Field name="trial" source="R-DATA:" type="Double"/>
+            <Field name="fold" source="R-DATA:" type="Double"/>
+            <Field name="mid" source="R-DATA:" type="Double"/>
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="value" source="R-DATA:" type="Double"/>
           </RecordInfo>
         </MetaInfo>
         <MetaInfo connection="Output1">
           <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Int32" />
-            <Field name="fold" source="R-DATA:" type="Int32" />
-            <Field name="mid" source="R-DATA:" type="Int32" />
-            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="actual" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="trial" source="R-DATA:" type="Int32"/>
+            <Field name="fold" source="R-DATA:" type="Int32"/>
+            <Field name="mid" source="R-DATA:" type="Int32"/>
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="actual" size="1073741823" source="R-DATA:" type="V_WString"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR"/>
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="181" />
+        <Position x="438" y="181"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4167,77 +4167,77 @@ runCrossValidation(inputs, config)
           <Abbrev>D</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <AnnotationText>**D output**: This output provides the actual data values as well as their predictions.</AnnotationText>
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.LabelGroup.LabelGroup">
-        <Position x="0" y="0" width="59" height="59" />
+        <Position x="0" y="0" width="59" height="59"/>
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration/>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="66" y="361" />
+        <Position x="66" y="361"/>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <UseFileInput value="True" />
+          <UseFileInput value="True"/>
           <Name>Input_Models</Name>
           <Abbrev>M</Abbrev>
-          <ShowFieldMap value="False" />
-          <Optional value="False" />
+          <ShowFieldMap value="False"/>
+          <Optional value="False"/>
           <FileInput>
             <Configuration>
-              <Passwords />
+              <Passwords/>
               <File OutputFileName="" FileFormat="19" SearchSubDirs="False" RecordLimit="">./Data/Models.yxdb</File>
-              <FormatSpecificOptions />
+              <FormatSpecificOptions/>
             </Configuration>
           </FileInput>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <AnnotationText><![CDATA[ **M input: **Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.]]></AnnotationText>
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
-          <Left value="True" />
+          <Left value="True"/>
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob" />
+            <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString"/>
+            <Field name="Object" size="2147483647" source="R-DATA:SERIAL" type="Blob"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput"/>
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="277" />
+        <Position x="438" y="277"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4245,17 +4245,17 @@ runCrossValidation(inputs, config)
           <Abbrev>F</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
+          <Name/>
           <AnnotationText>**F output: **This output reports various model fit measures, depending on model type (see the second paragraph for more details on these measures).</AnnotationText>
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="397" />
+        <Position x="438" y="397"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4263,266 +4263,266 @@ runCrossValidation(inputs, config)
           <Abbrev>C</Abbrev>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput"/>
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="56" y="37" width="512" height="122" />
+        <Position x="56" y="37" width="512" height="122"/>
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>INTERFACE</Caption>
-          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10" />
-          <Disabled value="False" />
-          <Folded value="False" />
+          <Style TextColor="#2f4f4f" FillColor="#defe9c" BorderColor="#2f4f4f" Transparency="80" Margin="10"/>
+          <Disabled value="False"/>
+          <Folded value="False"/>
         </Configuration>
         <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
+          <Name/>
+          <DefaultAnnotationText/>
+          <Left value="False"/>
         </Annotation>
       </Properties>
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="78" y="90" width="59" height="59" />
+            <Position x="78" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>numberTrials</Name>
               <AnnotationText>Enter the number of times you would like the cross-validation procedure to be repeated. Choosing a smaller number of trials will speed up the tool, but a larger number will give you a more robust estimate of your models' quality.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="150" y="90" width="59" height="59" />
+            <Position x="150" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>numberFolds</Name>
               <AnnotationText>Enter the number of subsets you would like the data split into. An analagous tradeoff to the one for the number of trials also exists for the number of folds.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="222" y="90" width="59" height="59" />
+            <Position x="222" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>classification</Name>
               <AnnotationText>The user should check this option if their models are for a classification problem.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="294" y="90" width="59" height="59" />
+            <Position x="294" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>regression</Name>
               <AnnotationText>The user should check this option if their models are for a regression problem.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="426" y="90" width="59" height="59" />
+            <Position x="426" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>stratified</Name>
-              <AnnotationText>Stratified cross-validation is a special type of cross-validation that creates folds with the same probability distribution as the larger dataset. For example, in a dataset where 80% of the target values are “No,” and 20% are “Yes,” each fold would have roughly 80% “No” responses and 20% “Yes” ones. Stratified cross-validation is frequently recommended when the target variable is imbalanced.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <AnnotationText>Stratified cross-validation is a special type of cross-validation that creates folds with the same probability distribution as the larger dataset. For example, in a dataset where 80% of the target values are &#x201C;No,&#x201D; and 20% are &#x201C;Yes,&#x201D; each fold would have roughly 80% &#x201C;No&#x201D; responses and 20% &#x201C;Yes&#x201D; ones. Stratified cross-validation is frequently recommended when the target variable is imbalanced.</AnnotationText>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="366" y="90" width="59" height="59" />
+            <Position x="366" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>posClass</Name>
-              <AnnotationText>This configuration option is only relevant in binary (two-class) classification. Some of the measures reported for binary classification, such as the F1 score, require a distinction between a positive class (such as “Yes”) and a negative class (such as “no”). However, this configuration option is not required. If you leave it blank when using the tool with binary classification models, the tool will choose one of the classes as the positive one.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <AnnotationText>This configuration option is only relevant in binary (two-class) classification. Some of the measures reported for binary classification, such as the F1 score, require a distinction between a positive class (such as &#x201C;Yes&#x201D;) and a negative class (such as &#x201C;no&#x201D;). However, this configuration option is not required. If you leave it blank when using the tool with binary classification models, the tool will choose one of the classes as the positive one.</AnnotationText>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="498" y="90" width="59" height="59" />
+            <Position x="498" y="90" width="59" height="59"/>
           </GuiSettings>
           <Properties>
-            <Configuration />
+            <Configuration/>
             <Annotation DisplayMode="0">
               <Name>displayGraphs</Name>
               <AnnotationText>If you wish to view the graphs of the fit measures described in the introduction, you should check this option. If not, you should leave it unchecked, because not creating these graphs will speed up the tool.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="51">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="66" y="66" width="72" height="24" />
+            <Position x="66" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>numTrials</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="52">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="138" y="66" width="72" height="24" />
+            <Position x="138" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>numFolds</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="53">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="210" y="66" width="72" height="24" />
+            <Position x="210" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>classification</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="54">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="282" y="66" width="72" height="24" />
+            <Position x="282" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>regression</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="55">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="354" y="66" width="72" height="24" />
+            <Position x="354" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>posClass</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="57">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="414" y="66" width="72" height="24" />
+            <Position x="414" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>stratified</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
         <Node ToolID="56">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="486" y="66" width="72" height="24" />
+            <Position x="486" y="66" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>displayGraphs</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
+              <Font name="Segoe UI" size="8.25" style="0"/>
+              <TextColor r="0" g="128" b="192"/>
+              <FillColor name="White"/>
+              <Shape shape="3"/>
+              <Justification Justification="4"/>
             </Configuration>
             <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
+              <Name/>
+              <DefaultAnnotationText/>
+              <Left value="False"/>
             </Annotation>
           </Properties>
         </Node>
@@ -4531,173 +4531,173 @@ runCrossValidation(inputs, config)
   </Nodes>
   <Connections>
     <Connection name="#1">
-      <Origin ToolID="3" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="3" Connection="Output"/>
+      <Destination ToolID="4" Connection="Input"/>
     </Connection>
     <Connection name="#2">
-      <Origin ToolID="28" Connection="Output" />
-      <Destination ToolID="4" Connection="Input" />
+      <Origin ToolID="28" Connection="Output"/>
+      <Destination ToolID="4" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output1" />
-      <Destination ToolID="5" Connection="Input" />
+      <Origin ToolID="4" Connection="Output1"/>
+      <Destination ToolID="5" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2" />
-      <Destination ToolID="48" Connection="Input" />
+      <Origin ToolID="4" Connection="Output2"/>
+      <Destination ToolID="48" Connection="Input"/>
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
+      <Origin ToolID="4" Connection="Output3"/>
+      <Destination ToolID="49" Connection="Input"/>
     </Connection>
   </Connections>
   <Properties>
-    <Memory default="True" />
-    <GlobalRecordLimit value="0" />
-    <TempFiles default="True" />
-    <Annotation on="False" includeToolName="False" />
-    <ConvErrorLimit value="10" />
-    <ConvErrorLimit_Stop value="False" />
-    <CancelOnError value="False" />
-    <DisableBrowse value="False" />
-    <EnablePerformanceProfiling value="False" />
-    <DisableAllOutput value="False" />
-    <ShowAllMacroMessages value="False" />
-    <ShowConnectionStatusIsOn value="True" />
-    <ShowConnectionStatusOnlyWhenRunning value="True" />
-    <ZoomLevel value="0" />
+    <Memory default="True"/>
+    <GlobalRecordLimit value="0"/>
+    <TempFiles default="True"/>
+    <Annotation on="False" includeToolName="False"/>
+    <ConvErrorLimit value="10"/>
+    <ConvErrorLimit_Stop value="False"/>
+    <CancelOnError value="False"/>
+    <DisableBrowse value="False"/>
+    <EnablePerformanceProfiling value="False"/>
+    <DisableAllOutput value="False"/>
+    <ShowAllMacroMessages value="False"/>
+    <ShowConnectionStatusIsOn value="True"/>
+    <ShowConnectionStatusOnlyWhenRunning value="True"/>
+    <ZoomLevel value="0"/>
     <LayoutType>Horizontal</LayoutType>
     <Constants>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberTrials</Name>
-        <Value />
-        <IsNumeric value="True" />
+        <Value/>
+        <IsNumeric value="True"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>numberFolds</Name>
-        <Value />
-        <IsNumeric value="True" />
+        <Value/>
+        <IsNumeric value="True"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>classification</Name>
         <Value>True</Value>
-        <IsNumeric value="False" />
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>regression</Name>
         <Value>False</Value>
-        <IsNumeric value="False" />
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>stratified</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>posClass</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
       <Constant>
         <Namespace>Question</Namespace>
         <Name>displayGraphs</Name>
-        <Value />
-        <IsNumeric value="False" />
+        <Value/>
+        <IsNumeric value="False"/>
       </Constant>
     </Constants>
     <MetaInfo>
-      <NameIsFileName value="False" />
+      <NameIsFileName value="False"/>
       <Name>Cross Validation</Name>
       <Description>Benchmark multiple models using cross validation.</Description>
-      <RootToolName />
-      <ToolVersion />
-      <ToolInDb value="False" />
+      <RootToolName/>
+      <ToolVersion/>
+      <ToolInDb value="False"/>
       <CategoryName>Predictive Refresh</CategoryName>
-      <SearchTags />
+      <SearchTags/>
       <Author>Advanced Analytics</Author>
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
-      <DescriptionLink actual="" displayed="" />
+      <DescriptionLink actual="" displayed=""/>
       <Example>
-        <Description />
-        <File />
+        <Description/>
+        <File/>
       </Example>
     </MetaInfo>
     <Events>
-      <Enabled value="True" />
+      <Enabled value="True"/>
     </Events>
     <RuntimeProperties>
-      <Actions />
+      <Actions/>
       <Questions>
         <Question>
           <Type>Tab</Type>
           <Description>Questions</Description>
           <Name>Tab (2)</Name>
-          <ToolId value="2" />
+          <ToolId value="2"/>
           <Questions>
             <Question>
               <Type>MacroInput</Type>
               <Description>Macro Input (3)</Description>
               <Name>Macro Input (3)</Name>
-              <ToolId value="3" />
+              <ToolId value="3"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (5)</Description>
               <Name>Macro Output (5)</Name>
-              <ToolId value="5" />
+              <ToolId value="5"/>
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of trials</Description>
               <Name>numberTrials</Name>
-              <ToolId value="23" />
-              <Minimum value="1" />
-              <Maximum value="100" />
-              <Increment value="1" />
-              <Default value="3" />
-              <Decimals value="0" />
+              <ToolId value="23"/>
+              <Minimum value="1"/>
+              <Maximum value="100"/>
+              <Increment value="1"/>
+              <Default value="3"/>
+              <Decimals value="0"/>
             </Question>
             <Question>
               <Type>NumericUpDown</Type>
               <Description>Number of folds</Description>
               <Name>numberFolds</Name>
-              <ToolId value="24" />
-              <Minimum value="1" />
-              <Maximum value="100" />
-              <Increment value="1" />
-              <Default value="5" />
-              <Decimals value="0" />
+              <ToolId value="24"/>
+              <Minimum value="1"/>
+              <Maximum value="100"/>
+              <Increment value="1"/>
+              <Default value="5"/>
+              <Decimals value="0"/>
             </Question>
             <Question>
               <Type>LabelGroup</Type>
               <Description>Type of model</Description>
               <Name>LabelGroup (27)</Name>
-              <ToolId value="27" />
+              <ToolId value="27"/>
               <Questions>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Classification</Description>
                   <Name>classification</Name>
-                  <ToolId value="25" />
-                  <Questions />
-                  <Default value="False" />
-                  <Collapsable value="False" />
+                  <ToolId value="25"/>
+                  <Questions/>
+                  <Default value="False"/>
+                  <Collapsable value="False"/>
                 </Question>
                 <Question>
                   <Type>RadioGroup</Type>
                   <Description>Regression</Description>
                   <Name>regression</Name>
-                  <ToolId value="26" />
-                  <Questions />
-                  <Default value="False" />
-                  <Collapsable value="False" />
+                  <ToolId value="26"/>
+                  <Questions/>
+                  <Default value="False"/>
+                  <Collapsable value="False"/>
                 </Question>
               </Questions>
             </Question>
@@ -4705,47 +4705,47 @@ runCrossValidation(inputs, config)
               <Type>MacroInput</Type>
               <Description>Macro Input (28)</Description>
               <Name>Macro Input (28)</Name>
-              <ToolId value="28" />
+              <ToolId value="28"/>
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should stratified cross-validation be used?</Description>
               <Name>stratified</Name>
-              <ToolId value="41" />
-              <Questions />
-              <Default value="False" />
-              <Collapsable value="False" />
+              <ToolId value="41"/>
+              <Questions/>
+              <Default value="False"/>
+              <Collapsable value="False"/>
             </Question>
             <Question>
               <Type>TextBox</Type>
               <Description>Name of the positive class (Optional, only relevant for binary classification)</Description>
               <Name>posClass</Name>
-              <ToolId value="47" />
-              <Default />
-              <Password value="False" />
-              <Multiline value="False" />
-              <Hidden value="False" />
+              <ToolId value="47"/>
+              <Default/>
+              <Password value="False"/>
+              <Multiline value="False"/>
+              <Hidden value="False"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (48)</Description>
               <Name>Macro Output (48)</Name>
-              <ToolId value="48" />
+              <ToolId value="48"/>
             </Question>
             <Question>
               <Type>MacroOutput</Type>
               <Description>Macro Output (49)</Description>
               <Name>Macro Output (49)</Name>
-              <ToolId value="49" />
+              <ToolId value="49"/>
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
               <Description>Should graphs of the fit measures be displayed? (Not recommended if the product of the number of trials and the number of folds is large.)</Description>
               <Name>displayGraphs</Name>
-              <ToolId value="50" />
-              <Questions />
-              <Default value="False" />
-              <Collapsable value="False" />
+              <ToolId value="50"/>
+              <Questions/>
+              <Default value="False"/>
+              <Collapsable value="False"/>
             </Question>
           </Questions>
         </Question>
@@ -4753,29 +4753,29 @@ runCrossValidation(inputs, config)
           <Type>Tab</Type>
           <Description>Debug</Description>
           <Name>Tab (12)</Name>
-          <ToolId value="12" />
-          <Questions />
+          <ToolId value="12"/>
+          <Questions/>
         </Question>
       </Questions>
       <ModuleType>Macro</ModuleType>
-      <MacroCustomHelp value="False" />
-      <MacroDynamicOutputFields value="False" />
-      <MacroImageStd value="39" />
-      <MacroInputs />
-      <MacroOutputs />
-      <Wiz_CustomHelp value="False" />
-      <Wiz_CustomGraphic value="False" />
-      <Wiz_ShowOutput value="True" />
+      <MacroCustomHelp value="False"/>
+      <MacroDynamicOutputFields value="False"/>
+      <MacroImageStd value="39"/>
+      <MacroInputs/>
+      <MacroOutputs/>
+      <Wiz_CustomHelp value="False"/>
+      <Wiz_CustomGraphic value="False"/>
+      <Wiz_ShowOutput value="True"/>
       <Wiz_OpenOutputTools>
-        <Tool ToolId="3" Selected="True" />
-        <Tool ToolId="5" Selected="True" />
-        <Tool ToolId="28" Selected="True" />
-        <Tool ToolId="48" Selected="True" />
-        <Tool ToolId="49" Selected="True" />
+        <Tool ToolId="3" Selected="True"/>
+        <Tool ToolId="5" Selected="True"/>
+        <Tool ToolId="28" Selected="True"/>
+        <Tool ToolId="48" Selected="True"/>
+        <Tool ToolId="49" Selected="True"/>
       </Wiz_OpenOutputTools>
-      <Wiz_OutputMessage />
-      <Wiz_NoOutputFilesMessage />
-      <Wiz_ChainRunWizard />
+      <Wiz_OutputMessage/>
+      <Wiz_NoOutputFilesMessage/>
+      <Wiz_ChainRunWizard/>
     </RuntimeProperties>
   </Properties>
 </AlteryxDocument>
