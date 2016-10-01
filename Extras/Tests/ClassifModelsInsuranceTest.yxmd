@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="54" y="186" />
+        <Position x="54" y="174" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -27,7 +27,7 @@
     </Node>
     <Node ToolID="7">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="54" y="78" />
+        <Position x="54" y="66" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -65,7 +65,7 @@
     </Node>
     <Node ToolID="8">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="126" y="78" />
+        <Position x="126" y="66" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -91,11 +91,11 @@
     </Node>
     <Node ToolID="9">
       <GuiSettings>
-        <Position x="222" y="150" />
+        <Position x="222" y="138" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Value name="numberTrials">3</Value>
+          <Value name="numberTrials">2</Value>
           <Value name="numberFolds">5</Value>
           <Value name="classification">True</Value>
           <Value name="regression">False</Value>
@@ -116,12 +116,18 @@
     </Node>
     <Node ToolID="10">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="318" y="66" />
+        <Position x="318" y="54" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6068_17e1b0d167574f92854df1e6c0d3278e_\Engine_6212_fccfa2ff6cf744fa9f8c893337114eb6_.yxdb</TempFile>
-          <Layout />
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_4876_faec714d151d446a864ee624c643d198_\Engine_2184_5db4f8ff2bb54d33ae8acc15eae6922d_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -133,12 +139,18 @@
     </Node>
     <Node ToolID="11">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="318" y="150" />
+        <Position x="318" y="138" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6068_17e1b0d167574f92854df1e6c0d3278e_\Engine_6212_b614e7ae849342a7a1e6d3cb42a540bd_.yxdb</TempFile>
-          <Layout />
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_4876_faec714d151d446a864ee624c643d198_\Engine_2184_ff812c6464904233b99424d9a13ac544_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -150,11 +162,11 @@
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="318" y="234" />
+        <Position x="318" y="222" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_6068_17e1b0d167574f92854df1e6c0d3278e_\Engine_6212_687f4aeb66b146eeb798b9a47f53fa2e_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_4876_faec714d151d446a864ee624c643d198_\Engine_2184_e9cb5743d6c045eab3f8c5ca3673256c_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
