@@ -4198,7 +4198,7 @@ runCrossValidation(inputs, config)
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <AnnotationText><![CDATA[ **M input: **Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.]]></AnnotationText>
+          <AnnotationText><![CDATA[ **M input:** Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.]]></AnnotationText>
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
           <Left value="True" />
         </Annotation>

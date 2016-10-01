@@ -18,7 +18,7 @@ _Note: This tool uses the R tool. Install R and the necessary packages by going 
 The Cross-Validation tool requires 2 inputs.
 
 1.  **D input**: The dataset used to generate the above models.
-2.  **M input: **Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.
+2.  **M input:** Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.
 
 ### Configuration
 
