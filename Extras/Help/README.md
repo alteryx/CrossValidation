@@ -31,4 +31,4 @@ The Cross-Validation tool requires 2 inputs.
 ### Output
 
 1. **D output**: This output provides the actual data values as well as their predictions.
-2. **F output: **This output reports various model fit measures, depending on model type (see the second paragraph for more details on these measures).
+2. **F output:** This output reports various model fit measures, depending on model type (see the second paragraph for more details on these measures).
