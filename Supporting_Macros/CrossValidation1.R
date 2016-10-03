@@ -24,6 +24,8 @@ options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
 
+
+
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
 if (!inAlteryx()){
@@ -156,6 +158,7 @@ checkFactorVars <- function(data, folds, config) {
           #testing if all classes are represented in the training set when trial i, fold j is the test set. 
           #So the training set here is trial i, all folds except fold j.
           if (length(missingTrainingClasses) > 0) {
+            currentColumnName <- colnames(factorVars)[k]
             if (length(missingTrainingClasses) > 1) {
               warningMessage1 <- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
@@ -178,6 +181,7 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
+  set.seed(2)
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
   checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
@@ -261,6 +265,7 @@ adjustGbmModel <- function(model){
 getActualandResponse <- function(model, data, testIndices, extras){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
+  currentYvar <- getOneYVar(model)
   currentModel <- update(model, data = trainingData)
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
@@ -380,7 +385,7 @@ getMeasuresClassification <- function(outData, extras) {
     outVec <- vector(length = length((extras$levels)))
     for (l in 1:length((extras$levels))) {
       tempPred <- scoredOutput[actual == (extras$levels)[[l]]]
-      nCorrect <- sum(temppred == (extras$levels)[[l]])
+      nCorrect <- sum(tempPred == (extras$levels)[[l]])
       thisAcc <- nCorrect/sum(actual == (extras$levels)[[l]])
       outVec[l] <- thisAcc
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
