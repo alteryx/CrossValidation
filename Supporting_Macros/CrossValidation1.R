@@ -74,7 +74,7 @@ runTest <- function(modelName, payload){
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
-  modelXVars <- lapply(inputs$models, getXVars)
+  modelXVars <- lapply(inputs$models, getXVars2)
   dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
