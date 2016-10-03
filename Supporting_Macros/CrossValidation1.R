@@ -52,6 +52,8 @@ options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
 
+set.seed(2)
+
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
 if (!inAlteryx()){
@@ -184,6 +186,7 @@ checkFactorVars <- function(data, folds, config) {
           #testing if all classes are represented in the training set when trial i, fold j is the test set. 
           #So the training set here is trial i, all folds except fold j.
           if (length(missingTrainingClasses) > 0) {
+            currentColumnName <- colnames(factorVars)[k]
             if (length(missingTrainingClasses) > 1) {
               warningMessage1 <- paste0("Classes ", missingTrainingClasses, " were not present in variable ", currentColumnName," of the training set.")
               warningMessage2 <- "It is recommended that you either check your data to ensure no records were mis-labeled or collect more data on these classes."
@@ -289,11 +292,27 @@ adjustGbmModel <- function(model){
 getActualandResponse <- function(model, data, testIndices, extras){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
+  currentYvar <- getOneYVar(model)
+  print(paste0('currentYvar is: ', currentYvar))
+  print("head of data is: ")
+  print(head(data))
+  print('head of trainingData is:')
+  print(head(trainingData))
+  print('head of testData is: ')
+  print(head(testData))
+  print("unique yvar factors from training data are:")
+  print(unique(trainingData[,currentYvar]))
+  print('unique yvar factors from testing data are: ')
+  print(unique(testData[,currentYvar]))
+  print("about to update")
   currentModel <- update(model, data = trainingData)
+  print("did the update")
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
+  print("about to score")
   pred <- scoreModel(currentModel, new.data = testData)
+  print("scored")
   actual <- (extras$yVar)[testIndices]
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
@@ -309,7 +328,9 @@ getCrossValidatedResults <- function(inputs, allFolds, extras){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
+    print(paste0("about to call getactualandresponse for model ", mid))
     out <- (getActualandResponse(model, inputs$data, testIndices, extras))
+    print("called getactualandresponse")
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
@@ -408,7 +429,7 @@ getMeasuresClassification <- function(outData, extras) {
     outVec <- vector(length = length((extras$levels)))
     for (l in 1:length((extras$levels))) {
       tempPred <- scoredOutput[actual == (extras$levels)[[l]]]
-      nCorrect <- sum(temppred == (extras$levels)[[l]])
+      nCorrect <- sum(tempPred == (extras$levels)[[l]])
       thisAcc <- nCorrect/sum(actual == (extras$levels)[[l]])
       outVec[l] <- thisAcc
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
