@@ -90,7 +90,8 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_5080_5ad53e386eea4543ae7d006c4a6fc96b_\Engine_4244_1b3edfb520234f0da4d5eaf7a8390c1f_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_5768_7e49d98eebf747339dbf30234c94a5b2_\Engine_5008_e051207e95eb4db48444dc1b1445294d_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_5768_7e49d98eebf747339dbf30234c94a5b2_\Engine_5008_3df9be8e8ea64475af9de2b5273ff689_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -157,9 +158,6 @@
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
       </Properties>
       <EngineSettings Macro="Predictive Tools\Boosted_Model.yxmc" />
     </Node>
@@ -217,9 +215,6 @@
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
       </Properties>
       <EngineSettings Macro="Predictive Tools\Decision_Tree.yxmc" />
     </Node>
@@ -242,9 +237,6 @@
           <DefaultAnnotationText>AllClassifModelsInsurance.yxdb</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
     </Node>
@@ -267,9 +259,6 @@
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
       </Properties>
       <EngineSettings Macro="Predictive Tools\Logistic_Regression.yxmc" />
     </Node>
@@ -346,22 +335,96 @@
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\SVM_v2.yxmc" />
+    </Node>
+    <Node ToolID="32">
+      <GuiSettings>
+        <Position x="366" y="306" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="model.name">nnet_model</Value>
+          <Value name="select.target">smoker</Value>
+          <Value name="select.predictors">age=True,sex=True,bmi=True,children=True,smoker=False,region=True,charges=True</Value>
+          <Value name="use.weights">False</Value>
+          <Value name="select.weights">age</Value>
+          <Value name="num.nodes">10</Value>
+          <Value name="marginal.plots">True</Value>
+          <Value name="custom.scaling">False</Value>
+          <Value name="scale.type">z-score</Value>
+          <Value name="decay">0.100</Value>
+          <Value name="range">0.700</Value>
+          <Value name="max.wts">1000</Value>
+          <Value name="max.iter">100</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+          <Value name="pointsize">10</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
         <Dependencies>
           <Implicit />
         </Dependencies>
       </Properties>
-      <EngineSettings Macro="Predictive Tools\SVM_v2.yxmc" />
+      <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
+    </Node>
+    <Node ToolID="33">
+      <GuiSettings>
+        <Position x="366" y="390" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="Model Name">randomforest</Value>
+          <Value name="Y Var">smoker</Value>
+          <Value name="X Vars">age + sex + bmi + children + region + charges</Value>
+          <Value name="Num Trees">500</Value>
+          <Value name="Custom Num Vars">False</Value>
+          <Value name="Num Vars">3</Value>
+          <Value name="model.size">False</Value>
+          <Value name="total.nodes">100</Value>
+          <Value name="max.depth">10</Value>
+          <Value name="node.size">5</Value>
+          <Value name="replace">True</Value>
+          <Value name="samp.rate">100</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+          <Value name="pointsize">10</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="702" y="294" width="115.8146" height="19" />
+        <Position x="702" y="294" width="115.8146" height="98" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>Save RDS File</Caption>
           <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="10" />
-          <Disabled value="True" />
-          <Folded value="True" />
+          <Disabled value="False" />
+          <Folded value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -381,7 +444,7 @@ wd &lt;- '%Engine.WorkflowDirectory%'
 
 saveRDS(
   df, 
-  file.path(wd, 'AllRegModelsInsurance.rds')
+  file.path(wd, 'AllClassifModelsInsurance.rds')
 )</RScript>
               <UseFullUpdate value="False" />
             </Configuration>
@@ -418,6 +481,14 @@ saveRDS(
       <Destination ToolID="31" Connection="Input" />
     </Connection>
     <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="32" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="33" Connection="Input" />
+    </Connection>
+    <Connection>
       <Origin ToolID="9" Connection="Output" />
       <Destination ToolID="10" Connection="Input" />
     </Connection>
@@ -443,6 +514,14 @@ saveRDS(
     </Connection>
     <Connection name="#4">
       <Origin ToolID="31" Connection="Object" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection name="#5">
+      <Origin ToolID="32" Connection="Output" />
+      <Destination ToolID="9" Connection="Input" />
+    </Connection>
+    <Connection name="#6">
+      <Origin ToolID="33" Connection="Output" />
       <Destination ToolID="9" Connection="Input" />
     </Connection>
   </Connections>
