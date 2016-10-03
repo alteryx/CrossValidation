@@ -24,7 +24,7 @@ options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
 
-set.seed(2)
+
 
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
@@ -181,6 +181,7 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
+  set.seed(2)
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
   checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
