@@ -16,7 +16,7 @@
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="66" y="229" />
+        <Position x="64" y="246" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -3560,7 +3560,7 @@
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="306" y="289" />
+        <Position x="304" y="306" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -3570,35 +3570,6 @@
 #' ---
 #' 
 #' 
-#' This is a utility function to check to see if the necessary packages are
-#' installed and install them if they're not.
-
-checkInstalls &lt;- function(packages) {
-  # See if the desired packages are installed, and install if they're not
-  if (!all(packages %in% row.names(installed.packages()))) {
-    # Use the IE based "Internet2" since it is most reliable for this action,
-    # it will be switched back at the end
-    setInternet2(use = TRUE)
-    # Make sure the path to the users library is in place and create it if it
-    # is not
-    minor_ver &lt;- strsplit(R.Version()$minor, "\\.")[[1]][1]
-    R_ver &lt;- paste(R.Version()$major, minor_ver, sep = ".")
-    the_path &lt;- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
-    # Create the user's personal folder if it doesn't already exist
-    if (!dir.exists(the_path)) {
-      dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
-    }
-    # The set of possible repositories to use
-    repos &lt;- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
-    # Select a particular repository
-    repo &lt;- sample(repos, 1)
-    missingPackages &lt;- packages[which(!(packages %in% row.names(installed.packages())))]
-    install.packages(missingPackages, lib = the_path, repos = repo)
-    setInternet2(use = FALSE)
-  }
-}
-checkInstalls(c("AlteryxPredictive", "ROCR", "plyr", "TunePareto", "sm", "vioplot"))
-#' ---
 
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
@@ -3606,6 +3577,7 @@ suppressWarnings(library(AlteryxPredictive))
 config &lt;- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
   `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
+  `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
   `posClass` = textInput('%Question.posClass%'),
@@ -4074,13 +4046,17 @@ generateDataForPlots &lt;- function(d, extras, config){
 # Helper Functions End ----
 
 runCrossValidation &lt;- function(inputs, config){
-  
-  
+  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot"))
   library(ROCR)
   library(plyr)
   library("TunePareto")
   library("sm")
   library("vioplot")
+  
+  if (!is.null(config$modelType)){
+    config$classification = config$modelType == "classification"
+    config$regression = !config$classification
+  }
 
   yVar &lt;- getYvars(inputs$data, inputs$models)
   if ((config$classification) &amp;&amp; (length(unique(yVar)) == 2)) {
@@ -4159,7 +4135,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="181" />
+        <Position x="436" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4203,7 +4179,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="66" y="361" />
+        <Position x="64" y="378" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4222,7 +4198,7 @@ runCrossValidation(inputs, config)
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <AnnotationText><![CDATA[ **M input: **Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.]]></AnnotationText>
+          <AnnotationText><![CDATA[ **M input:** Either a single Alteryx-generated predicted model, or the union of two or more such models. These models should all have been generated using the same dataset.]]></AnnotationText>
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
           <Left value="True" />
         </Annotation>
@@ -4237,7 +4213,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="277" />
+        <Position x="436" y="294" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4246,7 +4222,7 @@ runCrossValidation(inputs, config)
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <AnnotationText>**F output: **This output reports various model fit measures, depending on model type (see the second paragraph for more details on these measures).</AnnotationText>
+          <AnnotationText>**F output:** This output reports various model fit measures, depending on model type (see the second paragraph for more details on these measures).</AnnotationText>
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
@@ -4255,7 +4231,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="438" y="397" />
+        <Position x="436" y="414" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4272,7 +4248,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="56" y="37" width="512" height="122" />
+        <Position x="53.99997" y="53.99999" width="512" height="122.0001" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4290,7 +4266,7 @@ runCrossValidation(inputs, config)
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="78" y="90" width="59" height="59" />
+            <Position x="76.00005" y="107.0001" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4304,7 +4280,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="150" y="90" width="59" height="59" />
+            <Position x="148" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4318,7 +4294,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="222" y="90" width="59" height="59" />
+            <Position x="220" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4332,7 +4308,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="294" y="90" width="59" height="59" />
+            <Position x="292" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4346,7 +4322,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="426" y="90" width="59" height="59" />
+            <Position x="424" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4360,7 +4336,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="366" y="90" width="59" height="59" />
+            <Position x="364" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4374,7 +4350,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="498" y="90" width="59" height="59" />
+            <Position x="496" y="107" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4388,7 +4364,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="51">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="66" y="66" width="72" height="24" />
+            <Position x="63.99996" y="83.00001" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4408,7 +4384,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="52">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="138" y="66" width="72" height="24" />
+            <Position x="136" y="82.99999" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4428,7 +4404,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="53">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="210" y="66" width="72" height="24" />
+            <Position x="208" y="82.99999" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4448,7 +4424,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="54">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="282" y="66" width="72" height="24" />
+            <Position x="280" y="83" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4468,7 +4444,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="55">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="354" y="66" width="72" height="24" />
+            <Position x="352" y="83" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4488,7 +4464,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="57">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="414" y="66" width="72" height="24" />
+            <Position x="412" y="83" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4508,7 +4484,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="56">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="486" y="66" width="72" height="24" />
+            <Position x="484" y="83" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4678,7 +4654,7 @@ runCrossValidation(inputs, config)
             <Question>
               <Type>LabelGroup</Type>
               <Description>Type of model</Description>
-              <Name>LabelGroup (27)</Name>
+              <Name>modelType</Name>
               <ToolId value="27" />
               <Questions>
                 <Question>
