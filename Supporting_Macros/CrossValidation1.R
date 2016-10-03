@@ -76,7 +76,7 @@ runTest <- function(modelName, payload){
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
-  modelXVars <- lapply(inputs$models, getXVars)
+  modelXVars <- lapply(inputs$models, getXVars2)
   dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
@@ -265,26 +265,11 @@ getActualandResponse <- function(model, data, testIndices, extras){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
   currentYvar <- getOneYVar(model)
-  print(paste0('currentYvar is: ', currentYvar))
-  print("head of data is: ")
-  print(head(data))
-  print('head of trainingData is:')
-  print(head(trainingData))
-  print('head of testData is: ')
-  print(head(testData))
-  print("unique yvar factors from training data are:")
-  print(unique(trainingData[,currentYvar]))
-  print('unique yvar factors from testing data are: ')
-  print(unique(testData[,currentYvar]))
-  print("about to update")
   currentModel <- update(model, data = trainingData)
-  print("did the update")
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
-  print("about to score")
   pred <- scoreModel(currentModel, new.data = testData)
-  print("scored")
   actual <- (extras$yVar)[testIndices]
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
@@ -300,9 +285,7 @@ getCrossValidatedResults <- function(inputs, allFolds, extras){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    print(paste0("about to call getactualandresponse for model ", mid))
     out <- (getActualandResponse(model, inputs$data, testIndices, extras))
-    print("called getactualandresponse")
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
