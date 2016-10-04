@@ -268,22 +268,8 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   currentYvar <- getOneYVar(model)
   
   
-  #currentModel <- update(model, data = trainingData)
-  
-  
-  currentModel <- tryCatch({
-    modelAttempt <- update(model, data = trainingData)
-    error = function(err) {
-      errMessage <- paste0("One of the CV runs for model", mid, " was not completed successfully.")
-      errMesage2 <- "Since the model for this test/training combination could not be created, no information about it will appear in the tool's output."
-      AlteryxMessage2(errMessage, iType = 2, iPriority = 3)
-      AlteryxMessage2(errMessage2, iType = 2, iPriority = 3)
-      return(NULL)
-    }
-    return(modelAttempt)
-  })
-  
-  
+  currentModel <- update(model, data = trainingData)
+
   
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
@@ -299,12 +285,17 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   }
 }
 
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
+
 #' 
-getCrossValidatedResults <- function(inputs, allFolds, extras){
+getCrossValidatedResults <- function(inputs, allFolds, extras, config){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    out <- (getActualandResponse(model, inputs$data, testIndices, extras, mid))
+    out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
+    if (is.null(out)) {
+      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", "the data could not be scored."), iType = 2, iPriority = 3)
+    }
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
@@ -454,7 +445,7 @@ generateOutput3 <- function(inputs, config, extras){
     trial = seq_along(allFolds),
     fold = seq_along(allFolds[[1]])
   )
-  mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
+  mdply(g, getCrossValidatedResults(inputs, allFolds, extras, config))
 }
 
 computeBinaryMetrics <- function(pred_prob, actual, threshold){
