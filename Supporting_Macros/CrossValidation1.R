@@ -183,7 +183,7 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
-  if (useSeed) {
+  if (config$useSeed) {
     set.seed(config$seed)
   }
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)

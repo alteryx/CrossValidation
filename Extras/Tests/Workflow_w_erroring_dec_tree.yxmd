@@ -189,12 +189,17 @@ write.Alteryx(outdf, 1)
           <Value name="stratified">False</Value>
           <Value name="posClass" />
           <Value name="displayGraphs">False</Value>
+          <Value name="useSeed">False</Value>
+          <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
       </Properties>
       <EngineSettings Macro="..\..\Supporting_Macros\CrossValidation.yxmc" />
     </Node>
@@ -204,7 +209,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_8082563e82c2466ca9acf4467a8a4f68_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_573f858a0d76416494a6788b84c2cde5_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -227,7 +232,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_0b086b809ba7444783d353eefca0da24_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_cdc2f55b0c3044dfa0f84e04006f8f2d_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -250,7 +255,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_c4fe8543c108447aaf981fa2141afd20_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_27cdcc826d49424f8f22d9492e3493ec_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -390,9 +395,10 @@ write.Alteryx(outdf, 1)
         <Configuration>
           <RScript>nnet &lt;- read.Alteryx("#1", mode="data.frame")
 nnetData &lt;- read.Alteryx("#2", mode="data.frame")
-
+rf &lt;- read.Alteryx("#3", mode="data.frame")
 saveRDS(nnet, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/nnet.rds")
-saveRDS(nnetData, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/nnetData.rds")</RScript>
+saveRDS(nnetData, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/nnetData.rds")
+saveRDS(rf, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/rf.rds")</RScript>
           <UseFullUpdate value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
@@ -431,6 +437,10 @@ saveRDS(nnetData, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Ma
     </Connection>
     <Connection name="#1">
       <Origin ToolID="15" Connection="Output" />
+      <Destination ToolID="31" Connection="Input" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="29" Connection="Output" />
       <Destination ToolID="31" Connection="Input" />
     </Connection>
     <Connection name="#3">
