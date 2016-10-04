@@ -4252,7 +4252,7 @@ runCrossValidation(inputs, config)
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="49" width="646" height="134" />
+        <Position x="54" y="49" width="622" height="134" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4508,7 +4508,7 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="58">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="618" y="114" width="59" height="59" />
+            <Position x="594" y="114" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4521,44 +4521,11 @@ runCrossValidation(inputs, config)
         </Node>
         <Node ToolID="59">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="618" y="78" width="72" height="24" />
+            <Position x="594" y="78" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text>seed</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-        </Node>
-        <Node ToolID="60">
-          <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="558" y="114" width="59" height="59" />
-          </GuiSettings>
-          <Properties>
-            <Configuration />
-            <Annotation DisplayMode="0">
-              <Name>useSeed</Name>
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-        </Node>
-        <Node ToolID="61">
-          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="546" y="78" width="72" height="24" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Text>useSeed</Text>
               <Font name="Segoe UI" size="8.25" style="0" />
               <TextColor r="0" g="128" b="192" />
               <FillColor name="White" />
@@ -4661,12 +4628,6 @@ runCrossValidation(inputs, config)
         <Name>seed</Name>
         <Value />
         <IsNumeric value="True" />
-      </Constant>
-      <Constant>
-        <Namespace>Question</Namespace>
-        <Name>useSeed</Name>
-        <Value />
-        <IsNumeric value="False" />
       </Constant>
     </Constants>
     <MetaInfo>
@@ -4802,25 +4763,15 @@ runCrossValidation(inputs, config)
               <Collapsable value="False" />
             </Question>
             <Question>
-              <Type>BooleanGroup</Type>
-              <Description>Do you wish to choose a seed for replicable fold generation?</Description>
-              <Name>useSeed</Name>
-              <ToolId value="60" />
-              <Questions>
-                <Question>
-                  <Type>NumericUpDown</Type>
-                  <Description>Value of seed</Description>
-                  <Name>seed</Name>
-                  <ToolId value="58" />
-                  <Minimum value="-2147399999" />
-                  <Maximum value="2147399999" />
-                  <Increment value="1" />
-                  <Default value="1" />
-                  <Decimals value="0" />
-                </Question>
-              </Questions>
-              <Default value="False" />
-              <Collapsable value="False" />
+              <Type>NumericUpDown</Type>
+              <Description>Value of seed</Description>
+              <Name>seed</Name>
+              <ToolId value="58" />
+              <Minimum value="-2147399999" />
+              <Maximum value="2147399999" />
+              <Increment value="1" />
+              <Default value="1" />
+              <Decimals value="0" />
             </Question>
           </Questions>
         </Question>

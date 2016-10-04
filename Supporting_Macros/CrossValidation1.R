@@ -19,7 +19,6 @@ config <- list(
   `regression` = radioInput('%Question.regression%' , FALSE),
   `stratified` = checkboxInput('%Question.stratified%' , FALSE),
   `targetField` = dropdownInput('%Question.targetField%'),
-  `useSeed` = checkboxInput('%Question.useSeed%', TRUE),
   `seed` = numericInput('%Question.seed%', 1)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
@@ -27,7 +26,7 @@ options(alteryx.debug = config$debug)
 ##----
 
 
-
+library(plyr)
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
 if (!inAlteryx()){
@@ -183,9 +182,7 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
-  if (config$useSeed) {
-    set.seed(config$seed)
-  }
+  set.seed(config$seed)
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
   print("foldList is:")
   print(foldList)
@@ -515,7 +512,6 @@ generateDataForPlots <- function(d, extras, config){
 runCrossValidation <- function(inputs, config){
   checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot"))
   library(ROCR)
-  library(plyr)
   library("TunePareto")
   library("sm")
   library("vioplot")
