@@ -262,11 +262,29 @@ adjustGbmModel <- function(model){
 
 
 #' Given a model, a dataset and index of test cases, return actual and response
-getActualandResponse <- function(model, data, testIndices, extras){
+getActualandResponse <- function(model, data, testIndices, extras, mid){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
   currentYvar <- getOneYVar(model)
-  currentModel <- update(model, data = trainingData)
+  
+  
+  #currentModel <- update(model, data = trainingData)
+  
+  
+  currentModel <- tryCatch({
+    modelAttempt <- update(model, data = trainingData)
+    error = function(err) {
+      errMessage <- paste0("One of the CV runs for model", mid, " was not completed successfully.")
+      errMesage2 <- "Since the model for this test/training combination could not be created, no information about it will appear in the tool's output."
+      AlteryxMessage2(errMessage, iType = 2, iPriority = 3)
+      AlteryxMessage2(errMessage2, iType = 2, iPriority = 3)
+      return(NULL)
+    }
+    return(modelAttempt)
+  })
+  
+  
+  
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
@@ -286,7 +304,7 @@ getCrossValidatedResults <- function(inputs, allFolds, extras){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    out <- (getActualandResponse(model, inputs$data, testIndices, extras))
+    out <- (getActualandResponse(model, inputs$data, testIndices, extras, mid))
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
     return(out)
   }
