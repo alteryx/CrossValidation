@@ -18,7 +18,9 @@ config <- list(
   `predFields` = listInput('%Question.predFields%'),
   `regression` = radioInput('%Question.regression%' , FALSE),
   `stratified` = checkboxInput('%Question.stratified%' , FALSE),
-  `targetField` = dropdownInput('%Question.targetField%')
+  `targetField` = dropdownInput('%Question.targetField%'),
+  `useSeed` = checkboxInput('%Question.useSeed%', TRUE),
+  `seed` = numericInput('%Question.seed%', 1)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
@@ -181,8 +183,12 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
-  set.seed(2)
+  if (useSeed) {
+    set.seed(config$seed)
+  }
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
+  print("foldList is:")
+  print(foldList)
   checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
 }
@@ -285,18 +291,29 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
 
 #' 
 getCrossValidatedResults <- function(inputs, allFolds, extras, config){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
+    print("about to call safeg")
     out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
+    print("about to test if out is null")
     if (is.null(out)) {
       AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", "the data could not be scored."), iType = 2, iPriority = 3)
     }
+    print("about to re-define out")
     out <- cbind(trial = trial, fold = fold, mid = mid, out)
+    print("about to return out")
+    print("str of out is:")
+    print(str(out))
+    print("head of out is:")
+    print(head(out))
+    print(paste0("typeof out is: ", typeof(out)))
+    print(paste0("is out a df? ", is.data.frame(out)))
+    print(paste0("is out a vector? ", is.vector(out)))
     return(out)
   }
 }
@@ -445,7 +462,9 @@ generateOutput3 <- function(inputs, config, extras){
     trial = seq_along(allFolds),
     fold = seq_along(allFolds[[1]])
   )
-  mdply(g, getCrossValidatedResults(inputs, allFolds, extras, config))
+  print("about to call mdply")
+  return(mdply(g, getCrossValidatedResults(inputs, allFolds, extras, config)))
+  print("called mdply")
 }
 
 computeBinaryMetrics <- function(pred_prob, actual, threshold){
@@ -525,6 +544,10 @@ runCrossValidation <- function(inputs, config){
   
   # FIXME: clean up hardcoded values
   dataOutput3 <- generateOutput3(inputs, config, extras)
+  print("dim of dataoutput3 is:")
+  print(dim(dataOutput3))
+  print("and its str:")
+  print(str(dataOutput3))
   write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput3, extras)
