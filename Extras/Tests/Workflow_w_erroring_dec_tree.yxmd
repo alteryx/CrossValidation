@@ -1,0 +1,495 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="10.5">
+  <Nodes>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="66" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript><![CDATA[outdf <- as.data.frame(matrix(c(runif(500)), nrow = 100))
+lastCol <- .4*outdf[,1]  - .88 * outdf[,2] + 1.5 * outdf[,3] + rnorm(100)
+
+toLetter <- function(number) {
+  if (number < -2) {
+    "A"
+  } else if (number < 0) {
+    "B"
+  } else if (number < 2) {
+    "C"
+  } else {
+    "D"
+  }
+}
+lastCol <- sapply(lastCol, FUN = toLetter)
+outdf <- cbind(outdf, lastCol)
+write.Alteryx(outdf, 1)
+]]></RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="V1" source="R-DATA:" type="Double" />
+            <Field name="V2" source="R-DATA:" type="Double" />
+            <Field name="V3" source="R-DATA:" type="Double" />
+            <Field name="V4" source="R-DATA:" type="Double" />
+            <Field name="V5" source="R-DATA:" type="Double" />
+            <Field name="lastCol" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings>
+        <Position x="222" y="162" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="model.name">svm</Value>
+          <Value name="select.target">lastCol</Value>
+          <Value name="select.predictors">V1=True,V2=True,V3=True,V4=True,V5=True,lastCol=False</Value>
+          <Value name="type.classification">True</Value>
+          <Value name="class.c">True</Value>
+          <Value name="class.nu">False</Value>
+          <Value name="nu_nu">0.05</Value>
+          <Value name="type.regression">False</Value>
+          <Value name="reg.eps">True</Value>
+          <Value name="reg.nu">False</Value>
+          <Value name="reg.nu_nu">0.05</Value>
+          <Value name="model.cust">False</Value>
+          <Value name="user.define">True</Value>
+          <Value name="kernel.linear">False</Value>
+          <Value name="linear.cost">1.00</Value>
+          <Value name="kernel.polynomial">False</Value>
+          <Value name="poly.cost">1.00</Value>
+          <Value name="poly.degree">2.000</Value>
+          <Value name="poly.gamma">1.00000</Value>
+          <Value name="poly.coef0">1.00</Value>
+          <Value name="kernel.radial">True</Value>
+          <Value name="rad.cost">1.00</Value>
+          <Value name="rad.gamma">1.00000</Value>
+          <Value name="kernel.sigmoid">False</Value>
+          <Value name="sigmoid.cost">1.00</Value>
+          <Value name="sigmoid.gamma">1.00000</Value>
+          <Value name="sigmoid.coef0">1.00</Value>
+          <Value name="grid.search">False</Value>
+          <Value name="gs.number">5</Value>
+          <Value name="gs.linear">False</Value>
+          <Value name="gs.linear.cost_min">1.00</Value>
+          <Value name="gs.linear.cost_max">1.00</Value>
+          <Value name="gs.polynomial">False</Value>
+          <Value name="gs.poly.cost_min">1.00</Value>
+          <Value name="gs.poly.cost_max">1.00</Value>
+          <Value name="gs.poly.degree_min">2.000</Value>
+          <Value name="gs.poly.degree_max">2.000</Value>
+          <Value name="gs.poly.gamma_min">1.00000</Value>
+          <Value name="gs.poly.gamma_max">1.00000</Value>
+          <Value name="gs.poly.coef0_min">1.00</Value>
+          <Value name="gs.poly.coef0_max">1.00</Value>
+          <Value name="gs.radial">True</Value>
+          <Value name="gs.radial.cost_min">1.00</Value>
+          <Value name="gs.radial.cost_max">1.00</Value>
+          <Value name="gs.radial.gamma_min">1.00000</Value>
+          <Value name="gs.radial.gamma_max">1.00000</Value>
+          <Value name="gs.sigmoid">False</Value>
+          <Value name="gs.sigmoid.cost_min">1.00</Value>
+          <Value name="gs.sigmoid.cost_max">1.00</Value>
+          <Value name="gs.sigmoid.gamma_min">1.00000</Value>
+          <Value name="gs.sigmoid.gamma_max">1.00000</Value>
+          <Value name="gs.sigmoid.coef0_min">1.00</Value>
+          <Value name="gs.sigmoid.coef0_max">1.00</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+          <Value name="pointsize">10</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\SVM_v2.yxmc" />
+    </Node>
+    <Node ToolID="15">
+      <GuiSettings>
+        <Position x="222" y="246" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="model.name">neural_net</Value>
+          <Value name="select.target">lastCol</Value>
+          <Value name="select.predictors">V1=True,V2=True,V3=True,V4=True,V5=True,lastCol=True</Value>
+          <Value name="use.weights">False</Value>
+          <Value name="select.weights">V1</Value>
+          <Value name="num.nodes">10</Value>
+          <Value name="marginal.plots">True</Value>
+          <Value name="custom.scaling">False</Value>
+          <Value name="scale.type">z-score</Value>
+          <Value name="decay">0.100</Value>
+          <Value name="range">0.700</Value>
+          <Value name="max.wts">1000</Value>
+          <Value name="max.iter">100</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+          <Value name="pointsize">10</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
+    </Node>
+    <Node ToolID="16">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="474" y="90" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ByName_ErrorMode>Warning</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ByName</Mode>
+          <SetOutputOrder value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
+    <Node ToolID="21">
+      <GuiSettings>
+        <Position x="738" y="258" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="numberTrials">2</Value>
+          <Value name="numberFolds">5</Value>
+          <Value name="classification">True</Value>
+          <Value name="regression">False</Value>
+          <Value name="stratified">False</Value>
+          <Value name="posClass" />
+          <Value name="displayGraphs">False</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="..\..\Supporting_Macros\CrossValidation.yxmc" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="834" y="174" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_8082563e82c2466ca9acf4467a8a4f68_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="834" y="258" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_0b086b809ba7444783d353eefca0da24_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="834" y="342" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7376_3610dc0dfdff494696444a7a3cfd0351_\Engine_4916_c4fe8543c108447aaf981fa2141afd20_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="54" y="126" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Generate the data</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="210" y="318" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Create the models</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="486" y="162" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Union the models together</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="28">
+      <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+        <Position x="726" y="318" width="100" height="40" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Text>Use the unioned models and the original data as input to the tool</Text>
+          <Font name="Segoe UI" size="8.25" style="0" />
+          <TextColor name="Black" />
+          <FillColor name="White" />
+          <Shape shape="0" />
+          <Justification Justification="4" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="29">
+      <GuiSettings>
+        <Position x="234" y="78" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="Model Name">rf</Value>
+          <Value name="Y Var">lastCol</Value>
+          <Value name="X Vars">V1 + V2 + V3 + V4 + V5</Value>
+          <Value name="Num Trees">500</Value>
+          <Value name="Custom Num Vars">False</Value>
+          <Value name="Num Vars">3</Value>
+          <Value name="model.size">False</Value>
+          <Value name="total.nodes">100</Value>
+          <Value name="max.depth">10</Value>
+          <Value name="node.size">5</Value>
+          <Value name="replace">True</Value>
+          <Value name="samp.rate">100</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+          <Value name="pointsize">10</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
+    </Node>
+    <Node ToolID="31">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="402" y="318" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript>nnet &lt;- read.Alteryx("#1", mode="data.frame")
+nnetData &lt;- read.Alteryx("#2", mode="data.frame")
+
+saveRDS(nnet, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/nnet.rds")
+saveRDS(nnetData, file = "C:/Users/btoomey/Desktop/CrossValidation/Supporting_Macros/Data/nnetData.rds")</RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="11" Connection="Output1" />
+      <Destination ToolID="14" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Output1" />
+      <Destination ToolID="15" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Output1" />
+      <Destination ToolID="21" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="16" Connection="Output" />
+      <Destination ToolID="21" Connection="Input_Models" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="11" Connection="Output1" />
+      <Destination ToolID="29" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="11" Connection="Output1" />
+      <Destination ToolID="31" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="15" Connection="Output" />
+      <Destination ToolID="31" Connection="Input" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="14" Connection="Object" />
+      <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection name="#4">
+      <Origin ToolID="15" Connection="Output" />
+      <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="29" Connection="Output" />
+      <Destination ToolID="16" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="21" Connection="Data" />
+      <Destination ToolID="22" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="21" Connection="Fit Measures" />
+      <Destination ToolID="23" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="21" Connection="Confusion Matrices" />
+      <Destination ToolID="24" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="True" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Workflow_w_erroring_dec_tree</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>
