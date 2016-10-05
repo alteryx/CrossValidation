@@ -189,7 +189,6 @@ write.Alteryx(outdf, 1)
           <Value name="stratified">False</Value>
           <Value name="posClass" />
           <Value name="displayGraphs">False</Value>
-          <Value name="useSeed">False</Value>
           <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -209,7 +208,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_573f858a0d76416494a6788b84c2cde5_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8884_c3c2f6fc5ba64fd8a6daf47c729dca13_\Engine_9000_77d6714326854aa5b541d62b7567f6dc_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -232,7 +231,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_cdc2f55b0c3044dfa0f84e04006f8f2d_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8884_c3c2f6fc5ba64fd8a6daf47c729dca13_\Engine_9000_c624384ed6d54bea8a01f529f2fd24de_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -255,7 +254,7 @@ write.Alteryx(outdf, 1)
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_860_80ad5123892945b89cd3a062d2a75fb7_\Engine_9000_27cdcc826d49424f8f22d9492e3493ec_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8884_c3c2f6fc5ba64fd8a6daf47c729dca13_\Engine_9000_47f1a6fe09104828ab7f2353c48b95b7_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
