@@ -122,7 +122,7 @@ getMissingClasses <- function(currentClasses, currentRecords) {
 }
 
 #' For each factor variable, check to see if all levels are present in each fold. 
-#' If not, error out with an informative message.
+#' If not, warn the user.
 #' 
 
 checkFactorVars <- function(data, folds, config) {
@@ -177,6 +177,46 @@ checkFactorVars <- function(data, folds, config) {
       }
     }
   }
+}
+
+#Make sure that the levels from the test data match the levels from the training data
+#This code is a subset of the function matchLevels in AlteryxRDataX CommonUtils
+#It excludes the portion that checks for factor variables in the model that aren't in the test data,
+#since checkXVars already takes care of that situation.
+noZeroLevels <- function(ll){Filter(Negate(is.numeric), ll)}
+noNullLevels <- function(ll){Filter(Negate(is.null), ll)}
+
+# matchLevels coerces the levels in new data factors to exactly match the levels
+# of factors in the original data, and is needed for Revo ScaleR models
+matchLevels <- function(nd, ol) {
+  # Address the non-standard way randomForest returns xlevel values
+  check.ol <- sapply(ol, is.numeric)
+  ol[check.ol] <- NULL
+  # if the model does appear to have factors then sort out the levels
+  if (!(is.null(ol) || length(ol) == 0)) {
+    factor.test <- sapply(nd, is.factor)
+    the.factors <- names(nd)[factor.test]
+    # The function to use with sapply to determine which factors have different
+    # levels in the new data versus the levels used in model estimation.
+    checkLevels <- function(z) {
+      current.levels <- levels(nd[[z]])
+      desired.levels <- ol[[z]]
+      !all(current.levels == desired.levels)
+    }
+    the.factors <- the.factors[sapply(the.factors, checkLevels)]
+    # The function to use with lapply to relevel a factor
+    relevelFac <- function(z) {
+      orig.factor <- nd[[z]]
+      these.levels <- ol[[z]]
+      new.factor <- factor(orig.factor, levels = these.levels)
+      new.factor
+    }
+    # Relevel the factors that differ from their levels in model estimation
+    new.factor.list <- lapply(the.factors, relevelFac)
+    names(new.factor.list) <- the.factors
+    nd[the.factors] <- new.factor.list
+  }
+  nd
 }
 
 #Create the list of cross-validation folds and output warnings/errors as appropriate
@@ -264,8 +304,9 @@ adjustGbmModel <- function(model){
 
 #' Given a model, a dataset and index of test cases, return actual and response
 getActualandResponse <- function(model, data, testIndices, extras, mid){
-  trainingData = data[-testIndices,]
-  testData = data[testIndices,]
+  trainingData <- data[-testIndices,]
+  testData <- data[testIndices,]
+  testData <- matchLevels(testData, model)
   currentYvar <- getOneYVar(model)
   currentModel <- update(model, data = trainingData)
   if (inherits(currentModel, 'gbm')){
@@ -514,6 +555,8 @@ runCrossValidation <- function(inputs, config){
   
   inputs$modelNames = names(inputs$models)
   checkXVars(inputs)
+  
+  
   
   extras <- list(
     yVar = yVar,
