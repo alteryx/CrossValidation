@@ -18,14 +18,15 @@ config <- list(
   `predFields` = listInput('%Question.predFields%'),
   `regression` = radioInput('%Question.regression%' , FALSE),
   `stratified` = checkboxInput('%Question.stratified%' , FALSE),
-  `targetField` = dropdownInput('%Question.targetField%')
+  `targetField` = dropdownInput('%Question.targetField%'),
+  `seed` = numericInput('%Question.seed%', 1)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
 options(alteryx.debug = config$debug)
 ##----
 
 
-
+library(plyr)
 #' ### Defaults
 #' These defaults are used when the R code is run outside Alteryx
 if (!inAlteryx()){
@@ -181,7 +182,7 @@ checkFactorVars <- function(data, folds, config) {
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
   target <- data[, 1]
-  set.seed(2)
+  set.seed(config$seed)
   foldList <- generateCVRuns(labels = target, ntimes = config$numberTrials, nfold = config$numberFolds, stratified = config$stratified)
   checkFactorVars(data = data, folds = foldList, config = config)
   return(foldList)
@@ -262,7 +263,7 @@ adjustGbmModel <- function(model){
 
 
 #' Given a model, a dataset and index of test cases, return actual and response
-getActualandResponse <- function(model, data, testIndices, extras){
+getActualandResponse <- function(model, data, testIndices, extras, mid){
   trainingData = data[-testIndices,]
   testData = data[testIndices,]
   currentYvar <- getOneYVar(model)
@@ -274,20 +275,28 @@ getActualandResponse <- function(model, data, testIndices, extras){
   actual <- (extras$yVar)[testIndices]
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
-    return(data.frame(response = response, actual = actual, pred))
+    d <- data.frame(response = response, actual = actual)
+    return(cbind(d, pred))
   } else {
     response <- pred$Score
     return(data.frame(response = response, actual = actual))
   }
 }
 
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
+#safeGetActualAndResponse <- getActualandResponse
+
 #' 
-getCrossValidatedResults <- function(inputs, allFolds, extras){
+getCrossValidatedResults <- function(inputs, allFolds, extras, config){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    out <- (getActualandResponse(model, inputs$data, testIndices, extras))
-    out <- cbind(trial = trial, fold = fold, mid = mid, out)
+    out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
+    if (is.null(out)) {
+      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", "the data could not be scored."), iType = 2, iPriority = 3)
+    } else {
+      out <- cbind(trial = trial, fold = fold, mid = mid, out)
+    }
     return(out)
   }
 }
@@ -332,9 +341,9 @@ getMeasuresRegression <- function(outData, extras) {
 
 #Get the necessary measures in the classification case
 getMeasuresClassification <- function(outData, extras) {
-  actual <- outData$actual
+  actual <- as.character(outData$actual)
   scoredData <- outData[,6:7]
-  scoredOutput <- outData$response
+  scoredOutput <- as.character(outData$response)
   posClass <- extras$posClass
   modelIndic <- unique(outData$mid)
   trialIndic <- unique(outData$trial)
@@ -436,7 +445,7 @@ generateOutput3 <- function(inputs, config, extras){
     trial = seq_along(allFolds),
     fold = seq_along(allFolds[[1]])
   )
-  mdply(g, getCrossValidatedResults(inputs, allFolds, extras))
+  return(mdply(g, getCrossValidatedResults(inputs, allFolds, extras, config)))
 }
 
 computeBinaryMetrics <- function(pred_prob, actual, threshold){
@@ -487,7 +496,6 @@ generateDataForPlots <- function(d, extras, config){
 runCrossValidation <- function(inputs, config){
   checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot"))
   library(ROCR)
-  library(plyr)
   library("TunePareto")
   library("sm")
   library("vioplot")
@@ -531,4 +539,7 @@ runCrossValidation <- function(inputs, config){
   )
 }
 
-runCrossValidation(inputs, config)
+
+if (is.null(getOption("testscript"))){
+  runCrossValidation(inputs, config)
+}
