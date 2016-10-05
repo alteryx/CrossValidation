@@ -6,4 +6,5 @@
 {{ `stratified` }}
 {{ `posClass` }}
 {{ `displayGraphs` }}
+{{ `seed` }}
 </fieldset>
