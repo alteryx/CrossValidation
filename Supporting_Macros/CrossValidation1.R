@@ -513,7 +513,7 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
   pred <- prediction(predictions = pred_prob, labels = actual)
   auc <- performance(pred, "auc")
   auc <- unlist(auc@y.values)
-  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
+  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr, Precision = precision)
 }
 
 generateDataForPlots <- function(d, extras, config){
@@ -528,11 +528,30 @@ generateDataForPlots <- function(d, extras, config){
   }
 }
 
+# plotOneLiftCurve <- function(plotData) {
+#   ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift)) + geom_point(plotData$fold) + 
+#     stat_smooth(method = "loess", formula = y ~ x, size = 1)
+# }
+
 plotBinaryData <- function(plotData) {
-  Lift_curve <- ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift), 
-                       main = paste0("Lift Chart for Model ", plotData$mid, " Trial ", plotData$trial)) + geom_point(colour = plotData$fold)
-                     
-  AlteryxGraph2(Lift_curve, nOutput = 4)
+  print("head of plotData is:")
+  print(head(plotData))
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold))
+  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
+  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Lift curve for model ", plotData$mid, 
+                                                                                                                                    " trial ", plotData$trial))
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
+                                                                                                                                             " trial ", plotData$trial))
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
+                                                                                                                                   " trial ", plotData$trial))
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
+                                                                                                                              " trial ", plotData$trial))
+  AlteryxGraph2(liftPlotObj, nOutput = 4)
+  AlteryxGraph2(gainPlotObj, nOutput = 4)
+  AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+  AlteryxGraph2(ROCPlotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
