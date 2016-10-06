@@ -460,7 +460,7 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput1 <- function(data, extras) {
+generateOutput3 <- function(data, extras) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
@@ -477,7 +477,7 @@ generateOutput2 <- function(data, extras) {
   reshape2::melt(d, id = c('trial', 'fold', 'mid'))
 }
 
-generateOutput3 <- function(inputs, config, extras){
+generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
   for (pkg in pkgsToLoad) library(pkg, character.only = TRUE)
   allFolds <- extras$allFolds
@@ -566,18 +566,18 @@ runCrossValidation <- function(inputs, config){
   )
   
   # FIXME: clean up hardcoded values
-  dataOutput3 <- generateOutput3(inputs, config, extras)
-  write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
+  dataOutput1 <- generateOutput1(inputs, config, extras)
+  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
 
-  dataOutput2 <- generateOutput2(dataOutput3, extras)
+  dataOutput2 <- generateOutput2(dataOutput1, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput1(dataOutput3, extras)
+    confMats <- generateOutput3(dataOutput1, extras)
     write.Alteryx2(confMats, 3)
   }
   
-  plotData <- ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, 
+  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
     extras = extras, config = config
   )
 }

@@ -4026,7 +4026,7 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput1 <- function(data, extras) {
+generateOutput3 <- function(data, extras) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
@@ -4043,7 +4043,7 @@ generateOutput2 <- function(data, extras) {
   reshape2::melt(d, id = c('trial', 'fold', 'mid'))
 }
 
-generateOutput3 <- function(inputs, config, extras){
+generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
   for (pkg in pkgsToLoad) library(pkg, character.only = TRUE)
   allFolds <- extras$allFolds
@@ -4132,18 +4132,18 @@ runCrossValidation <- function(inputs, config){
   )
   
   # FIXME: clean up hardcoded values
-  dataOutput3 <- generateOutput3(inputs, config, extras)
-  write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
+  dataOutput1 <- generateOutput1(inputs, config, extras)
+  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
 
-  dataOutput2 <- generateOutput2(dataOutput3, extras)
+  dataOutput2 <- generateOutput2(dataOutput1, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput1(dataOutput3, extras)
+    confMats <- generateOutput3(dataOutput1, extras)
     write.Alteryx2(confMats, 3)
   }
   
-  plotData <- ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, 
+  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
     extras = extras, config = config
   )
 }
@@ -4160,12 +4160,41 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="trial" source="R-DATA:" type="Int32" />
+            <Field name="fold" source="R-DATA:" type="Int32" />
+            <Field name="mid" source="R-DATA:" type="Int32" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="actual" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output2">
+          <RecordInfo>
+            <Field name="trial" source="R-DATA:" type="Double" />
+            <Field name="fold" source="R-DATA:" type="Double" />
+            <Field name="mid" source="R-DATA:" type="Double" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" source="R-DATA:" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output3">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="203" />
+        <Position x="894" y="366" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4243,7 +4272,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="299" />
+        <Position x="618" y="546" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4276,9 +4305,131 @@ if (is.null(getOption("testscript"))){
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
     </Node>
+    <Node ToolID="61">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
+        <Position x="558" y="450" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NumRows value="0" />
+          <Fields>
+            <Field name="trial" />
+            <Field name="fold" />
+            <Field name="mid" />
+            <Field name="response" />
+            <Field name="actual" />
+          </Fields>
+          <Data />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="response" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="actual" size="1073741823" source="TextInput:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
+    </Node>
+    <Node ToolID="70">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="642" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ByName_ErrorMode>Warning</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ByName</Mode>
+          <SetOutputOrder value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="fold" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="mid" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="response" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="actual" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
+    <Node ToolID="72">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
+        <Position x="402" y="546" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NumRows value="0" />
+          <Fields>
+            <Field name="trial" />
+            <Field name="fold" />
+            <Field name="mid" />
+            <Field name="variable" />
+            <Field name="value" />
+          </Fields>
+          <Data />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="TextInput:" type="V_WString" />
+            <Field name="value" size="1073741823" source="TextInput:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
+    </Node>
+    <Node ToolID="73">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="486" y="546" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ByName_ErrorMode>Warning</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ByName</Mode>
+          <SetOutputOrder value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="fold" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="mid" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="variable" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+            <Field name="value" size="1073741823" source="(Multiple Sources)" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="54" width="622" height="134" />
+        <Position x="65.99999" y="18" width="622" height="134" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4296,7 +4447,7 @@ if (is.null(getOption("testscript"))){
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="76.00009" y="112.0001" width="59" height="59" />
+            <Position x="88.00011" y="76.00004" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4310,7 +4461,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="24">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="148" y="112" width="59" height="59" />
+            <Position x="160" y="76.00001" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4324,7 +4475,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="220" y="112" width="59" height="59" />
+            <Position x="222" y="65.99998" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4338,7 +4489,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="292" y="112" width="59" height="59" />
+            <Position x="294" y="78" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4352,7 +4503,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="41">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="424" y="112" width="59" height="59" />
+            <Position x="436" y="76" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4366,7 +4517,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
-            <Position x="364" y="112" width="59" height="59" />
+            <Position x="376" y="76" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4380,7 +4531,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="50">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="496" y="112" width="59" height="59" />
+            <Position x="508" y="76" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4394,7 +4545,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="51">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="64" y="88.00002" width="72" height="24" />
+            <Position x="75.99999" y="52.00005" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4414,7 +4565,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="52">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="136" y="88" width="72" height="24" />
+            <Position x="148" y="51.99998" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4434,7 +4585,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="53">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="208" y="88" width="72" height="24" />
+            <Position x="220" y="51.99998" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4454,7 +4605,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="54">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="280" y="88.00002" width="72" height="24" />
+            <Position x="292" y="52.00003" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4474,7 +4625,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="55">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="352" y="88.00002" width="72" height="24" />
+            <Position x="364" y="52.00002" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4494,7 +4645,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="57">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="412" y="88.00002" width="72" height="24" />
+            <Position x="424" y="52.00002" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4514,7 +4665,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="56">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="484" y="88.00002" width="72" height="24" />
+            <Position x="496" y="52.00002" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4534,7 +4685,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="58">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="594" y="119" width="59" height="59" />
+            <Position x="606" y="83" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -4547,7 +4698,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="59">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="594" y="83" width="72" height="24" />
+            <Position x="606" y="47" width="72" height="24" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4578,16 +4729,32 @@ if (is.null(getOption("testscript"))){
       <Destination ToolID="4" Connection="Input" />
     </Connection>
     <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="49" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
       <Origin ToolID="4" Connection="Output1" />
+      <Destination ToolID="70" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="61" Connection="Output" />
+      <Destination ToolID="70" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="4" Connection="Output2" />
+      <Destination ToolID="73" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="72" Connection="Output" />
+      <Destination ToolID="73" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="70" Connection="Output" />
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2" />
+      <Origin ToolID="73" Connection="Output" />
       <Destination ToolID="48" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>

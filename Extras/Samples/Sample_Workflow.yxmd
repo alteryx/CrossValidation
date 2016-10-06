@@ -8,7 +8,7 @@
       <Properties>
         <Configuration>
           <Text>Sample Alteryx Module
-&lt;Insert Title&gt;</Text>
+Cross-Validation</Text>
           <Font name="Microsoft Sans Serif" size="18" style="0" />
           <TextColor name="White" />
           <FillColor r="95" g="152" b="171" />
@@ -210,7 +210,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7240_2a9696db47954367864d0e977f1d5d38_\Engine_4360_65ce212f4f75433cbee65d9a2eaf93e7_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_e386a9b3548b45ad8ebaf886652dad94_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -233,7 +233,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7240_2a9696db47954367864d0e977f1d5d38_\Engine_4360_1ae5294424c145e4aae2f963713f61a6_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_c9bedb37a6a14600bd0a6347675adb3c_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -256,7 +256,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7240_2a9696db47954367864d0e977f1d5d38_\Engine_4360_ce521ccd1da44ed69fd80b8579e021eb_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_415589e7cbaa4d01ae8de839ed61b08e_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -373,12 +373,18 @@
       <ChildNodes>
         <Node ToolID="28">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="616" y="119" width="158" height="103" />
+            <Position x="616" y="119" width="158" height="139" />
           </GuiSettings>
           <Properties>
             <Configuration>
               <Text><![CDATA[Tools Used:
-<Insert List of Tools Used>
+Browse
+Cross-Validation
+Forest Model
+Linear Regression
+Select
+Text Input
+Union
 ]]></Text>
               <Font name="Microsoft Sans Serif" size="9.75" style="0" />
               <TextColor name="Black" />
@@ -415,11 +421,11 @@
       <ChildNodes>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="580" y="95" width="242" height="187" />
+            <Position x="580" y="95" width="242" height="235" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Text>&lt;Insert Description of Sample&gt;</Text>
+              <Text>The Cross-Validation tool directly evaluates one or model Alteryx-generated predictive models without requiring separate test and training datasets. The model quality metrics provided by the tool depend on the type of modeling problem (regression, two-class classification, or classification with more than two classes). This workflow illustrates how the Cross-Validation tool can be used in a regression problem. Gender, height, age, weight, and Body Mass Index are used to predict a person's body fat percentage.</Text>
               <Font name="Microsoft Sans Serif" size="9.75" style="0" />
               <TextColor name="Black" />
               <FillColor name="White" />
