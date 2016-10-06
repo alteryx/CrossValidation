@@ -517,16 +517,14 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
 }
 
 generateDataForPlots <- function(d, extras, config){
-  if (config$classification) {
-    if (length(extras$levels) == 2) {
-      thresholds <- seq(0, 1, 0.05)
-      ldply(thresholds, computeBinaryMetrics, 
-            actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
-            pred_prob = d[[paste0('Score_', extras$posClass)]]
-      )
-    } else {
-      data.frame(response = d$response, actual = d$actual)
-    }
+  if ((length(extras$levels) == 2) && (config$classification)) {
+    thresholds <- seq(0, 1, 0.05)
+    ldply(thresholds, computeBinaryMetrics, 
+          actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
+          pred_prob = d[[paste0('Score_', extras$posClass)]]
+    )
+  } else {
+    data.frame(response = d$response, actual = d$actual)
   }
 }
 
