@@ -529,8 +529,9 @@ generateDataForPlots <- function(d, extras, config){
 }
 
 plotBinaryData <- function(plotData) {
-  Lift_curve <- qplot(Rate_Pos_Predictions, lift, data = plotData, colour = fold, 
-                      main = paste0("Lift Chart for Model ", plotData$mid, " Trial ", plotData$trial))
+  Lift_curve <- ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift), 
+                       main = paste0("Lift Chart for Model ", plotData$mid, " Trial ", plotData$trial)) + geom_point(colour = plotData$fold)
+                     
   AlteryxGraph2(Lift_curve, nOutput = 4)
 }
 
