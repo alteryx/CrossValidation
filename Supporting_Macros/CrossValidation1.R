@@ -600,18 +600,18 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(confMats, 3)
   }
   
-  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
-    extras = extras, config = config
-  )
-  
-  print("head plotData is:")
-  print(head(plotData))
-  if (config$classification) {
-    if (length(extras$levels) == 2) {
-      d_ply(plotData, .(trial, mid), plotBinaryData)
+  if (config$displayGraphs) {
+    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+                      extras = extras, config = config
+    )
+    print("head plotData is:")
+    print(head(plotData))
+    if (config$classification) {
+      if (length(extras$levels) == 2) {
+        d_ply(plotData, .(trial, mid), plotBinaryData)
+      }
     }
   }
-  
 }
 
 

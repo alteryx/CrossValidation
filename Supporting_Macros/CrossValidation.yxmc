@@ -3560,7 +3560,7 @@
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="304" y="311" />
+        <Position x="306" y="306" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4166,18 +4166,18 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(confMats, 3)
   }
   
-  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
-    extras = extras, config = config
-  )
-  
-  print("head plotData is:")
-  print(head(plotData))
-  if (config$classification) {
-    if (length(extras$levels) == 2) {
-      d_ply(plotData, .(trial, mid), plotBinaryData)
+  if (config$displayGraphs) {
+    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+                      extras = extras, config = config
+    )
+    print("head plotData is:")
+    print(head(plotData))
+    if (config$classification) {
+      if (length(extras$levels) == 2) {
+        d_ply(plotData, .(trial, mid), plotBinaryData)
+      }
     }
   }
-  
 }
 
 
@@ -4314,7 +4314,279 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8084_11a4e07db3a74ad586ae9448d0849363_\Engine_1076_ad03055a946a4292b72c412a5d14af79_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9400_1472f8ec81c142479c6d838b24f58124_\Engine_1076_1fea516deefc4bdcaa243820b4f9b289_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="61">
+      <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
+        <Position x="570" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TableMode>Basic</TableMode>
+          <GroupingFields orderChanged="False">
+            <Field name="trial" />
+            <Field name="fold" />
+            <Field name="mid" />
+          </GroupingFields>
+          <Width>100%</Width>
+          <ShowHeader value="True" />
+          <ShowBarGraph value="False" />
+          <TableFields orderChanged="False">
+            <Field name="response" selected="True" Alignment="Right" />
+            <Field name="Predicted_class" selected="True" Alignment="Right" />
+            <Field name="variable" selected="True" Alignment="Right" />
+            <Field name="value" selected="True" Alignment="Right" />
+            <Field name="*Unknown" selected="True" Alignment="Right" />
+            <Field name="trial" selected="False" />
+            <Field name="fold" selected="False" />
+            <Field name="mid" selected="False" />
+          </TableFields>
+          <TableStyles>
+            <Style Name="Data" Font="Arial" Size="8" TextColor="#000000" BackColor="#ffffff" AltColor="#f0f0f0" RowGroup="1" />
+            <Style Name="Header" Font="Arial" Size="10" TextColor="#000000" BackColor="#dbdbdb" />
+            <Style Name="Borders" Width="1" DataColor="#000000" HeaderColor="#000000" RowBorder="None" BasicColBorder="Default (Use Per Column Setting)" />
+            <Style Name="Table" CellPadding="0" ColumnPadding="0" TableBorder="true" Width="1" BorderColor="#000000" />
+            <Style Name="BarGraph" Width="100" Height="15" AutoScale="true" Min="0" Max="100" BaseValue="0" LabelBars="true" ColorMode="Single" TextColor="#b0c4de" BarPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" BarFormula="&quot;Green&quot;" OutlineBars="true" OutlineColor="#000000" />
+          </TableStyles>
+          <StyleRules />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Basic Table</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="mid" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTablePlugin" />
+    </Node>
+    <Node ToolID="62">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="846" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9400_1472f8ec81c142479c6d838b24f58124_\Engine_1076_af8e03365ff04c96ad93f289eeef6b98_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="63">
+      <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
+        <Position x="678" y="246" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Images />
+          <Output>Text</Output>
+          <HeaderMode value="False" />
+          <RawMode value="False" />
+          <ValidatePCXML value="True" />
+          <Message />
+          <RichTextMode value="True" />
+          <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs29 trial: [trial:A]\par
+fold: [fold:A]\par
+model: [mid:A]\par
+}
+]]></RichTextString>
+          <Styles>
+            <Style Name="TextStyle" />
+          </Styles>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>trial: [trial:A]
+fold: [fold:A...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="mid" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
+    </Node>
+    <Node ToolID="64">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
+        <Position x="522" y="258" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UniqueFields>
+            <Field field="trial" />
+            <Field field="fold" />
+            <Field field="mid" />
+          </UniqueFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Unique: trial, fold, mid</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Unique">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="mid" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Duplicates">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="mid" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
+    </Node>
+    <Node ToolID="65">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.JoinMultiple.JoinMultiple">
+        <Position x="774" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <JoinByRecPos value="False" />
+          <JoinFields>
+            <JoinInfo connection="#1">
+              <Field field="trial" />
+              <Field field="fold" />
+              <Field field="mid" />
+            </JoinInfo>
+            <JoinInfo connection="#2">
+              <Field field="trial" />
+              <Field field="fold" />
+              <Field field="mid" />
+            </JoinInfo>
+          </JoinFields>
+          <CartesianMode>Error</CartesianMode>
+          <OutputJoinOnly value="False" />
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <SelectFields>
+                <SelectField field="Input_#2_trial" selected="True" rename="Input_#2_trial" />
+                <SelectField field="Input_#2_fold" selected="True" rename="Input_#2_fold" />
+                <SelectField field="Input_#2_mid" selected="True" rename="Input_#2_mid" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
+            <Field name="Input_#2_trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Input_#2_fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Input_#2_mid" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="" />
+            <Field field="fold" order="" />
+            <Field field="mid" order="" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoinMultiple" />
+    </Node>
+    <Node ToolID="66">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="882" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9400_1472f8ec81c142479c6d838b24f58124_\Engine_1076_a7727ad8cee142f2a56a5272d997c0ca_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4652,6 +4924,34 @@ if (is.null(getOption("testscript"))){
       <Origin ToolID="4" Connection="Output4" />
       <Destination ToolID="60" Connection="Input" />
     </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="61" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="64" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="61" Connection="Output" />
+      <Destination ToolID="62" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="61" Connection="Output" />
+      <Destination ToolID="65" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="63" Connection="Output" />
+      <Destination ToolID="65" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="64" Connection="Unique" />
+      <Destination ToolID="63" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="65" Connection="Output" />
+      <Destination ToolID="66" Connection="Input" />
+    </Connection>
   </Connections>
   <Properties>
     <Memory default="True" />
@@ -4844,7 +5144,7 @@ if (is.null(getOption("testscript"))){
             </Question>
             <Question>
               <Type>BooleanGroup</Type>
-              <Description>Should graphs of the fit measures be displayed? (Not recommended if the product of the number of trials and the number of folds is large.)</Description>
+              <Description><![CDATA[Should graphs of the fit measures be displayed? ]]></Description>
               <Name>displayGraphs</Name>
               <ToolId value="50" />
               <Questions />
@@ -4888,6 +5188,8 @@ if (is.null(getOption("testscript"))){
         <Tool ToolId="48" Selected="True" />
         <Tool ToolId="49" Selected="True" />
         <Tool ToolId="60" Selected="False" />
+        <Tool ToolId="62" Selected="False" />
+        <Tool ToolId="66" Selected="False" />
       </Wiz_OpenOutputTools>
       <Wiz_OutputMessage />
       <Wiz_NoOutputFilesMessage />
