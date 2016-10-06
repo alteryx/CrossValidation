@@ -528,16 +528,21 @@ generateDataForPlots <- function(d, extras, config){
   }
 }
 
-
+plotBinaryData <- function(plotData) {
+  Lift_curve <- qplot(Rate_Pos_Predictions, lift, data = plotData, colour = fold, 
+                      main = paste0("Lift Chart for Model ", plotData$mid, " Trial ", plotData$trial))
+  AlteryxGraph2(Lift_curve, nOutput = 4)
+}
 
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
-  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot"))
+  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2"))
   library(ROCR)
   library("TunePareto")
   library("sm")
   library("vioplot")
+  library("ggplot2")
   
   if (!is.null(config$modelType)){
     config$classification = config$modelType == "classification"
@@ -578,6 +583,15 @@ runCrossValidation <- function(inputs, config){
   plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
     extras = extras, config = config
   )
+  
+  print("head plotData is:")
+  print(head(plotData))
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      d_ply(plotData, .(trial, mid), plotBinaryData)
+    }
+  }
+  
 }
 
 
