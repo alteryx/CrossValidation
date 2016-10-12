@@ -593,7 +593,7 @@ runCrossValidation <- function(inputs, config){
     print('confmats$mid is:')
     print(confMats$mid)
     write.Alteryx2(data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                              Response = confMats$response, Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
+                              Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
   }
   
   if (config$displayGraphs) {

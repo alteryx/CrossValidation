@@ -4159,7 +4159,7 @@ runCrossValidation <- function(inputs, config){
     print('confmats$mid is:')
     print(confMats$mid)
     write.Alteryx2(data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                              Response = confMats$response, Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
+                              Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
   }
   
   if (config$displayGraphs) {
@@ -4189,6 +4189,39 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="Trial" source="R-DATA:" type="Int32" />
+            <Field name="Fold" source="R-DATA:" type="Int32" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Actual" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output2">
+          <RecordInfo>
+            <Field name="Trial" source="R-DATA:" type="Double" />
+            <Field name="Fold" source="R-DATA:" type="Double" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Value" source="R-DATA:" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output3">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output4">
+          <RecordInfo>
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
@@ -4311,7 +4344,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_4768_d9485baac3b549ec9aa633d8b95a03f9_\Engine_2716_18a5f40288e14420b1f55c4f84d89578_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_cb4d15a05a504e46a3833d7a07d864d9_\Engine_2716_3ec3b3aa48034a009cff5a6eaff817c8_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4369,6 +4402,48 @@ if (is.null(getOption("testscript"))){
             <Field field="Trial" order="Asc" />
             <Field field="Fold" order="Asc" />
             <Field field="Model" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
+    </Node>
+    <Node ToolID="69">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
+        <Position x="486" y="390" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <GroupFields>
+            <Field field="Trial" />
+            <Field field="Fold" />
+            <Field field="Model" />
+            <Field field="Predicted_class" />
+          </GroupFields>
+          <HeaderField field="Variable" />
+          <DataField field="value" />
+          <Methods>
+            <Method method="Concat" />
+            <Separator>,</Separator>
+            <FieldSize value="2048" />
+          </Methods>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+            <Field field="Predicted_class" order="Asc" />
           </SortInfo>
         </MetaInfo>
       </Properties>
@@ -4953,11 +5028,15 @@ fold: [fold:A...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
+      <Destination ToolID="69" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="68" Connection="Output" />
       <Destination ToolID="48" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="69" Connection="Output" />
+      <Destination ToolID="49" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="61" Connection="Output" />
