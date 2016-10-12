@@ -424,9 +424,13 @@ generateConfusionMatrices <- function(outData, extras) {
 }
 
 generateOutput3 <- function(data, extras) {
+  print('head of input data for generate output3')
+  print(head(data))
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
+  print('result of generateoutput3 before the melt:')
+  print(d)
   reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
 }
 
@@ -579,11 +583,17 @@ runCrossValidation <- function(inputs, config){
                             Response = dataOutput1$response, Actual = dataOutput1$actual), nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput1, extras)
-  write.Alteryx2(dataOutput2, nOutput = 2)
+  write.Alteryx2(data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
+                            Variable  = dataOutput2$variable, Value = dataOutput2$value), nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras)
-    write.Alteryx2(confMats, 3)
+    print("head of confmats is:")
+    print(head(confMats))
+    print('confmats$mid is:')
+    print(confMats$mid)
+    write.Alteryx2(data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                              Response = confMats$response, Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
   }
   
   if (config$displayGraphs) {

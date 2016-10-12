@@ -3990,9 +3990,13 @@ generateConfusionMatrices <- function(outData, extras) {
 }
 
 generateOutput3 <- function(data, extras) {
+  print('head of input data for generate output3')
+  print(head(data))
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
+  print('result of generateoutput3 before the melt:')
+  print(d)
   reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
 }
 
@@ -4145,11 +4149,17 @@ runCrossValidation <- function(inputs, config){
                             Response = dataOutput1$response, Actual = dataOutput1$actual), nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput1, extras)
-  write.Alteryx2(dataOutput2, nOutput = 2)
+  write.Alteryx2(data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
+                            Variable  = dataOutput2$variable, Value = dataOutput2$value), nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras)
-    write.Alteryx2(confMats, 3)
+    print("head of confmats is:")
+    print(head(confMats))
+    print('confmats$mid is:')
+    print(confMats$mid)
+    write.Alteryx2(data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                              Response = confMats$response, Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
   }
   
   if (config$displayGraphs) {
@@ -4280,7 +4290,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="419" />
+        <Position x="618" y="390" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4301,7 +4311,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8700_6c623b413cb44932a0bd49cf23d41f9c_\Engine_2716_36dc365718ec4b1aac7402a57039640c_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_4768_d9485baac3b549ec9aa633d8b95a03f9_\Engine_2716_18a5f40288e14420b1f55c4f84d89578_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4329,12 +4339,12 @@ if (is.null(getOption("testscript"))){
       <Properties>
         <Configuration>
           <GroupFields>
-            <Field field="trial" />
-            <Field field="fold" />
-            <Field field="mid" />
+            <Field field="Trial" />
+            <Field field="Fold" />
+            <Field field="Model" />
           </GroupFields>
-          <HeaderField field="variable" />
-          <DataField field="value" />
+          <HeaderField field="Variable" />
+          <DataField field="Value" />
           <Methods>
             <Method method="First" />
           </Methods>
@@ -4346,9 +4356,9 @@ if (is.null(getOption("testscript"))){
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="trial" source="CrossTab:Group:First:" type="Double" />
-            <Field name="fold" source="CrossTab:Group:First:" type="Double" />
-            <Field name="mid" source="CrossTab:Group:First:" type="Double" />
+            <Field name="Trial" source="CrossTab:Group:First:" type="Double" />
+            <Field name="Fold" source="CrossTab:Group:First:" type="Double" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" />
             <Field name="Accuracy_Class_1" source="R-DATA:" type="Double" />
             <Field name="Accuracy_Class_2" source="R-DATA:" type="Double" />
             <Field name="AUC" source="R-DATA:" type="Double" />
@@ -4356,9 +4366,9 @@ if (is.null(getOption("testscript"))){
             <Field name="Overall_Accuracy" source="R-DATA:" type="Double" />
           </RecordInfo>
           <SortInfo>
-            <Field field="trial" order="Asc" />
-            <Field field="fold" order="Asc" />
-            <Field field="mid" order="Asc" />
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
           </SortInfo>
         </MetaInfo>
       </Properties>
@@ -4926,10 +4936,6 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="4" Connection="Output4" />
       <Destination ToolID="60" Connection="Input" />
     </Connection>
@@ -4944,6 +4950,10 @@ fold: [fold:A...</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="4" Connection="Output2" />
       <Destination ToolID="68" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="49" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="68" Connection="Output" />
