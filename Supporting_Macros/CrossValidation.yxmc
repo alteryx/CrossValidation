@@ -4080,13 +4080,13 @@ plotBinaryData <- function(plotData, config, modelNames) {
   trialVec <- paste0('Trial ', plotData$trial)
   plotData <- cbind(plotData, modelVec, trialVec)
   liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), 
-                       models = plotData$modelVec, trial = plotData$trial)
+                       models = plotData$modelVec, trial = plotData$trialVec)
   gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
-                       models = plotData$modelVec, trial = plotData$trial)
+                       models = plotData$modelVec, trial = plotData$trialVec)
   prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold),
-                              models = plotData$modelVec, trial = plotData$trial)
+                              models = plotData$modelVec, trial = plotData$trialVec)
   rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
-                      models = plotData$modelVec, trial = plotData$trial)
+                      models = plotData$modelVec, trial = plotData$trialVec)
   
   liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
     geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
@@ -4301,7 +4301,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7604_23cd6838945d42439cc7903713e21ab9_\Engine_2716_7c0fa6c2bb98464d8ed071ada0f0ce55_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8700_6c623b413cb44932a0bd49cf23d41f9c_\Engine_2716_36dc365718ec4b1aac7402a57039640c_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4349,6 +4349,11 @@ if (is.null(getOption("testscript"))){
             <Field name="trial" source="CrossTab:Group:First:" type="Double" />
             <Field name="fold" source="CrossTab:Group:First:" type="Double" />
             <Field name="mid" source="CrossTab:Group:First:" type="Double" />
+            <Field name="Accuracy_Class_1" source="R-DATA:" type="Double" />
+            <Field name="Accuracy_Class_2" source="R-DATA:" type="Double" />
+            <Field name="AUC" source="R-DATA:" type="Double" />
+            <Field name="F1" source="R-DATA:" type="Double" />
+            <Field name="Overall_Accuracy" source="R-DATA:" type="Double" />
           </RecordInfo>
           <SortInfo>
             <Field field="trial" order="Asc" />

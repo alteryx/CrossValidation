@@ -514,13 +514,13 @@ plotBinaryData <- function(plotData, config, modelNames) {
   trialVec <- paste0('Trial ', plotData$trial)
   plotData <- cbind(plotData, modelVec, trialVec)
   liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), 
-                       models = plotData$modelVec, trial = plotData$trial)
+                       models = plotData$modelVec, trial = plotData$trialVec)
   gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
-                       models = plotData$modelVec, trial = plotData$trial)
+                       models = plotData$modelVec, trial = plotData$trialVec)
   prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold),
-                              models = plotData$modelVec, trial = plotData$trial)
+                              models = plotData$modelVec, trial = plotData$trialVec)
   rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
-                      models = plotData$modelVec, trial = plotData$trial)
+                      models = plotData$modelVec, trial = plotData$trialVec)
   
   liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
     geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
