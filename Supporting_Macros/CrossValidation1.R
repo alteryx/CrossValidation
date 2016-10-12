@@ -10,7 +10,7 @@
 suppressWarnings(library(AlteryxPredictive))
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
-  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
+  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , TRUE),
   `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -122,7 +122,7 @@ getMissingClasses <- function(currentClasses, currentRecords) {
 }
 
 #' For each factor variable, check to see if all levels are present in each fold. 
-#' If not, error out with an informative message.
+#' If not, warn the user.
 #' 
 
 checkFactorVars <- function(data, folds, config) {
@@ -178,6 +178,7 @@ checkFactorVars <- function(data, folds, config) {
     }
   }
 }
+
 
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
@@ -264,8 +265,9 @@ adjustGbmModel <- function(model){
 
 #' Given a model, a dataset and index of test cases, return actual and response
 getActualandResponse <- function(model, data, testIndices, extras, mid){
-  trainingData = data[-testIndices,]
-  testData = data[testIndices,]
+  trainingData <- data[-testIndices,]
+  testData <- data[testIndices,]
+  testData <- matchLevels(testData, getXlevels(model))
   currentYvar <- getOneYVar(model)
   currentModel <- update(model, data = trainingData)
   if (inherits(currentModel, 'gbm')){
@@ -283,7 +285,7 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
 #safeGetActualAndResponse <- getActualandResponse
 
 #' 
@@ -419,7 +421,7 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput1 <- function(data, extras) {
+generateOutput3 <- function(data, extras) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
@@ -436,7 +438,7 @@ generateOutput2 <- function(data, extras) {
   reshape2::melt(d, id = c('trial', 'fold', 'mid'))
 }
 
-generateOutput3 <- function(inputs, config, extras){
+generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
   for (pkg in pkgsToLoad) library(pkg, character.only = TRUE)
   allFolds <- extras$allFolds
@@ -472,33 +474,67 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
   pred <- prediction(predictions = pred_prob, labels = actual)
   auc <- performance(pred, "auc")
   auc <- unlist(auc@y.values)
-  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr)
+  data.frame(threshold = threshold, recall = recall, F1 = F1, lift = lift, Rate_Pos_Predictions = rpp, True_Pos_Rate = tpr, False_Pos_Rate = fpr, Precision = precision)
 }
 
 generateDataForPlots <- function(d, extras, config){
-  if (config$classification) {
-    if (length(extras$levels) == 2) {
-      thresholds <- seq(0, 1, 0.05)
-      ldply(thresholds, computeBinaryMetrics, 
-            actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
-            pred_prob = d[[paste0('Score_', extras$posClass)]]
-      )
-    } else {
-      data.frame(response = d$response, actual = d$actual)
-    }
+  if ((length(extras$levels) == 2) && (config$classification)) {
+    thresholds <- seq(0, 1, 0.05)
+    ldply(thresholds, computeBinaryMetrics, 
+          actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
+          pred_prob = d[[paste0('Score_', extras$posClass)]]
+    )
+  } else {
+    data.frame(response = d$response, actual = d$actual)
   }
 }
 
+# plotOneLiftCurve <- function(plotData) {
+#   ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift)) + geom_point(plotData$fold) + 
+#     stat_smooth(method = "loess", formula = y ~ x, size = 1)
+# }
 
+generateLabels <- function(plotData, config) {
+  trials <- c()
+  for (i in 1:length(unique(plotData$trial))) {
+    trials <- c(trials, paste0("Trial ", unique(plotData$trial))[i])
+  }
+  models <- c()
+  for (i in 1:length(unique(plotData$mid))) {
+    models <- c(models, paste0("Model ", unique(plotData$model))[i])
+  }
+  list(trials = trials, models = models)
+}
+
+plotBinaryData <- function(plotData, config) {
+  labels <- generateLabels(plotData, config)
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), mid = plotData$mid, trial = plotData$trial)
+  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
+  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(mid ~ trial, labeller = labeller(mid = labels$models, trial = labels$trials)) + geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
+#   gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
+#                                                                                                                                              " trial ", plotData$trial))
+#   PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
+#                                                                                                                                    " trial ", plotData$trial))
+#   ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
+#                                                                                                                               " trial ", plotData$trial))
+  AlteryxGraph2(liftPlotObj, nOutput = 4)
+#   AlteryxGraph2(gainPlotObj, nOutput = 4)
+#   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+#   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+}
 
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
-  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot"))
+  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2"))
   library(ROCR)
   library("TunePareto")
   library("sm")
   library("vioplot")
+  library("ggplot2")
   
   if (!is.null(config$modelType)){
     config$classification = config$modelType == "classification"
@@ -515,6 +551,8 @@ runCrossValidation <- function(inputs, config){
   inputs$modelNames = names(inputs$models)
   checkXVars(inputs)
   
+  
+  
   extras <- list(
     yVar = yVar,
     posClass = config$posClass,
@@ -523,20 +561,30 @@ runCrossValidation <- function(inputs, config){
   )
   
   # FIXME: clean up hardcoded values
-  dataOutput3 <- generateOutput3(inputs, config, extras)
-  write.Alteryx2(dataOutput3[,1:5], nOutput = 1)
+  dataOutput1 <- generateOutput1(inputs, config, extras)
+  print("head of dataOutput1 is: ")
+  print(head(dataOutput1))
+  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
 
-  dataOutput2 <- generateOutput2(dataOutput3, extras)
+  dataOutput2 <- generateOutput2(dataOutput1, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput1(dataOutput3, extras)
+    confMats <- generateOutput3(dataOutput1, extras)
     write.Alteryx2(confMats, 3)
   }
   
-  plotData <- ddply(dataOutput3, .(trial, fold, mid), generateDataForPlots, 
-    extras = extras, config = config
-  )
+  if (config$displayGraphs) {
+    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+                      extras = extras, config = config
+    )
+    if (config$classification) {
+      if (length(extras$levels) == 2) {
+        #d_ply(plotData, .(mid), plotBinaryData)
+        plotBinaryData(plotData, config)
+      }
+    }
+  }
 }
 
 
