@@ -10,7 +10,7 @@
 suppressWarnings(library(AlteryxPredictive))
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
-  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , FALSE),
+  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , TRUE),
   `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -179,45 +179,6 @@ checkFactorVars <- function(data, folds, config) {
   }
 }
 
-#Make sure that the levels from the test data match the levels from the training data
-#This code is a subset of the function matchLevels in AlteryxRDataX CommonUtils
-#It excludes the portion that checks for factor variables in the model that aren't in the test data,
-#since checkXVars already takes care of that situation.
-noZeroLevels <- function(ll){Filter(Negate(is.numeric), ll)}
-noNullLevels <- function(ll){Filter(Negate(is.null), ll)}
-
-# matchLevels coerces the levels in new data factors to exactly match the levels
-# of factors in the original data, and is needed for Revo ScaleR models
-matchLevels <- function(nd, ol) {
-  # Address the non-standard way randomForest returns xlevel values
-  check.ol <- sapply(ol, is.numeric)
-  ol[check.ol] <- NULL
-  # if the model does appear to have factors then sort out the levels
-  if (!(is.null(ol) || length(ol) == 0)) {
-    factor.test <- sapply(nd, is.factor)
-    the.factors <- names(nd)[factor.test]
-    # The function to use with sapply to determine which factors have different
-    # levels in the new data versus the levels used in model estimation.
-    checkLevels <- function(z) {
-      current.levels <- levels(nd[[z]])
-      desired.levels <- ol[[z]]
-      !all(current.levels == desired.levels)
-    }
-    the.factors <- the.factors[sapply(the.factors, checkLevels)]
-    # The function to use with lapply to relevel a factor
-    relevelFac <- function(z) {
-      orig.factor <- nd[[z]]
-      these.levels <- ol[[z]]
-      new.factor <- factor(orig.factor, levels = these.levels)
-      new.factor
-    }
-    # Relevel the factors that differ from their levels in model estimation
-    new.factor.list <- lapply(the.factors, relevelFac)
-    names(new.factor.list) <- the.factors
-    nd[the.factors] <- new.factor.list
-  }
-  nd
-}
 
 #Create the list of cross-validation folds and output warnings/errors as appropriate
 createFolds <- function(data, config) {
@@ -306,7 +267,7 @@ adjustGbmModel <- function(model){
 getActualandResponse <- function(model, data, testIndices, extras, mid){
   trainingData <- data[-testIndices,]
   testData <- data[testIndices,]
-  testData <- matchLevels(testData, model)
+  testData <- matchLevels(testData, getXlevels(model))
   currentYvar <- getOneYVar(model)
   currentModel <- update(model, data = trainingData)
   if (inherits(currentModel, 'gbm')){
@@ -324,7 +285,7 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
 #safeGetActualAndResponse <- getActualandResponse
 
 #' 
@@ -533,25 +494,36 @@ generateDataForPlots <- function(d, extras, config){
 #     stat_smooth(method = "loess", formula = y ~ x, size = 1)
 # }
 
-plotBinaryData <- function(plotData) {
-  print("head of plotData is:")
-  print(head(plotData))
-  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold))
+generateLabels <- function(plotData, config) {
+  trials <- c()
+  for (i in 1:length(unique(plotData$trial))) {
+    trials <- c(trials, paste0("Trial ", unique(plotData$trial))[i])
+  }
+  models <- c()
+  for (i in 1:length(unique(plotData$mid))) {
+    models <- c(models, paste0("Model ", unique(plotData$model))[i])
+  }
+  list(trials = trials, models = models)
+}
+
+plotBinaryData <- function(plotData, config) {
+  labels <- generateLabels(plotData, config)
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), mid = plotData$mid, trial = plotData$trial)
   gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
   prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
   rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Lift curve for model ", plotData$mid, 
-                                                                                                                                    " trial ", plotData$trial))
-  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
-                                                                                                                                             " trial ", plotData$trial))
-  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
-                                                                                                                                   " trial ", plotData$trial))
-  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
-                                                                                                                              " trial ", plotData$trial))
+  
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(mid ~ trial, labeller = labeller(mid = labels$models, trial = labels$trials)) + geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
+#   gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
+#                                                                                                                                              " trial ", plotData$trial))
+#   PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
+#                                                                                                                                    " trial ", plotData$trial))
+#   ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
+#                                                                                                                               " trial ", plotData$trial))
   AlteryxGraph2(liftPlotObj, nOutput = 4)
-  AlteryxGraph2(gainPlotObj, nOutput = 4)
-  AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
-  AlteryxGraph2(ROCPlotObj, nOutput = 4)
+#   AlteryxGraph2(gainPlotObj, nOutput = 4)
+#   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+#   AlteryxGraph2(ROCPlotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -590,6 +562,8 @@ runCrossValidation <- function(inputs, config){
   
   # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
+  print("head of dataOutput1 is: ")
+  print(head(dataOutput1))
   write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput1, extras)
@@ -604,11 +578,10 @@ runCrossValidation <- function(inputs, config){
     plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
     )
-    print("head plotData is:")
-    print(head(plotData))
     if (config$classification) {
       if (length(extras$levels) == 2) {
-        d_ply(plotData, .(trial, mid), plotBinaryData)
+        #d_ply(plotData, .(mid), plotBinaryData)
+        plotBinaryData(plotData, config)
       }
     }
   }
