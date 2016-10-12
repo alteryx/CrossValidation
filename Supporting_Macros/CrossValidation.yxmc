@@ -4074,24 +4074,32 @@ generateLabels <- function(plotData, config) {
   list(trials = trials, models = models)
 }
 
-plotBinaryData <- function(plotData, config) {
+plotBinaryData <- function(plotData, config, modelNames) {
   labels <- generateLabels(plotData, config)
-  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), mid = plotData$mid, trial = plotData$trial)
-  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
-  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
-  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  modelVec <- modelNames[plotData$mid]
+  trialVec <- paste0('Trial ', plotData$trial)
+  plotData <- cbind(plotData, modelVec, trialVec)
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), 
+                       models = plotData$modelVec, trial = plotData$trial)
+  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                       models = plotData$modelVec, trial = plotData$trial)
+  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold),
+                              models = plotData$modelVec, trial = plotData$trial)
+  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                      models = plotData$modelVec, trial = plotData$trial)
   
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(mid ~ trial, labeller = labeller(mid = labels$models, trial = labels$trials)) + geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
-#   gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
-#                                                                                                                                              " trial ", plotData$trial))
-#   PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
-#                                                                                                                                    " trial ", plotData$trial))
-#   ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
-#                                                                                                                               " trial ", plotData$trial))
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Gain Charts')
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Precision and Recall Curves')
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + facet_grid(models ~ trial) +
+    geom_line(aes(colour=fold)) + ggtitle('ROC Curves')
   AlteryxGraph2(liftPlotObj, nOutput = 4)
-#   AlteryxGraph2(gainPlotObj, nOutput = 4)
-#   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
-#   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+  AlteryxGraph2(gainPlotObj, nOutput = 4)
+  AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+  AlteryxGraph2(ROCPlotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -4148,10 +4156,12 @@ runCrossValidation <- function(inputs, config){
     plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
     )
+    print('head of plotdata is:')
+    print(head(plotData))
     if (config$classification) {
       if (length(extras$levels) == 2) {
         #d_ply(plotData, .(mid), plotBinaryData)
-        plotBinaryData(plotData, config)
+        plotBinaryData(plotData, config, modelNames)
       }
     }
   }
@@ -4252,7 +4262,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="299" />
+        <Position x="582" y="294" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4291,7 +4301,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7020_907f218d21d74eb9950a6abf1816a657_\Engine_2716_016c4426ee9647feb712a65badfd1329_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7604_23cd6838945d42439cc7903713e21ab9_\Engine_2716_7c0fa6c2bb98464d8ed071ada0f0ce55_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4311,6 +4321,43 @@ if (is.null(getOption("testscript"))){
         </Annotation>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="68">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
+        <Position x="474" y="294" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <GroupFields>
+            <Field field="trial" />
+            <Field field="fold" />
+            <Field field="mid" />
+          </GroupFields>
+          <HeaderField field="variable" />
+          <DataField field="value" />
+          <Methods>
+            <Method method="First" />
+          </Methods>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" source="CrossTab:Group:First:" type="Double" />
+            <Field name="fold" source="CrossTab:Group:First:" type="Double" />
+            <Field name="mid" source="CrossTab:Group:First:" type="Double" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="mid" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
     </Node>
     <Node ToolID="67">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
@@ -4874,10 +4921,6 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2" />
-      <Destination ToolID="48" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="4" Connection="Output3" />
       <Destination ToolID="49" Connection="Input" />
     </Connection>
@@ -4892,6 +4935,14 @@ fold: [fold:A...</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="4" Connection="Output3" />
       <Destination ToolID="64" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output2" />
+      <Destination ToolID="68" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="68" Connection="Output" />
+      <Destination ToolID="48" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="61" Connection="Output" />
