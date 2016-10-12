@@ -46,6 +46,8 @@ inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
+print("names of inputs$models is:")
+print(names(inputs$models))
 
 ##---- Inputs/Config Complete
 
@@ -548,7 +550,8 @@ runCrossValidation <- function(inputs, config){
     }
   }
   
-  inputs$modelNames = names(inputs$models)
+  inputs$modelNames <- names(inputs$models)
+  modelNames <- names(inputs$models)
   checkXVars(inputs)
   
   
@@ -564,7 +567,8 @@ runCrossValidation <- function(inputs, config){
   dataOutput1 <- generateOutput1(inputs, config, extras)
   print("head of dataOutput1 is: ")
   print(head(dataOutput1))
-  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
+  write.Alteryx2(data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+                            Response = dataOutput1$response, Actual = dataOutput1$actual), nOutput = 1)
 
   dataOutput2 <- generateOutput2(dataOutput1, extras)
   write.Alteryx2(dataOutput2, nOutput = 2)
