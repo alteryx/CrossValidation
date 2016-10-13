@@ -46,8 +46,7 @@ inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
-print("names of inputs$models is:")
-print(names(inputs$models))
+
 
 ##---- Inputs/Config Complete
 
@@ -424,13 +423,9 @@ generateConfusionMatrices <- function(outData, extras) {
 }
 
 generateOutput3 <- function(data, extras) {
-  print('head of input data for generate output3')
-  print(head(data))
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  print('result of generateoutput3 before the melt:')
-  print(d)
   reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
 }
 
@@ -577,14 +572,17 @@ runCrossValidation <- function(inputs, config){
   
   # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  print("head of dataOutput1 is: ")
-  print(head(dataOutput1))
-  write.Alteryx2(data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
-                            Response = dataOutput1$response, Actual = dataOutput1$actual), nOutput = 1)
+  preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+                               Response = dataOutput1$response, Actual = dataOutput1$actual)
+  write.Alteryx2(preppedOutput1, nOutput = 1)
+
 
   dataOutput2 <- generateOutput2(dataOutput1, extras)
-  write.Alteryx2(data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
-                            Variable  = dataOutput2$variable, Value = dataOutput2$value), nOutput = 2)
+  print("head of dataoutput2")
+  print(head(dataOutput2))
+  preppedOutput2 <- data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
+                               Variable  = dataOutput2$variable, Value = dataOutput2$value)
+  write.Alteryx2(preppedOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras)
@@ -592,16 +590,15 @@ runCrossValidation <- function(inputs, config){
     print(head(confMats))
     print('confmats$mid is:')
     print(confMats$mid)
-    write.Alteryx2(data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                              Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value), 3)
+    preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                                 Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
+    write.Alteryx2(preppedOutput3, 3)
   }
   
   if (config$displayGraphs) {
     plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
     )
-    print('head of plotdata is:')
-    print(head(plotData))
     if (config$classification) {
       if (length(extras$levels) == 2) {
         #d_ply(plotData, .(mid), plotBinaryData)
