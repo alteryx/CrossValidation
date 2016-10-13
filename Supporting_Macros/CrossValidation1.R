@@ -428,17 +428,9 @@ generateOutput3 <- function(data, extras, modelNames) {
   )
   
   d$Model <- modelNames[as.numeric(d$mid)]
-  print('d before the subset')
-  print(d)
   d <- subset(d, select = -c(mid, response))
-  print('and after')
-  print(d)
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
-  print('and after the melt')
-  print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
-  print('and after the colnames reset')
-  print(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -595,12 +587,6 @@ runCrossValidation <- function(inputs, config){
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras, modelNames)
-    print("confmats is:")
-    print(confMats)
-    #print('confmats$mid is:')
-    #print(confMats$mid)
-    #preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                                 #Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
     write.Alteryx2(confMats, 3)
   }
   
@@ -610,7 +596,6 @@ runCrossValidation <- function(inputs, config){
     )
     if (config$classification) {
       if (length(extras$levels) == 2) {
-        #d_ply(plotData, .(mid), plotBinaryData)
         plotBinaryData(plotData, config, modelNames)
       }
     }

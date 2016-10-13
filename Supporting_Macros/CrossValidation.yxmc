@@ -4195,6 +4195,39 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="Trial" source="R-DATA:" type="Int32" />
+            <Field name="Fold" source="R-DATA:" type="Int32" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Actual" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output2">
+          <RecordInfo>
+            <Field name="trial" source="R-DATA:" type="Double" />
+            <Field name="fold" source="R-DATA:" type="Double" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" source="R-DATA:" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output3">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output4">
+          <RecordInfo>
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
@@ -4317,7 +4350,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_6a32cad724aa48c084dd61351d591c49_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_80958439f6ee4c5eacd0a4b08cd2fc87_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4365,6 +4398,11 @@ if (is.null(getOption("testscript"))){
             <Field name="trial" source="CrossTab:Group:First:" type="Double" />
             <Field name="fold" source="CrossTab:Group:First:" type="Double" />
             <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" />
+            <Field name="Accuracy_Class_1" source="R-DATA:" type="Double" />
+            <Field name="Accuracy_Class_2" source="R-DATA:" type="Double" />
+            <Field name="AUC" source="R-DATA:" type="Double" />
+            <Field name="F1" source="R-DATA:" type="Double" />
+            <Field name="Overall_Accuracy" source="R-DATA:" type="Double" />
           </RecordInfo>
           <SortInfo>
             <Field field="trial" order="Asc" />
@@ -4381,9 +4419,14 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <GroupFields />
+          <GroupFields>
+            <Field field="Trial" />
+            <Field field="Fold" />
+            <Field field="Model" />
+            <Field field="Predicted_class" />
+          </GroupFields>
           <HeaderField field="Variable" />
-          <DataField field="value" />
+          <DataField field="Value" />
           <Methods>
             <Method method="Concat" />
             <Separator>,</Separator>
@@ -4395,6 +4438,20 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+            <Field field="Predicted_class" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
     </Node>
@@ -4433,8 +4490,6 @@ fold: [fold:A...</DefaultAnnotationText>
             <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Class_No" size="2048" source="CrossTab:Header:Variable:Class_No:Concat:" type="V_WString" />
-            <Field name="Class_Yes" size="2048" source="CrossTab:Header:Variable:Class_Yes:Concat:" type="V_WString" />
             <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
           </RecordInfo>
           <SortInfo>
@@ -4529,8 +4584,6 @@ fold: [fold:A...</DefaultAnnotationText>
             <Field name="Input_#2_Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Input_#2_Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Class_No" size="2048" source="CrossTab:Header:Variable:Class_No:Concat:" type="V_WString" />
-            <Field name="Class_Yes" size="2048" source="CrossTab:Header:Variable:Class_Yes:Concat:" type="V_WString" />
             <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
             <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
@@ -4546,7 +4599,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_f61fb4f34aeb4ce29459e165dd71a41e_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_dabd641c32124d4595339dcd49b4b50e_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4614,7 +4667,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_f075238efbd947298fede3c0f9932bdb_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_e39420c5ec1e46fd841554f9e8354a89_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4641,7 +4694,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_70e002e3561f416c9905dd1dec556cb3_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_2b8acc3c752f46ea912d5d8ff79a10c1_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
