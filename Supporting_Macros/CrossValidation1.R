@@ -428,9 +428,14 @@ generateOutput3 <- function(data, extras, modelNames) {
   )
   
   d$Model <- modelNames[as.numeric(d$mid)]
+  d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
-  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
-  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
+  print('d after the reshape')
+  print(d)
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
+  print('d is:')
+  print(d)
   return(d)
 }
 
@@ -597,6 +602,9 @@ runCrossValidation <- function(inputs, config){
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras, modelNames)
     write.Alteryx2(confMats, 3)
+  } else {
+    #Provide garbage data that'll get filtered out on the Alteryx side.
+    write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50))
   }
   
   if (config$displayGraphs) {
