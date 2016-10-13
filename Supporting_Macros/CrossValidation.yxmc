@@ -3988,11 +3988,23 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput3 <- function(data, extras) {
+generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
+  
+  d$Model <- modelNames[as.numeric(d$mid)]
+  print('d before the subset')
+  print(d)
+  d <- subset(d, select = -c(mid, response))
+  print('and after')
+  print(d)
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
+  print('and after the melt')
+  print(d)
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  print('and after the colnames reset')
+  print(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -4004,11 +4016,7 @@ generateOutput2 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
   d$Model <- modelNames[as.numeric(d$mid)]
   d <- subset(d, select = -c(mid))
-  print('head of d before the reshape')
-  print(head(d))
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
-  print('and after')
-  print(head(d))
 }
 
 generateOutput1 <- function(inputs, config, extras){
@@ -4142,7 +4150,6 @@ runCrossValidation <- function(inputs, config){
     levels = if (config$classification) levels(yVar) else NULL
   )
   
-  # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
   preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
                                Response = dataOutput1$response, Actual = dataOutput1$actual)
@@ -4150,21 +4157,17 @@ runCrossValidation <- function(inputs, config){
 
 
   dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
-  print("head of dataoutput2")
-  print(head(dataOutput2))
-  #preppedOutput2 <- data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
-                               #Variable  = dataOutput2$variable, Value = dataOutput2$value)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput3(dataOutput1, extras)
-    print("head of confmats is:")
-    print(head(confMats))
-    print('confmats$mid is:')
-    print(confMats$mid)
-    preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                                 Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
-    write.Alteryx2(preppedOutput3, 3)
+    confMats <- generateOutput3(dataOutput1, extras, modelNames)
+    print("confmats is:")
+    print(confMats)
+    #print('confmats$mid is:')
+    #print(confMats$mid)
+    #preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                                 #Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
+    write.Alteryx2(confMats, 3)
   }
   
   if (config$displayGraphs) {
@@ -4314,7 +4317,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7800_16deb057cb6042b3990c81bf357f37f0_\Engine_7388_cec5b2b7207a4c3699a00e89a2985b9b_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_6a32cad724aa48c084dd61351d591c49_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4342,12 +4345,12 @@ if (is.null(getOption("testscript"))){
       <Properties>
         <Configuration>
           <GroupFields>
-            <Field field="Trial" />
-            <Field field="Fold" />
+            <Field field="trial" />
+            <Field field="fold" />
             <Field field="Model" />
           </GroupFields>
-          <HeaderField field="Variable" />
-          <DataField field="Value" />
+          <HeaderField field="variable" />
+          <DataField field="value" />
           <Methods>
             <Method method="First" />
           </Methods>
@@ -4359,18 +4362,13 @@ if (is.null(getOption("testscript"))){
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="Trial" source="CrossTab:Group:First:" type="Double" />
-            <Field name="Fold" source="CrossTab:Group:First:" type="Double" />
+            <Field name="trial" source="CrossTab:Group:First:" type="Double" />
+            <Field name="fold" source="CrossTab:Group:First:" type="Double" />
             <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" />
-            <Field name="Accuracy_Class_1" source="R-DATA:" type="Double" />
-            <Field name="Accuracy_Class_2" source="R-DATA:" type="Double" />
-            <Field name="AUC" source="R-DATA:" type="Double" />
-            <Field name="F1" source="R-DATA:" type="Double" />
-            <Field name="Overall_Accuracy" source="R-DATA:" type="Double" />
           </RecordInfo>
           <SortInfo>
-            <Field field="Trial" order="Asc" />
-            <Field field="Fold" order="Asc" />
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
             <Field field="Model" order="Asc" />
           </SortInfo>
         </MetaInfo>
@@ -4383,12 +4381,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <GroupFields>
-            <Field field="Trial" />
-            <Field field="Fold" />
-            <Field field="Model" />
-            <Field field="Predicted_class" />
-          </GroupFields>
+          <GroupFields />
           <HeaderField field="Variable" />
           <DataField field="value" />
           <Methods>
@@ -4402,22 +4395,6 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <MetaInfo connection="Output">
-          <RecordInfo>
-            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
-            <Field name="Class_No" size="2048" source="CrossTab:Header:Variable:Class_No:Concat:" type="V_WString" />
-            <Field name="Class_Yes" size="2048" source="CrossTab:Header:Variable:Class_Yes:Concat:" type="V_WString" />
-          </RecordInfo>
-          <SortInfo>
-            <Field field="Trial" order="Asc" />
-            <Field field="Fold" order="Asc" />
-            <Field field="Model" order="Asc" />
-            <Field field="Predicted_class" order="Asc" />
-          </SortInfo>
-        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
     </Node>
@@ -4569,7 +4546,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7800_16deb057cb6042b3990c81bf357f37f0_\Engine_7388_b8b8a26c7445410c9b295a0fcd86c788_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_f61fb4f34aeb4ce29459e165dd71a41e_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4637,7 +4614,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7800_16deb057cb6042b3990c81bf357f37f0_\Engine_7388_f7ee610e4dd4417a9984948a13d6eed0_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_f075238efbd947298fede3c0f9932bdb_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4664,7 +4641,7 @@ fold: [fold:A...</DefaultAnnotationText>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7800_16deb057cb6042b3990c81bf357f37f0_\Engine_7388_aee4fec72631420385aa0fb2e3db9c52_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7700_3dd65e6125a740b59bf1d990c931cd83_\Engine_7388_70e002e3561f416c9905dd1dec556cb3_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />

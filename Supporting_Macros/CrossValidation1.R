@@ -422,11 +422,23 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput3 <- function(data, extras) {
+generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
+  
+  d$Model <- modelNames[as.numeric(d$mid)]
+  print('d before the subset')
+  print(d)
+  d <- subset(d, select = -c(mid, response))
+  print('and after')
+  print(d)
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
+  print('and after the melt')
+  print(d)
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  print('and after the colnames reset')
+  print(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -572,7 +584,6 @@ runCrossValidation <- function(inputs, config){
     levels = if (config$classification) levels(yVar) else NULL
   )
   
-  # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
   preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
                                Response = dataOutput1$response, Actual = dataOutput1$actual)
@@ -583,14 +594,14 @@ runCrossValidation <- function(inputs, config){
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput3(dataOutput1, extras)
-    print("head of confmats is:")
-    print(head(confMats))
-    print('confmats$mid is:')
-    print(confMats$mid)
-    preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
-                                 Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
-    write.Alteryx2(preppedOutput3, 3)
+    confMats <- generateOutput3(dataOutput1, extras, modelNames)
+    print("confmats is:")
+    print(confMats)
+    #print('confmats$mid is:')
+    #print(confMats$mid)
+    #preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                                 #Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
+    write.Alteryx2(confMats, 3)
   }
   
   if (config$displayGraphs) {
