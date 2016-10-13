@@ -429,14 +429,16 @@ generateOutput3 <- function(data, extras) {
   reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
 }
 
-generateOutput2 <- function(data, extras) {
+generateOutput2 <- function(data, extras, modelNames) {
   fun <- if (is.null(extras$levels)) {
     getMeasuresRegression 
   } else {
     getMeasuresClassification
   }
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
-  reshape2::melt(d, id = c('trial', 'fold', 'mid'))
+  d$Model <- modelNames[as.numeric(d$mid)]
+  d <- subset(d, select = -c(mid))
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
 }
 
 generateOutput1 <- function(inputs, config, extras){
@@ -577,12 +579,8 @@ runCrossValidation <- function(inputs, config){
   write.Alteryx2(preppedOutput1, nOutput = 1)
 
 
-  dataOutput2 <- generateOutput2(dataOutput1, extras)
-  print("head of dataoutput2")
-  print(head(dataOutput2))
-  preppedOutput2 <- data.frame(Trial = dataOutput2$trial, Fold = dataOutput2$fold, Model = modelNames[dataOutput2$mid],
-                               Variable  = dataOutput2$variable, Value = dataOutput2$value)
-  write.Alteryx2(preppedOutput2, nOutput = 2)
+  dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
+  write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras)
