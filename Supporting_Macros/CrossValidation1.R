@@ -47,6 +47,7 @@ inputs <- list(
   models = readModelObjects("#2", default = defaults$models)
 )
 
+
 ##---- Inputs/Config Complete
 
 #' ### Helper Functions
@@ -421,21 +422,27 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput3 <- function(data, extras) {
+generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
+  
+  d$Model <- modelNames[as.numeric(d$mid)]
+  d <- subset(d, select = -c(mid, response))
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
 }
 
-generateOutput2 <- function(data, extras) {
+generateOutput2 <- function(data, extras, modelNames) {
   fun <- if (is.null(extras$levels)) {
     getMeasuresRegression 
   } else {
     getMeasuresClassification
   }
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
-  reshape2::melt(d, id = c('trial', 'fold', 'mid'))
+  d$Model <- modelNames[as.numeric(d$mid)]
+  d <- subset(d, select = -c(mid))
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
 }
 
 generateOutput1 <- function(inputs, config, extras){
@@ -506,24 +513,32 @@ generateLabels <- function(plotData, config) {
   list(trials = trials, models = models)
 }
 
-plotBinaryData <- function(plotData, config) {
+plotBinaryData <- function(plotData, config, modelNames) {
   labels <- generateLabels(plotData, config)
-  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), mid = plotData$mid, trial = plotData$trial)
-  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
-  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
-  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  modelVec <- modelNames[plotData$mid]
+  trialVec <- paste0('Trial ', plotData$trial)
+  plotData <- cbind(plotData, modelVec, trialVec)
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), 
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold),
+                              models = plotData$modelVec, trial = plotData$trialVec)
+  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                      models = plotData$modelVec, trial = plotData$trialVec)
   
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(mid ~ trial, labeller = labeller(mid = labels$models, trial = labels$trials)) + geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
-#   gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
-#                                                                                                                                              " trial ", plotData$trial))
-#   PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
-#                                                                                                                                    " trial ", plotData$trial))
-#   ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
-#                                                                                                                               " trial ", plotData$trial))
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Gain Charts')
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Precision and Recall Curves')
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + facet_grid(models ~ trial) +
+    geom_line(aes(colour=fold)) + ggtitle('ROC Curves')
   AlteryxGraph2(liftPlotObj, nOutput = 4)
-#   AlteryxGraph2(gainPlotObj, nOutput = 4)
-#   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
-#   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+  AlteryxGraph2(gainPlotObj, nOutput = 4)
+  AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+  AlteryxGraph2(ROCPlotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -548,7 +563,8 @@ runCrossValidation <- function(inputs, config){
     }
   }
   
-  inputs$modelNames = names(inputs$models)
+  inputs$modelNames <- names(inputs$models)
+  modelNames <- names(inputs$models)
   checkXVars(inputs)
   
   
@@ -560,17 +576,17 @@ runCrossValidation <- function(inputs, config){
     levels = if (config$classification) levels(yVar) else NULL
   )
   
-  # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  print("head of dataOutput1 is: ")
-  print(head(dataOutput1))
-  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
+  preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+                               Response = dataOutput1$response, Actual = dataOutput1$actual)
+  write.Alteryx2(preppedOutput1, nOutput = 1)
 
-  dataOutput2 <- generateOutput2(dataOutput1, extras)
+
+  dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput3(dataOutput1, extras)
+    confMats <- generateOutput3(dataOutput1, extras, modelNames)
     write.Alteryx2(confMats, 3)
   }
   
@@ -580,8 +596,7 @@ runCrossValidation <- function(inputs, config){
     )
     if (config$classification) {
       if (length(extras$levels) == 2) {
-        #d_ply(plotData, .(mid), plotBinaryData)
-        plotBinaryData(plotData, config)
+        plotBinaryData(plotData, config, modelNames)
       }
     }
   }

@@ -3613,6 +3613,7 @@ inputs <- list(
   models = readModelObjects("#2", default = defaults$models)
 )
 
+
 ##---- Inputs/Config Complete
 
 #' ### Helper Functions
@@ -3987,21 +3988,35 @@ generateConfusionMatrices <- function(outData, extras) {
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
 
-generateOutput3 <- function(data, extras) {
+generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  reshape2::melt(d, id = c('trial', 'fold', 'mid', 'response', 'Predicted_class'))
+  
+  d$Model <- modelNames[as.numeric(d$mid)]
+  print('d before the subset')
+  print(d)
+  d <- subset(d, select = -c(mid, response))
+  print('and after')
+  print(d)
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
+  print('and after the melt')
+  print(d)
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  print('and after the colnames reset')
+  print(d)
 }
 
-generateOutput2 <- function(data, extras) {
+generateOutput2 <- function(data, extras, modelNames) {
   fun <- if (is.null(extras$levels)) {
     getMeasuresRegression 
   } else {
     getMeasuresClassification
   }
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
-  reshape2::melt(d, id = c('trial', 'fold', 'mid'))
+  d$Model <- modelNames[as.numeric(d$mid)]
+  d <- subset(d, select = -c(mid))
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
 }
 
 generateOutput1 <- function(inputs, config, extras){
@@ -4072,24 +4087,32 @@ generateLabels <- function(plotData, config) {
   list(trials = trials, models = models)
 }
 
-plotBinaryData <- function(plotData, config) {
+plotBinaryData <- function(plotData, config, modelNames) {
   labels <- generateLabels(plotData, config)
-  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), mid = plotData$mid, trial = plotData$trial)
-  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
-  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold))
-  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold))
+  modelVec <- modelNames[plotData$mid]
+  trialVec <- paste0('Trial ', plotData$trial)
+  plotData <- cbind(plotData, modelVec, trialVec)
+  liftdf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, lift = plotData$lift, fold = paste0("Fold", plotData$fold), 
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  gaindf <- data.frame(Rate_positive_predictions = plotData$Rate_Pos_Predictions, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  prec_recalldf <- data.frame(recall = plotData$recall, precision = plotData$Precision, fold = paste0("Fold", plotData$fold),
+                              models = plotData$modelVec, trial = plotData$trialVec)
+  rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
+                      models = plotData$modelVec, trial = plotData$trialVec)
   
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(mid ~ trial, labeller = labeller(mid = labels$models, trial = labels$trials)) + geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
-#   gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Gain chart for model ", plotData$mid, 
-#                                                                                                                                              " trial ", plotData$trial))
-#   PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + geom_line(aes(colour=fold)) + ggtitle(paste0("Precision and recall curves for model ", plotData$mid, 
-#                                                                                                                                    " trial ", plotData$trial))
-#   ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + geom_line(aes(colour=fold)) + ggtitle(paste0("ROC Curve for model ", plotData$mid, 
-#                                                                                                                               " trial ", plotData$trial))
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Gain Charts')
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle('Precision and Recall Curves')
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + facet_grid(models ~ trial) +
+    geom_line(aes(colour=fold)) + ggtitle('ROC Curves')
   AlteryxGraph2(liftPlotObj, nOutput = 4)
-#   AlteryxGraph2(gainPlotObj, nOutput = 4)
-#   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
-#   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+  AlteryxGraph2(gainPlotObj, nOutput = 4)
+  AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
+  AlteryxGraph2(ROCPlotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -4114,7 +4137,8 @@ runCrossValidation <- function(inputs, config){
     }
   }
   
-  inputs$modelNames = names(inputs$models)
+  inputs$modelNames <- names(inputs$models)
+  modelNames <- names(inputs$models)
   checkXVars(inputs)
   
   
@@ -4126,17 +4150,23 @@ runCrossValidation <- function(inputs, config){
     levels = if (config$classification) levels(yVar) else NULL
   )
   
-  # FIXME: clean up hardcoded values
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  print("head of dataOutput1 is: ")
-  print(head(dataOutput1))
-  write.Alteryx2(dataOutput1[,1:5], nOutput = 1)
+  preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+                               Response = dataOutput1$response, Actual = dataOutput1$actual)
+  write.Alteryx2(preppedOutput1, nOutput = 1)
 
-  dataOutput2 <- generateOutput2(dataOutput1, extras)
+
+  dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
   write.Alteryx2(dataOutput2, nOutput = 2)
 
   if (config$classification) {
-    confMats <- generateOutput3(dataOutput1, extras)
+    confMats <- generateOutput3(dataOutput1, extras, modelNames)
+    print("confmats is:")
+    print(confMats)
+    #print('confmats$mid is:')
+    #print(confMats$mid)
+    #preppedOutput3 <- data.frame(Trial = confMats$trial, Fold = confMats$fold, Model = modelNames[as.numeric(confMats$mid)],
+                                 #Predicted_class = confMats$Predicted_class, Variable = confMats$variable, value = confMats$value)
     write.Alteryx2(confMats, 3)
   }
   
@@ -4147,7 +4177,7 @@ runCrossValidation <- function(inputs, config){
     if (config$classification) {
       if (length(extras$levels) == 2) {
         #d_ply(plotData, .(mid), plotBinaryData)
-        plotBinaryData(plotData, config)
+        plotBinaryData(plotData, config, modelNames)
       }
     }
   }
@@ -4165,6 +4195,39 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="Trial" source="R-DATA:" type="Int32" />
+            <Field name="Fold" source="R-DATA:" type="Int32" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Response" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Actual" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output2">
+          <RecordInfo>
+            <Field name="trial" source="R-DATA:" type="Double" />
+            <Field name="fold" source="R-DATA:" type="Double" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="value" source="R-DATA:" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output3">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output4">
+          <RecordInfo>
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
@@ -4248,7 +4311,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="299" />
+        <Position x="606" y="426" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4266,7 +4329,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="49">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="436" y="419" />
+        <Position x="642" y="522" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4283,11 +4346,355 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="60">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="438" y="498" />
+        <Position x="462" y="630" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8528_acc4c00ccac445edb9b0cf17aa0d6644_\Engine_2716_a7bcbaf2edbd455fbd92670dc329f14d_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_80958439f6ee4c5eacd0a4b08cd2fc87_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="68">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
+        <Position x="498" y="426" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <GroupFields>
+            <Field field="trial" />
+            <Field field="fold" />
+            <Field field="Model" />
+          </GroupFields>
+          <HeaderField field="variable" />
+          <DataField field="value" />
+          <Methods>
+            <Method method="First" />
+          </Methods>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="trial" source="CrossTab:Group:First:" type="Double" />
+            <Field name="fold" source="CrossTab:Group:First:" type="Double" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" />
+            <Field name="Accuracy_Class_1" source="R-DATA:" type="Double" />
+            <Field name="Accuracy_Class_2" source="R-DATA:" type="Double" />
+            <Field name="AUC" source="R-DATA:" type="Double" />
+            <Field name="F1" source="R-DATA:" type="Double" />
+            <Field name="Overall_Accuracy" source="R-DATA:" type="Double" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="trial" order="Asc" />
+            <Field field="fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
+    </Node>
+    <Node ToolID="69">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
+        <Position x="510" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <GroupFields>
+            <Field field="Trial" />
+            <Field field="Fold" />
+            <Field field="Model" />
+            <Field field="Predicted_class" />
+          </GroupFields>
+          <HeaderField field="Variable" />
+          <DataField field="Value" />
+          <Methods>
+            <Method method="Concat" />
+            <Separator>,</Separator>
+            <FieldSize value="2048" />
+          </Methods>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+            <Field field="Predicted_class" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxCrossTab" />
+    </Node>
+    <Node ToolID="70">
+      <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
+        <Position x="738" y="474" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Images />
+          <Output>Text</Output>
+          <HeaderMode value="False" />
+          <RawMode value="False" />
+          <ValidatePCXML value="True" />
+          <Message />
+          <RichTextMode value="True" />
+          <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs29 trial: [trial:A]\par
+fold: [fold:A]\par
+model: [model:A]\par
+}
+]]></RichTextString>
+          <Styles>
+            <Style Name="TextStyle" />
+          </Styles>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>trial: [trial:A]
+fold: [fold:A...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+            <Field field="Predicted_class" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
+    </Node>
+    <Node ToolID="71">
+      <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
+        <Position x="774" y="558" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TableMode>Basic</TableMode>
+          <GroupingFields orderChanged="False">
+            <Field name="Trial" />
+            <Field name="Model" />
+          </GroupingFields>
+          <Width>100%</Width>
+          <ShowHeader value="True" />
+          <ShowBarGraph value="False" />
+          <TableFields orderChanged="False">
+            <Field name="Trial" selected="True" Alignment="Right" />
+            <Field name="Fold" selected="True" Alignment="Right" />
+            <Field name="Model" selected="True" Alignment="Right" />
+            <Field name="Predicted_class" selected="True" Alignment="Right" />
+            <Field name="Class_No" selected="True" Alignment="Right" />
+            <Field name="Class_Yes" selected="True" Alignment="Right" />
+            <Field name="*Unknown" selected="True" Alignment="Right" />
+            <Field name="mid" selected="False" />
+          </TableFields>
+          <TableStyles>
+            <Style Name="Data" Font="Arial" Size="8" TextColor="#000000" BackColor="#ffffff" AltColor="#f0f0f0" RowGroup="1" />
+            <Style Name="Header" Font="Arial" Size="10" TextColor="#000000" BackColor="#dbdbdb" />
+            <Style Name="Borders" Width="1" DataColor="#000000" HeaderColor="#000000" RowBorder="None" BasicColBorder="Default (Use Per Column Setting)" />
+            <Style Name="Table" CellPadding="0" ColumnPadding="0" TableBorder="true" Width="1" BorderColor="#000000" />
+          </TableStyles>
+          <StyleRules />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Basic Table</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Model" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTablePlugin" />
+    </Node>
+    <Node ToolID="72">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.JoinMultiple.JoinMultiple">
+        <Position x="906" y="510" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <JoinByRecPos value="True" />
+          <OutputJoinOnly value="False" />
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <SelectFields>
+                <SelectField field="Input_#2_Trial" selected="True" rename="Input_#2_Trial" />
+                <SelectField field="Input_#2_Fold" selected="True" rename="Input_#2_Fold" />
+                <SelectField field="Input_#2_Model" selected="True" rename="Input_#2_Model" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Input_#2_Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Input_#2_Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Input_#2_Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoinMultiple" />
+    </Node>
+    <Node ToolID="73">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="1014" y="510" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_dabd641c32124d4595339dcd49b4b50e_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="79">
+      <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
+        <Position x="870" y="630" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Images />
+          <HeaderMode value="True" />
+          <HeaderField>Table</HeaderField>
+          <Position>Above</Position>
+          <RawMode value="False" />
+          <ValidatePCXML value="True" />
+          <Message />
+          <RichTextMode value="True" />
+          <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}}
+\viewkind4\uc1\pard\f0\fs29 Confusion matrices for each trial/fold/model\par
+}
+]]></RichTextString>
+          <Styles>
+            <Style Name="TextStyle" />
+          </Styles>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Confusion matrices for each tr...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Model" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
+    </Node>
+    <Node ToolID="80">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="978" y="630" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_e39420c5ec1e46fd841554f9e8354a89_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="81">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="822" y="654" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7748_b7c89fc419564d32bc4722e902c64795_\Engine_7388_2b8acc3c752f46ea912d5d8ff79a10c1_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4310,7 +4717,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="67">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="558" y="246" width="152.3273" height="19" />
+        <Position x="702" y="66" width="152.3273" height="19" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4328,27 +4735,27 @@ if (is.null(getOption("testscript"))){
       <ChildNodes>
         <Node ToolID="61">
           <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
-            <Position x="666" y="433" />
+            <Position x="810" y="253" />
           </GuiSettings>
           <Properties>
             <Configuration>
               <TableMode>Basic</TableMode>
               <GroupingFields orderChanged="False">
-                <Field name="trial" />
-                <Field name="fold" />
+                <Field name="Trial" />
+                <Field name="Fold" />
                 <Field name="mid" />
               </GroupingFields>
               <Width>100%</Width>
               <ShowHeader value="True" />
               <ShowBarGraph value="False" />
               <TableFields orderChanged="False">
-                <Field name="response" selected="True" Alignment="Right" />
+                <Field name="Trial" selected="True" Alignment="Right" />
+                <Field name="Fold" selected="True" Alignment="Right" />
+                <Field name="Model" selected="True" Alignment="Right" />
                 <Field name="Predicted_class" selected="True" Alignment="Right" />
-                <Field name="variable" selected="True" Alignment="Right" />
+                <Field name="Variable" selected="True" Alignment="Right" />
                 <Field name="value" selected="True" Alignment="Right" />
                 <Field name="*Unknown" selected="True" Alignment="Right" />
-                <Field name="trial" selected="False" />
-                <Field name="fold" selected="False" />
                 <Field name="mid" selected="False" />
               </TableFields>
               <TableStyles>
@@ -4356,7 +4763,6 @@ if (is.null(getOption("testscript"))){
                 <Style Name="Header" Font="Arial" Size="10" TextColor="#000000" BackColor="#dbdbdb" />
                 <Style Name="Borders" Width="1" DataColor="#000000" HeaderColor="#000000" RowBorder="None" BasicColBorder="Default (Use Per Column Setting)" />
                 <Style Name="Table" CellPadding="0" ColumnPadding="0" TableBorder="true" Width="1" BorderColor="#000000" />
-                <Style Name="BarGraph" Width="100" Height="15" AutoScale="true" Min="0" Max="100" BaseValue="0" LabelBars="true" ColorMode="Single" TextColor="#b0c4de" BarPalette="#b30023,#00488c,#1e6c0b,#d84000,#f0b400,#332600,#5400a8,#434c43" BarFormula="&quot;Green&quot;" OutlineBars="true" OutlineColor="#000000" />
               </TableStyles>
               <StyleRules />
             </Configuration>
@@ -4365,29 +4771,16 @@ if (is.null(getOption("testscript"))){
               <DefaultAnnotationText>Basic Table</DefaultAnnotationText>
               <Left value="False" />
             </Annotation>
-            <MetaInfo connection="Output">
-              <RecordInfo>
-                <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
-              </RecordInfo>
-              <SortInfo>
-                <Field field="trial" order="Asc" />
-                <Field field="fold" order="Asc" />
-                <Field field="mid" order="Asc" />
-              </SortInfo>
-            </MetaInfo>
           </Properties>
           <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTablePlugin" />
         </Node>
         <Node ToolID="62">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="942" y="433" />
+            <Position x="1086" y="253" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9868_9f5636d86b194609995f53d7ce0d9a22_\Engine_1076_1cb18dd373494075a9629616664c87a7_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8380_e4ef0c569983477abde25c02a647e585_\Engine_2716_ed921a75535e447d9fc0f643989b50aa_.yxdb</TempFile>
               <Layout>
                 <ViewMode>Single</ViewMode>
                 <ViewSize value="100" />
@@ -4410,7 +4803,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="63">
           <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
-            <Position x="774" y="325" />
+            <Position x="918" y="145" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4459,7 +4852,7 @@ fold: [fold:A...</DefaultAnnotationText>
         </Node>
         <Node ToolID="64">
           <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
-            <Position x="618" y="337" />
+            <Position x="762" y="157" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4475,7 +4868,7 @@ fold: [fold:A...</DefaultAnnotationText>
         </Node>
         <Node ToolID="65">
           <GuiSettings Plugin="AlteryxBasePluginsGui.JoinMultiple.JoinMultiple">
-            <Position x="870" y="361" />
+            <Position x="1014" y="181" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -4537,11 +4930,11 @@ fold: [fold:A...</DefaultAnnotationText>
         </Node>
         <Node ToolID="66">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="978" y="361" />
+            <Position x="1122" y="181" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9868_9f5636d86b194609995f53d7ce0d9a22_\Engine_1076_5d250670388848a98ed4e84c695083bb_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8380_e4ef0c569983477abde25c02a647e585_\Engine_2716_ba3d60e6f5fd4ab08a2d9d0fcba8b269_.yxdb</TempFile>
               <Layout>
                 <ViewMode>Single</ViewMode>
                 <ViewSize value="100" />
@@ -4870,14 +5263,6 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output2" />
-      <Destination ToolID="48" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="49" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="4" Connection="Output4" />
       <Destination ToolID="60" Connection="Input" />
     </Connection>
@@ -4888,6 +5273,54 @@ fold: [fold:A...</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="4" Connection="Output3" />
       <Destination ToolID="64" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output2" />
+      <Destination ToolID="68" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="69" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="68" Connection="Output" />
+      <Destination ToolID="48" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="69" Connection="Output" />
+      <Destination ToolID="49" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="69" Connection="Output" />
+      <Destination ToolID="70" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="69" Connection="Output" />
+      <Destination ToolID="71" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="70" Connection="Output" />
+      <Destination ToolID="72" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="71" Connection="Output" />
+      <Destination ToolID="72" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="71" Connection="Output" />
+      <Destination ToolID="73" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="71" Connection="Output" />
+      <Destination ToolID="79" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="71" Connection="Output" />
+      <Destination ToolID="81" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="79" Connection="Output" />
+      <Destination ToolID="80" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="61" Connection="Output" />
@@ -5145,6 +5578,9 @@ fold: [fold:A...</DefaultAnnotationText>
         <Tool ToolId="48" Selected="True" />
         <Tool ToolId="49" Selected="True" />
         <Tool ToolId="60" Selected="False" />
+        <Tool ToolId="73" Selected="False" />
+        <Tool ToolId="81" Selected="False" />
+        <Tool ToolId="80" Selected="False" />
         <Tool ToolId="62" Selected="False" />
         <Tool ToolId="66" Selected="False" />
       </Wiz_OpenOutputTools>
