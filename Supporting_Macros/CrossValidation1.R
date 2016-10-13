@@ -428,9 +428,15 @@ generateOutput3 <- function(data, extras, modelNames) {
   )
   
   d$Model <- modelNames[as.numeric(d$mid)]
+  d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
-  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
-  colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
+  print('d after the reshape')
+  print(d)
+  colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
+  print('d is:')
+  print(d)
+  return(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -496,10 +502,6 @@ generateDataForPlots <- function(d, extras, config){
   }
 }
 
-# plotOneLiftCurve <- function(plotData) {
-#   ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift)) + geom_point(plotData$fold) + 
-#     stat_smooth(method = "loess", formula = y ~ x, size = 1)
-# }
 
 generateLabels <- function(plotData, config) {
   trials <- c()
@@ -539,6 +541,19 @@ plotBinaryData <- function(plotData, config, modelNames) {
   AlteryxGraph2(gainPlotObj, nOutput = 4)
   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+}
+
+plotRegressionData <- function(plotData, config, modelNames) {
+  modelVec <- modelNames[plotData$mid]
+  trialVec <- paste0('Trial ', plotData$trial)
+  plotData <- cbind(plotData, modelVec, trialVec)
+  print('head of plotdata')
+  print(head(plotData))
+  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
+  AlteryxGraph2(plotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -588,6 +603,9 @@ runCrossValidation <- function(inputs, config){
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras, modelNames)
     write.Alteryx2(confMats, 3)
+  } else {
+    #Provide garbage data that'll get filtered out on the Alteryx side.
+    write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
   
   if (config$displayGraphs) {
@@ -598,6 +616,8 @@ runCrossValidation <- function(inputs, config){
       if (length(extras$levels) == 2) {
         plotBinaryData(plotData, config, modelNames)
       }
+    } else {
+      plotRegressionData(plotData, config, modelNames)
     }
   }
 }
