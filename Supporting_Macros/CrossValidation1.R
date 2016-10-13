@@ -553,6 +553,7 @@ plotRegressionData <- function(plotData, config, modelNames) {
                        models = plotData$modelVec, trial = plotData$trialVec)
   plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
     geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
+  AlteryxGraph2(plotObj, nOutput = 4)
 }
 
 # Helper Functions End ----
@@ -604,7 +605,7 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(confMats, 3)
   } else {
     #Provide garbage data that'll get filtered out on the Alteryx side.
-    write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50))
+    write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
   
   if (config$displayGraphs) {
