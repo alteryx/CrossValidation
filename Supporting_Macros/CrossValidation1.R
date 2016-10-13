@@ -542,7 +542,9 @@ plotRegressionData <- function(plotData, config, modelNames) {
   modelVec <- modelNames[plotData$mid]
   trialVec <- paste0('Trial ', plotData$trial)
   plotData <- cbind(plotData, modelVec, trialVec)
-  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$predicted, fold = paste0("Fold", plotData$fold), 
+  print('head of plotdata')
+  print(head(plotData))
+  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
                        models = plotData$modelVec, trial = plotData$trialVec)
   plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
     geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")

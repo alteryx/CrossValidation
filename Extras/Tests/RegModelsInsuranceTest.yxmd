@@ -31,19 +31,23 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Value name="numberTrials">3</Value>
+          <Value name="numberTrials">2</Value>
           <Value name="numberFolds">5</Value>
           <Value name="classification">False</Value>
           <Value name="regression">True</Value>
           <Value name="stratified">False</Value>
           <Value name="posClass" />
-          <Value name="displayGraphs">False</Value>
+          <Value name="displayGraphs">True</Value>
+          <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
       </Properties>
       <EngineSettings Macro="..\..\Supporting_Macros\CrossValidation.yxmc" />
     </Node>
@@ -142,13 +146,13 @@
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="age" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="sex" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="bmi" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="children" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="smoker" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="region" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="charges" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="age" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="sex" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="bmi" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="children" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="smoker" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="region" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="charges" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -199,7 +203,7 @@
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="3" Connection="Confusion Matrices" />
+      <Origin ToolID="3" Connection="Full Report" />
       <Destination ToolID="6" Connection="Input" />
     </Connection>
     <Connection>
@@ -236,10 +240,6 @@
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
-      <Example>
-        <Description />
-        <File />
-      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />

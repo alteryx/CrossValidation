@@ -3996,11 +3996,8 @@ generateOutput3 <- function(data, extras, modelNames) {
   d$Model <- modelNames[as.numeric(d$mid)]
   d <- subset(d, select = -c(mid, response))
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
-  #print('d before the colnames')
-  #print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
-  #print('and after')
-  #print(d)
+  return(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -4111,7 +4108,9 @@ plotRegressionData <- function(plotData, config, modelNames) {
   modelVec <- modelNames[plotData$mid]
   trialVec <- paste0('Trial ', plotData$trial)
   plotData <- cbind(plotData, modelVec, trialVec)
-  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$predicted, fold = paste0("Fold", plotData$fold), 
+  print('head of plotdata')
+  print(head(plotData))
+  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
                        models = plotData$modelVec, trial = plotData$trialVec)
   plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
     geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
@@ -4278,7 +4277,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="48">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
-        <Position x="618" y="378" />
+        <Position x="582" y="306" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4300,7 +4299,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6172_8c31814fa4f04adcbe6b4a5bada8efc9_\Engine_7388_fb87102f96b34de489959e9da46eaaff_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9132_2a7dfb175b9b49ef86b2533ce473c419_\Engine_7388_d66f8df6d5e74d4ba080fb6548bb5e6a_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4323,7 +4322,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="68">
       <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
-        <Position x="510" y="378" />
+        <Position x="474" y="306" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4365,11 +4364,16 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="69">
       <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
-        <Position x="522" y="474" />
+        <Position x="534" y="522" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <GroupFields />
+          <GroupFields>
+            <Field field="Trial" />
+            <Field field="Fold" />
+            <Field field="Model" />
+            <Field field="Predicted_class" />
+          </GroupFields>
           <HeaderField field="Variable" />
           <DataField field="Value" />
           <Methods>
@@ -4385,10 +4389,18 @@ if (is.null(getOption("testscript"))){
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
             <Field name="Class_No" size="2048" source="CrossTab:Header:Variable:Class_No:Concat:" type="V_WString" />
             <Field name="Class_Yes" size="2048" source="CrossTab:Header:Variable:Class_Yes:Concat:" type="V_WString" />
           </RecordInfo>
           <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Fold" order="Asc" />
+            <Field field="Model" order="Asc" />
+            <Field field="Predicted_class" order="Asc" />
           </SortInfo>
         </MetaInfo>
       </Properties>
@@ -4396,7 +4408,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="71">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
-        <Position x="762" y="498" />
+        <Position x="702" y="522" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4447,7 +4459,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="79">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
-        <Position x="882" y="558" />
+        <Position x="846" y="522" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4529,13 +4541,6 @@ if (is.null(getOption("testscript"))){
         <Configuration>
           <AutoResetMode>Custom</AutoResetMode>
           <MultiMetaInfo>
-            <MetaInfo name="#1">
-              <RecordInfo>
-                <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" column="1" />
-                <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" column="2" />
-                <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" column="3" />
-              </RecordInfo>
-            </MetaInfo>
             <MetaInfo name="#2">
               <RecordInfo>
                 <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" column="3" />
@@ -4545,6 +4550,13 @@ if (is.null(getOption("testscript"))){
               <RecordInfo>
                 <Field name="trial" source="CrossTab:Group:First:" type="Double" column="1" />
                 <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" column="2" />
+                <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" column="3" />
+              </RecordInfo>
+            </MetaInfo>
+            <MetaInfo name="#1">
+              <RecordInfo>
+                <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" column="1" />
+                <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" column="2" />
                 <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" column="3" />
               </RecordInfo>
             </MetaInfo>
@@ -4575,7 +4587,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6172_8c31814fa4f04adcbe6b4a5bada8efc9_\Engine_7388_e034ce8719a34b569a2f277798be4767_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9132_2a7dfb175b9b49ef86b2533ce473c419_\Engine_7388_14e9b7fd860340b79e4a6b5bd51225e2_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4696,7 +4708,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6172_8c31814fa4f04adcbe6b4a5bada8efc9_\Engine_7388_32cfb2c934aa40318866bd4485f0f95d_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9132_2a7dfb175b9b49ef86b2533ce473c419_\Engine_7388_ec4501d237684df7a46814e4a0077d41_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4723,7 +4735,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6172_8c31814fa4f04adcbe6b4a5bada8efc9_\Engine_7388_927e614759734235bb5d375bb848d9f1_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9132_2a7dfb175b9b49ef86b2533ce473c419_\Engine_7388_37d1e5eabe2549b7a544296de517506a_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4760,6 +4772,67 @@ if (is.null(getOption("testscript"))){
         </Annotation>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+    <Node ToolID="90">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Detour.Detour">
+        <Position x="438" y="474" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <DetourRight value="True" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Left">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Right">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
+            <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDetour" />
+    </Node>
+    <Node ToolID="92">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DetourEnd.DetourEnd">
+        <Position x="954" y="462" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Trial" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Model" size="1073741823" source="CrossTab:Group:Concat:" type="V_WString" />
+            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Trial" order="Asc" />
+            <Field field="Model" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDetourEnd" />
     </Node>
     <Node ToolID="67">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
@@ -5005,7 +5078,7 @@ fold: [fold:A...</DefaultAnnotationText>
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="54" width="622" height="134" />
+        <Position x="54" y="54" width="622" height="201" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -5051,7 +5124,7 @@ fold: [fold:A...</DefaultAnnotationText>
         </Node>
         <Node ToolID="25">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.RadioButtonGroup.RadioButtonGroup">
-            <Position x="220" y="112" width="59" height="59" />
+            <Position x="234" y="114" width="59" height="59" />
           </GuiSettings>
           <Properties>
             <Configuration />
@@ -5292,6 +5365,19 @@ fold: [fold:A...</DefaultAnnotationText>
             </Annotation>
           </Properties>
         </Node>
+        <Node ToolID="91">
+          <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+            <Position x="234" y="186" width="59" height="59" />
+          </GuiSettings>
+          <Properties>
+            <Configuration />
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
       </ChildNodes>
     </Node>
   </Nodes>
@@ -5325,12 +5411,16 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="68" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="69" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="4" Connection="Output4" />
       <Destination ToolID="82" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output3" />
+      <Destination ToolID="90" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="91" Connection="Action" />
+      <Destination ToolID="90" Connection="Action" />
     </Connection>
     <Connection>
       <Origin ToolID="68" Connection="Output" />
@@ -5348,9 +5438,13 @@ fold: [fold:A...</DefaultAnnotationText>
       <Origin ToolID="71" Connection="Output" />
       <Destination ToolID="79" Connection="Input" />
     </Connection>
-    <Connection name="#1">
+    <Connection>
       <Origin ToolID="79" Connection="Output" />
-      <Destination ToolID="83" Connection="Input" />
+      <Destination ToolID="92" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="90" Connection="Left" />
+      <Destination ToolID="92" Connection="Left" />
     </Connection>
     <Connection name="#2">
       <Origin ToolID="82" Connection="Output" />
@@ -5358,6 +5452,10 @@ fold: [fold:A...</DefaultAnnotationText>
     </Connection>
     <Connection name="#3">
       <Origin ToolID="86" Connection="Output" />
+      <Destination ToolID="83" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="92" Connection="Output" />
       <Destination ToolID="83" Connection="Input" />
     </Connection>
     <Connection>
@@ -5381,6 +5479,10 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="88" Connection="Input" />
     </Connection>
     <Connection>
+      <Origin ToolID="90" Connection="Right" />
+      <Destination ToolID="69" Connection="Input" />
+    </Connection>
+    <Connection>
       <Origin ToolID="61" Connection="Output" />
       <Destination ToolID="62" Connection="Input" />
     </Connection>
@@ -5399,6 +5501,10 @@ fold: [fold:A...</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="65" Connection="Output" />
       <Destination ToolID="66" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="25" Connection="Question" />
+      <Destination ToolID="91" Connection="Question" />
     </Connection>
   </Connections>
   <Properties>
@@ -5491,7 +5597,25 @@ fold: [fold:A...</DefaultAnnotationText>
       <Enabled value="True" />
     </Events>
     <RuntimeProperties>
-      <Actions />
+      <Actions>
+        <NoCondition>
+          <Type>NoCondition</Type>
+          <Description>(Always Run)</Description>
+          <True>
+            <Action>
+              <Type>Dynamic</Type>
+              <Description />
+              <ToolId value="91" />
+              <Expression>{{INPUT}}</Expression>
+              <Destination>90/DetourRight/@value</Destination>
+              <Mapping>Update Detour Direction from Question</Mapping>
+              <Mode>Expression</Mode>
+              <DynamicConfiguration />
+              <DefaultConfiguration value="True" />
+            </Action>
+          </True>
+        </NoCondition>
+      </Actions>
       <Questions>
         <Question>
           <Type>Tab</Type>
@@ -5545,7 +5669,7 @@ fold: [fold:A...</DefaultAnnotationText>
                   <Name>classification</Name>
                   <ToolId value="25" />
                   <Questions />
-                  <Default value="False" />
+                  <Default value="True" />
                   <Collapsable value="False" />
                 </Question>
                 <Question>
