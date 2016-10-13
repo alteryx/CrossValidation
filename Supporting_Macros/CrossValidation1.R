@@ -431,6 +431,7 @@ generateOutput3 <- function(data, extras, modelNames) {
   d <- subset(d, select = -c(mid, response))
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Predicted_class'))
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Predicted_class', 'Variable', 'Value')
+  return(d)
 }
 
 generateOutput2 <- function(data, extras, modelNames) {
@@ -496,10 +497,6 @@ generateDataForPlots <- function(d, extras, config){
   }
 }
 
-# plotOneLiftCurve <- function(plotData) {
-#   ggplot(plotData, aes(x = Rate_Pos_Predictions, y = lift)) + geom_point(plotData$fold) + 
-#     stat_smooth(method = "loess", formula = y ~ x, size = 1)
-# }
 
 generateLabels <- function(plotData, config) {
   trials <- c()
@@ -539,6 +536,16 @@ plotBinaryData <- function(plotData, config, modelNames) {
   AlteryxGraph2(gainPlotObj, nOutput = 4)
   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
   AlteryxGraph2(ROCPlotObj, nOutput = 4)
+}
+
+plotRegressionData <- function(plotData, config, modelNames) {
+  modelVec <- modelNames[plotData$mid]
+  trialVec <- paste0('Trial ', plotData$trial)
+  plotData <- cbind(plotData, modelVec, trialVec)
+  plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$predicted, fold = paste0("Fold", plotData$fold), 
+                       models = plotData$modelVec, trial = plotData$trialVec)
+  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
+    geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
 }
 
 # Helper Functions End ----
@@ -598,6 +605,8 @@ runCrossValidation <- function(inputs, config){
       if (length(extras$levels) == 2) {
         plotBinaryData(plotData, config, modelNames)
       }
+    } else {
+      plotRegressionData(plotData, config, modelNames)
     }
   }
 }
