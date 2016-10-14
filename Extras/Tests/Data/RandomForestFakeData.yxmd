@@ -124,6 +124,31 @@ saveRDS(
           <DefaultAnnotationText>FakeData.csv</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="390" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File MaxRecords="" FileFormat="0">.\FakeData_RF.csv</File>
+          <Passwords />
+          <FormatSpecificOptions>
+            <LineEndStyle>CRLF</LineEndStyle>
+            <Delimeter>,</Delimeter>
+            <ForceQuotes>False</ForceQuotes>
+            <HeaderRow>True</HeaderRow>
+            <CodePage>28591</CodePage>
+          </FormatSpecificOptions>
+          <MultiFile value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>FakeData_RF.csv</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
         <Dependencies>
           <Implicit />
         </Dependencies>
@@ -143,6 +168,10 @@ saveRDS(
     <Connection name="#1">
       <Origin ToolID="2" Connection="Output" />
       <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Output" />
+      <Destination ToolID="5" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -174,10 +203,6 @@ saveRDS(
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
-      <Example>
-        <Description />
-        <File />
-      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />
