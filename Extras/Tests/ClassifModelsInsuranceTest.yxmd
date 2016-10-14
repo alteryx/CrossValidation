@@ -51,13 +51,13 @@
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="age" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="sex" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="bmi" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="children" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="smoker" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="region" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="charges" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="age" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="sex" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="bmi" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="children" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="smoker" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="region" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="charges" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -89,32 +89,6 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
     </Node>
-    <Node ToolID="9">
-      <GuiSettings>
-        <Position x="222" y="138" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Value name="numberTrials">2</Value>
-          <Value name="numberFolds">5</Value>
-          <Value name="classification">True</Value>
-          <Value name="regression">False</Value>
-          <Value name="stratified">False</Value>
-          <Value name="posClass" />
-          <Value name="displayGraphs">False</Value>
-          <Value name="seed">1</Value>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
-      </Properties>
-      <EngineSettings Macro="\\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
-    </Node>
     <Node ToolID="10">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
         <Position x="318" y="54" />
@@ -122,7 +96,7 @@
       <Properties>
         <Configuration>
           <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_5ed68b87dbd643028f15c867d5149338_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_1f4ca5666cf6461ba915fd8e0b859754_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9144_cb5a30e939124a59a1e5f29f9bcc78ee_\Engine_4496_767db3076097409188e6b1cbb886c061_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -146,7 +120,7 @@
       <Properties>
         <Configuration>
           <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_1a5629c55d8b48e5a43b6c9b85fa16c8_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_b291bec3b1cb4ce0aa84187e47288839_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9144_cb5a30e939124a59a1e5f29f9bcc78ee_\Engine_4496_5dec3de9ffba41ca899cced0a52ca589_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -169,14 +143,17 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_676205053ead474483d9c81120ffc932_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_5480_4cb6856f126840e5a791987ee1cc2997_\Engine_3192_65b7e90f4e7148af9fe8ae3b52c9b565_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9144_cb5a30e939124a59a1e5f29f9bcc78ee_\Engine_4496_f7c9f999ef5140f1bdfc24ba722f7588_.yxdb</TempFile>
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Report</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -187,31 +164,57 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
+    <Node ToolID="13">
+      <GuiSettings>
+        <Position x="234" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="numberTrials">4</Value>
+          <Value name="numberFolds">5</Value>
+          <Value name="classification">True</Value>
+          <Value name="regression">False</Value>
+          <Value name="stratified">False</Value>
+          <Value name="posClass" />
+          <Value name="displayGraphs">True</Value>
+          <Value name="seed">1</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings Macro="C:\Users\btoomey\Desktop\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
+    </Node>
   </Nodes>
   <Connections>
     <Connection>
       <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="9" Connection="Input_Models" />
+      <Destination ToolID="13" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="8" Connection="Output" />
-      <Destination ToolID="9" Connection="Input_Data" />
+      <Destination ToolID="13" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="7" Connection="Output" />
       <Destination ToolID="8" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="9" Connection="Data" />
-      <Destination ToolID="10" Connection="Input" />
+      <Origin ToolID="13" Connection="Full Report" />
+      <Destination ToolID="12" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="9" Connection="Fit Measures" />
+      <Origin ToolID="13" Connection="Fit Measures" />
       <Destination ToolID="11" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="9" Connection="Confusion Matrices" />
-      <Destination ToolID="12" Connection="Input" />
+      <Origin ToolID="13" Connection="Data" />
+      <Destination ToolID="10" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -243,10 +246,6 @@
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
-      <Example>
-        <Description />
-        <File />
-      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />

@@ -286,7 +286,7 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
 #safeGetActualAndResponse <- getActualandResponse
 
 #' 
@@ -431,11 +431,7 @@ generateOutput3 <- function(data, extras, modelNames) {
   d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
-  print('d after the reshape')
-  print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
-  print('d is:')
-  print(d)
   return(d)
 }
 
@@ -547,8 +543,6 @@ plotRegressionData <- function(plotData, config, modelNames) {
   modelVec <- modelNames[plotData$mid]
   trialVec <- paste0('Trial ', plotData$trial)
   plotData <- cbind(plotData, modelVec, trialVec)
-  print('head of plotdata')
-  print(head(plotData))
   plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
                        models = plotData$modelVec, trial = plotData$trialVec)
   plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
@@ -614,9 +608,17 @@ runCrossValidation <- function(inputs, config){
     )
     if (config$classification) {
       if (length(extras$levels) == 2) {
+        print('binary case')
         plotBinaryData(plotData, config, modelNames)
+      } else {
+        #write out empty data
+        fakeGraph <- data.frame(Graph = "No graphs for >2 class classification")
+        print("fakegraph is:")
+        print(fakeGraph)
+        write.Alteryx2(fakeGraph, nOutput = 4)
       }
     } else {
+      print('regression case')
       plotRegressionData(plotData, config, modelNames)
     }
   }

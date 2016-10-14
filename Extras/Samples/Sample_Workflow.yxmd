@@ -171,7 +171,7 @@ Cross-Validation</Text>
           <Value name="regression">True</Value>
           <Value name="stratified">False</Value>
           <Value name="posClass" />
-          <Value name="displayGraphs">False</Value>
+          <Value name="displayGraphs">True</Value>
           <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -210,7 +210,7 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_e386a9b3548b45ad8ebaf886652dad94_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_99c0d99431f94fe594913040b6f4b071_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -233,7 +233,7 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_c9bedb37a6a14600bd0a6347675adb3c_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_d9f8e2fbbe79488e8d6dff851034b2ee_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -256,13 +256,17 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8348_304219c9f45c41c78cd635c2b18db697_\Engine_4360_415589e7cbaa4d01ae8de839ed61b08e_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_cc5b95aad59d4ba3b7f2e22094a6a6f2_.yxdb</TempFile>
           <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
             <View1>
+              <DefaultTab>Report</DefaultTab>
               <Hints>
                 <Table />
               </Hints>
             </View1>
+            <View2 />
           </Layout>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -480,7 +484,7 @@ Union
       <Destination ToolID="49" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="46" Connection="Confusion Matrices" />
+      <Origin ToolID="46" Connection="Full Report" />
       <Destination ToolID="50" Connection="Input" />
     </Connection>
   </Connections>
