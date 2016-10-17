@@ -4177,11 +4177,10 @@ runCrossValidation <- function(inputs, config){
         print('binary case')
         plotBinaryData(plotData, config, modelNames)
       } else {
-        #write out empty data
-        fakeGraph <- data.frame(Graph = "No graphs for >2 class classification")
-        print("fakegraph is:")
-        print(fakeGraph)
-        write.Alteryx2(fakeGraph, nOutput = 4)
+        #Generate an empty plot
+        empty_df <- data.frame()
+        emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
+        AlteryxGraph2(emptyPlot, nOutput = 4)
       }
     } else {
       print('regression case')
@@ -4341,7 +4340,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_2f7cd338dce2422191dc8ad9583eaaae_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_a5ed539727ea4a7c992eee150bbfb8a9_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4581,21 +4580,16 @@ if (is.null(getOption("testscript"))){
         <Configuration>
           <AutoResetMode>Custom</AutoResetMode>
           <MultiMetaInfo>
-            <MetaInfo name="#1">
-              <RecordInfo>
-                <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" column="3" />
-              </RecordInfo>
-            </MetaInfo>
-            <MetaInfo name="#2">
-              <RecordInfo>
-                <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" column="3" />
-              </RecordInfo>
-            </MetaInfo>
             <MetaInfo name="#3">
               <RecordInfo>
                 <Field name="Trial" source="CrossTab:Group:First:" type="Int16" column="1" />
                 <Field name="Model" size="1073741823" source="CrossTab:Group:First:" type="V_WString" column="2" />
                 <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" column="3" />
+              </RecordInfo>
+            </MetaInfo>
+            <MetaInfo name="#1">
+              <RecordInfo>
+                <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" column="3" />
               </RecordInfo>
             </MetaInfo>
             <MetaInfo name="#4">
@@ -4612,7 +4606,6 @@ if (is.null(getOption("testscript"))){
           <SetOutputOrder value="True" />
           <OutputOrder>
             <Connection>#1</Connection>
-            <Connection>#2</Connection>
             <Connection>#3</Connection>
             <Connection>#4</Connection>
           </OutputOrder>
@@ -4638,7 +4631,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_fb651c81f2fe410ea469a87640b57326_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_e312d1f6b56e4749a9dfe2423b503818_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4758,7 +4751,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_6b8d12807ad64324a94727ff9a0b05b2_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_f7f9c3a58482412891a0644ced97c784_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4785,7 +4778,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_ffdd9a9a1bb44922bb73d11e50677964_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_1f3ef25bc3104df3a2e4cff66d897371_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4901,138 +4894,13 @@ if (is.null(getOption("testscript"))){
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
     </Node>
-    <Node ToolID="100">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.Filter.Filter">
-        <Position x="606" y="654" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Expression>Contains([Graph], "No graphs for &gt;2 class")</Expression>
-          <Mode>Custom</Mode>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>Contains([Graph], "No graphs for &gt;2 class")</DefaultAnnotationText>
-          <Left value="False" />
-        </Annotation>
-        <MetaInfo connection="True">
-          <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="False">
-          <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
-          </RecordInfo>
-        </MetaInfo>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFilter" />
-    </Node>
-    <Node ToolID="101">
-      <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
-        <Position x="786" y="618" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TableMode>Basic</TableMode>
-          <GroupingFields orderChanged="False" />
-          <Width>100%</Width>
-          <ShowHeader value="True" />
-          <ShowBarGraph value="False" />
-          <TableFields orderChanged="False">
-            <Field name="Graph" selected="True" Alignment="Right" />
-            <Field name="*Unknown" selected="True" Alignment="Right" />
-          </TableFields>
-          <TableStyles>
-            <Style Name="Data" Font="Arial" Size="8" TextColor="#000000" BackColor="#ffffff" AltColor="#f0f0f0" RowGroup="1" />
-            <Style Name="Header" Font="Arial" Size="10" TextColor="#000000" BackColor="#dbdbdb" />
-            <Style Name="Borders" Width="1" DataColor="#000000" HeaderColor="#000000" RowBorder="None" BasicColBorder="Default (Use Per Column Setting)" />
-            <Style Name="Table" CellPadding="0" ColumnPadding="0" TableBorder="true" Width="1" BorderColor="#000000" />
-          </TableStyles>
-          <StyleRules />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>Basic Table</DefaultAnnotationText>
-          <Left value="False" />
-        </Annotation>
-        <MetaInfo connection="Output">
-          <RecordInfo>
-            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
-          </RecordInfo>
-        </MetaInfo>
-      </Properties>
-      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTablePlugin" />
-    </Node>
-    <Node ToolID="102">
-      <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
-        <Position x="894" y="618" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Images />
-          <HeaderMode value="True" />
-          <HeaderField>Table</HeaderField>
-          <Position>Above</Position>
-          <RawMode value="False" />
-          <ValidatePCXML value="True" />
-          <Message />
-          <RichTextMode value="True" />
-          <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}}
-\viewkind4\uc1\pard\f0\fs29 Performance Diagnostic Plots\par
-}
-]]></RichTextString>
-          <Styles>
-            <Style Name="TextStyle" />
-          </Styles>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText>Performance Diagnostic Plots</DefaultAnnotationText>
-          <Left value="False" />
-        </Annotation>
-        <MetaInfo connection="Output">
-          <RecordInfo>
-            <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
-          </RecordInfo>
-        </MetaInfo>
-      </Properties>
-      <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
-    </Node>
     <Node ToolID="104">
       <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
         <Position x="1074" y="726" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_61c478cfe2084055afc8037cf4cf34c0_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="105">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="954" y="570" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8756_07452218f79e43d3a72baf4d7d16ff09_\Engine_4496_59b566dc3d434ff89fd8da75883e6032_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_cc044ae0d4294f239e38535ef83c67c2_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -5622,7 +5490,7 @@ fold: [fold:A...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="4" Connection="Output4" />
-      <Destination ToolID="100" Connection="Input" />
+      <Destination ToolID="82" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="68" Connection="Output" />
@@ -5650,10 +5518,6 @@ fold: [fold:A...</DefaultAnnotationText>
     </Connection>
     <Connection name="#4">
       <Origin ToolID="86" Connection="Output" />
-      <Destination ToolID="83" Connection="Input" />
-    </Connection>
-    <Connection name="#2">
-      <Origin ToolID="102" Connection="Output" />
       <Destination ToolID="83" Connection="Input" />
     </Connection>
     <Connection>
@@ -5687,22 +5551,6 @@ fold: [fold:A...</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="93" Connection="Output" />
       <Destination ToolID="69" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="100" Connection="False" />
-      <Destination ToolID="82" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="100" Connection="True" />
-      <Destination ToolID="101" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="101" Connection="Output" />
-      <Destination ToolID="102" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="102" Connection="Output" />
-      <Destination ToolID="105" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="61" Connection="Output" />
@@ -5969,7 +5817,6 @@ fold: [fold:A...</DefaultAnnotationText>
         <Tool ToolId="87" Selected="False" />
         <Tool ToolId="88" Selected="False" />
         <Tool ToolId="89" Selected="True" />
-        <Tool ToolId="105" Selected="False" />
         <Tool ToolId="104" Selected="False" />
         <Tool ToolId="62" Selected="False" />
         <Tool ToolId="66" Selected="False" />
