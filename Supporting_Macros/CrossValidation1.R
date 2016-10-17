@@ -611,11 +611,10 @@ runCrossValidation <- function(inputs, config){
         print('binary case')
         plotBinaryData(plotData, config, modelNames)
       } else {
-        #write out empty data
-        fakeGraph <- data.frame(Graph = "No graphs for >2 class classification")
-        print("fakegraph is:")
-        print(fakeGraph)
-        write.Alteryx2(fakeGraph, nOutput = 4)
+        #Generate an empty plot
+        empty_df <- data.frame()
+        emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
+        AlteryxGraph2(emptyPlot, nOutput = 4)
       }
     } else {
       print('regression case')
