@@ -3615,7 +3615,6 @@ library("ggplot2")
 suppressWarnings(library(AlteryxPredictive))
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
-  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , TRUE),
   `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -4202,25 +4201,25 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
   
-  if (config$displayGraphs) {
-    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+
+  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
-    )
-    if (config$classification) {
-      if (length(extras$levels) == 2) {
-        print('binary case')
-        plotBinaryData(plotData, config, modelNames)
-      } else {
-        #Generate an empty plot
-        empty_df <- data.frame()
-        emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
-        AlteryxGraph2(emptyPlot, nOutput = 4)
-      }
+  )
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      print('binary case')
+      plotBinaryData(plotData, config, modelNames)
     } else {
-      print('regression case')
-      plotRegressionData(plotData, config, modelNames)
+      #Generate an empty plot
+      empty_df <- data.frame()
+      emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
+      AlteryxGraph2(emptyPlot, nOutput = 4)
     }
+  } else {
+    print('regression case')
+    plotRegressionData(plotData, config, modelNames)
   }
+  
 }
 
 
@@ -4307,6 +4306,9 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText>Models.yxdb</DefaultAnnotationText>
           <Left value="True" />
         </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
         <MetaInfo connection="Output">
           <RecordInfo>
             <Field name="Name" size="1073741823" source="R-DATA:" type="V_WString" />
@@ -4333,33 +4335,6 @@ if (is.null(getOption("testscript"))){
         </Annotation>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
-    </Node>
-    <Node ToolID="60">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="462" y="630" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_79c7c28362e54b49b28943e57d56fe71_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
     <Node ToolID="68">
       <GuiSettings Plugin="AlteryxBasePluginsGui.CrossTab.CrossTab">
@@ -4625,33 +4600,6 @@ if (is.null(getOption("testscript"))){
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
     </Node>
-    <Node ToolID="84">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1170" y="618" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_018eb1bf5f05437c83b2e93d7437698c_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
     <Node ToolID="85">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
         <Position x="726" y="342" />
@@ -4744,60 +4692,6 @@ if (is.null(getOption("testscript"))){
         </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
-    </Node>
-    <Node ToolID="87">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="846" y="270" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_fa87d711cade4ed189ac1c2f55824b36_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="88">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1002" y="306" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_a13063a3215549b5811e8b2a7180f13d_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
     <Node ToolID="89">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
@@ -4893,275 +4787,6 @@ if (is.null(getOption("testscript"))){
         </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
-    </Node>
-    <Node ToolID="104">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="1074" y="726" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_3d6151ae09984ab9b8e9644f8f34e5d0_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="67">
-      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="702" y="66" width="152.3273" height="19" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Caption>First reporting attempt</Caption>
-          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="60" />
-          <Disabled value="True" />
-          <Folded value="True" />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <ChildNodes>
-        <Node ToolID="61">
-          <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
-            <Position x="810" y="253" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <TableMode>Basic</TableMode>
-              <GroupingFields orderChanged="False">
-                <Field name="Trial" />
-                <Field name="Fold" />
-                <Field name="mid" />
-              </GroupingFields>
-              <Width>100%</Width>
-              <ShowHeader value="True" />
-              <ShowBarGraph value="False" />
-              <TableFields orderChanged="False">
-                <Field name="Trial" selected="True" Alignment="Right" />
-                <Field name="Fold" selected="True" Alignment="Right" />
-                <Field name="Model" selected="True" Alignment="Right" />
-                <Field name="Predicted_class" selected="True" Alignment="Right" />
-                <Field name="Variable" selected="True" Alignment="Right" />
-                <Field name="value" selected="True" Alignment="Right" />
-                <Field name="*Unknown" selected="True" Alignment="Right" />
-                <Field name="mid" selected="False" />
-              </TableFields>
-              <TableStyles>
-                <Style Name="Data" Font="Arial" Size="8" TextColor="#000000" BackColor="#ffffff" AltColor="#f0f0f0" RowGroup="1" />
-                <Style Name="Header" Font="Arial" Size="10" TextColor="#000000" BackColor="#dbdbdb" />
-                <Style Name="Borders" Width="1" DataColor="#000000" HeaderColor="#000000" RowBorder="None" BasicColBorder="Default (Use Per Column Setting)" />
-                <Style Name="Table" CellPadding="0" ColumnPadding="0" TableBorder="true" Width="1" BorderColor="#000000" />
-              </TableStyles>
-              <StyleRules />
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText>Basic Table</DefaultAnnotationText>
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTablePlugin" />
-        </Node>
-        <Node ToolID="62">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="1086" y="253" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8380_e4ef0c569983477abde25c02a647e585_\Engine_2716_ed921a75535e447d9fc0f643989b50aa_.yxdb</TempFile>
-              <Layout>
-                <ViewMode>Single</ViewMode>
-                <ViewSize value="100" />
-                <View1>
-                  <DefaultTab>Report</DefaultTab>
-                  <Hints>
-                    <Table />
-                  </Hints>
-                </View1>
-                <View2 />
-              </Layout>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-        </Node>
-        <Node ToolID="63">
-          <GuiSettings Plugin="PortfolioPluginsGui.ComposerText.PortfolioComposerText">
-            <Position x="918" y="145" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Images />
-              <Output>Text</Output>
-              <HeaderMode value="False" />
-              <RawMode value="False" />
-              <ValidatePCXML value="True" />
-              <Message />
-              <RichTextMode value="True" />
-              <RichTextString><![CDATA[{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Microsoft Sans Serif;}}
-\viewkind4\uc1\pard\f0\fs29 trial: [trial:A]\par
-fold: [fold:A]\par
-model: [mid:A]\par
-}
-]]></RichTextString>
-              <Styles>
-                <Style Name="TextStyle" />
-              </Styles>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText>trial: [trial:A]
-fold: [fold:A...</DefaultAnnotationText>
-              <Left value="False" />
-            </Annotation>
-            <MetaInfo connection="Output">
-              <RecordInfo>
-                <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
-              </RecordInfo>
-              <SortInfo>
-                <Field field="trial" order="Asc" />
-                <Field field="fold" order="Asc" />
-                <Field field="mid" order="Asc" />
-              </SortInfo>
-            </MetaInfo>
-          </Properties>
-          <EngineSettings EngineDll="PortfolioPluginsEngine.dll" EngineDllEntryPoint="AlteryxPortfolioComposerTextPlugin" />
-        </Node>
-        <Node ToolID="64">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
-            <Position x="762" y="157" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <UniqueFields />
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnique" />
-        </Node>
-        <Node ToolID="65">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.JoinMultiple.JoinMultiple">
-            <Position x="1014" y="181" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <JoinByRecPos value="False" />
-              <JoinFields>
-                <JoinInfo connection="#1">
-                  <Field field="trial" />
-                  <Field field="fold" />
-                  <Field field="mid" />
-                </JoinInfo>
-                <JoinInfo connection="#2">
-                  <Field field="trial" />
-                  <Field field="fold" />
-                  <Field field="mid" />
-                </JoinInfo>
-              </JoinFields>
-              <CartesianMode>Error</CartesianMode>
-              <OutputJoinOnly value="False" />
-              <SelectConfiguration>
-                <Configuration outputConnection="Output">
-                  <OrderChanged value="False" />
-                  <SelectFields>
-                    <SelectField field="Input_#2_trial" selected="True" rename="Input_#2_trial" />
-                    <SelectField field="Input_#2_fold" selected="True" rename="Input_#2_fold" />
-                    <SelectField field="Input_#2_mid" selected="True" rename="Input_#2_mid" />
-                    <SelectField field="*Unknown" selected="True" />
-                  </SelectFields>
-                </Configuration>
-              </SelectConfiguration>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-            <MetaInfo connection="Output">
-              <RecordInfo>
-                <Field name="trial" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="fold" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="mid" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="value" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Text" size="2147483647" source="Report:Text:" type="V_String" />
-                <Field name="Input_#2_trial" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Input_#2_fold" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Input_#2_mid" size="1073741823" source="R-DATA:" type="V_WString" />
-                <Field name="Table" size="2147483647" source="Report:Table:Basic:" type="V_String" />
-              </RecordInfo>
-              <SortInfo>
-                <Field field="trial" order="" />
-                <Field field="fold" order="" />
-                <Field field="mid" order="" />
-              </SortInfo>
-            </MetaInfo>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoinMultiple" />
-        </Node>
-        <Node ToolID="66">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="1122" y="181" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8380_e4ef0c569983477abde25c02a647e585_\Engine_2716_ba3d60e6f5fd4ab08a2d9d0fcba8b269_.yxdb</TempFile>
-              <Layout>
-                <ViewMode>Single</ViewMode>
-                <ViewSize value="100" />
-                <View1>
-                  <DefaultTab>Report</DefaultTab>
-                  <Hints>
-                    <Table />
-                  </Hints>
-                </View1>
-                <View2 />
-              </Layout>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-        </Node>
-      </ChildNodes>
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
@@ -5260,20 +4885,6 @@ fold: [fold:A...</DefaultAnnotationText>
             <Annotation DisplayMode="0">
               <Name>posClass</Name>
               <AnnotationText>This configuration option is only relevant in binary (two-class) classification. Some of the measures reported for binary classification, such as the F1 score, require a distinction between a positive class (such as “Yes”) and a negative class (such as “no”). However, this configuration option is not required. If you leave it blank when using the tool with binary classification models, the tool will choose one of the classes as the positive one.</AnnotationText>
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-        </Node>
-        <Node ToolID="50">
-          <GuiSettings Plugin="AlteryxGuiToolkit.Questions.CheckBoxGroup.CheckBoxGroup">
-            <Position x="496" y="112" width="59" height="59" />
-          </GuiSettings>
-          <Properties>
-            <Configuration />
-            <Annotation DisplayMode="0">
-              <Name>displayGraphs</Name>
-              <AnnotationText>If you wish to view the graphs of the fit measures described in the introduction, you should check this option. If not, you should leave it unchecked, because not creating these graphs will speed up the tool.</AnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
@@ -5399,26 +5010,6 @@ fold: [fold:A...</DefaultAnnotationText>
             </Annotation>
           </Properties>
         </Node>
-        <Node ToolID="56">
-          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="484" y="88.00002" width="72" height="24" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Text>displayGraphs</Text>
-              <Font name="Segoe UI" size="8.25" style="0" />
-              <TextColor r="0" g="128" b="192" />
-              <FillColor name="White" />
-              <Shape shape="3" />
-              <Justification Justification="4" />
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-        </Node>
         <Node ToolID="58">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
             <Position x="594" y="119" width="59" height="59" />
@@ -5469,18 +5060,6 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="5" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="4" Connection="Output4" />
-      <Destination ToolID="60" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="61" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="4" Connection="Output3" />
-      <Destination ToolID="64" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="4" Connection="Output2" />
       <Destination ToolID="68" Connection="Input" />
     </Connection>
@@ -5521,14 +5100,6 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="83" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="82" Connection="Output" />
-      <Destination ToolID="104" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="83" Connection="Output" />
-      <Destination ToolID="84" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="83" Connection="Output" />
       <Destination ToolID="89" Connection="Input" />
     </Connection>
@@ -5537,40 +5108,12 @@ fold: [fold:A...</DefaultAnnotationText>
       <Destination ToolID="86" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="85" Connection="Output" />
-      <Destination ToolID="87" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="86" Connection="Output" />
-      <Destination ToolID="88" Connection="Input" />
-    </Connection>
-    <Connection>
       <Origin ToolID="92" Connection="True" />
       <Destination ToolID="93" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="93" Connection="Output" />
       <Destination ToolID="69" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="61" Connection="Output" />
-      <Destination ToolID="62" Connection="Input" />
-    </Connection>
-    <Connection name="#2">
-      <Origin ToolID="61" Connection="Output" />
-      <Destination ToolID="65" Connection="Input" />
-    </Connection>
-    <Connection name="#1">
-      <Origin ToolID="63" Connection="Output" />
-      <Destination ToolID="65" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="64" Connection="Unique" />
-      <Destination ToolID="63" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="65" Connection="Output" />
-      <Destination ToolID="66" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -5624,12 +5167,6 @@ fold: [fold:A...</DefaultAnnotationText>
         <Namespace>Question</Namespace>
         <Name>posClass</Name>
         <Value />
-        <IsNumeric value="False" />
-      </Constant>
-      <Constant>
-        <Namespace>Question</Namespace>
-        <Name>displayGraphs</Name>
-        <Value>True</Value>
         <IsNumeric value="False" />
       </Constant>
       <Constant>
@@ -5763,15 +5300,6 @@ fold: [fold:A...</DefaultAnnotationText>
               <ToolId value="48" />
             </Question>
             <Question>
-              <Type>BooleanGroup</Type>
-              <Description><![CDATA[Should graphs of the fit measures be displayed? ]]></Description>
-              <Name>displayGraphs</Name>
-              <ToolId value="50" />
-              <Questions />
-              <Default value="False" />
-              <Collapsable value="False" />
-            </Question>
-            <Question>
               <Type>NumericUpDown</Type>
               <Description>Value of seed</Description>
               <Name>seed</Name>
@@ -5812,14 +5340,7 @@ fold: [fold:A...</DefaultAnnotationText>
         <Tool ToolId="5" Selected="True" />
         <Tool ToolId="28" Selected="True" />
         <Tool ToolId="48" Selected="True" />
-        <Tool ToolId="60" Selected="False" />
-        <Tool ToolId="84" Selected="False" />
-        <Tool ToolId="87" Selected="False" />
-        <Tool ToolId="88" Selected="False" />
         <Tool ToolId="89" Selected="True" />
-        <Tool ToolId="104" Selected="False" />
-        <Tool ToolId="62" Selected="False" />
-        <Tool ToolId="66" Selected="False" />
       </Wiz_OpenOutputTools>
       <Wiz_OutputMessage />
       <Wiz_NoOutputFilesMessage />

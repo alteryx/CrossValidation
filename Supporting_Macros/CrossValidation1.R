@@ -49,7 +49,6 @@ library("ggplot2")
 suppressWarnings(library(AlteryxPredictive))
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
-  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , TRUE),
   `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -636,25 +635,25 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
   
-  if (config$displayGraphs) {
-    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+
+  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
-    )
-    if (config$classification) {
-      if (length(extras$levels) == 2) {
-        print('binary case')
-        plotBinaryData(plotData, config, modelNames)
-      } else {
-        #Generate an empty plot
-        empty_df <- data.frame()
-        emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
-        AlteryxGraph2(emptyPlot, nOutput = 4)
-      }
+  )
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      print('binary case')
+      plotBinaryData(plotData, config, modelNames)
     } else {
-      print('regression case')
-      plotRegressionData(plotData, config, modelNames)
+      #Generate an empty plot
+      empty_df <- data.frame()
+      emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
+      AlteryxGraph2(emptyPlot, nOutput = 4)
     }
+  } else {
+    print('regression case')
+    plotRegressionData(plotData, config, modelNames)
   }
+  
 }
 
 
