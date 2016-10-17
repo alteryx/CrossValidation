@@ -3570,6 +3570,45 @@
 #' ---
 #' 
 #' 
+#' Utility function to check to see if the necessary packages are
+#' installed and install them if they're not.
+#'
+#'
+#' @param packages vector of package names to check and install.
+#' @export
+#' @author Bridget Toomey, Dan Putler
+checkInstalls <- function(packages) {
+  # See if the desired packages are installed, and install if they're not
+  if (!all(packages %in% row.names(installed.packages()))) {
+    # Use the IE based "Internet2" since it is most reliable for this action,
+    # it will be switched back at the end
+    setInternet2(use = TRUE)
+    # Make sure the path to the users library is in place and create it if it
+    # is not
+    minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
+    R_ver <- paste(R.Version()$major, minor_ver, sep = ".")
+    the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
+    # Create the user's personal folder if it doesn't already exist
+    if (!dir.exists(the_path)) {
+      dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
+    }
+    # The set of possible repositories to use
+    repos <- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
+    # Select a particular repository
+    repo <- sample(repos, 1)
+    repo <- c(repo, "https://alteryx.github.io/drat")
+    missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
+    install.packages(missingPackages, lib = the_path, repos = repo)
+    setInternet2(use = FALSE)
+  }
+}
+
+checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2", "AlteryxPredictive"))
+library(ROCR)
+library("TunePareto")
+library("sm")
+library("vioplot")
+library("ggplot2")
 
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
@@ -4119,12 +4158,7 @@ plotRegressionData <- function(plotData, config, modelNames) {
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
-  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2"))
-  library(ROCR)
-  library("TunePareto")
-  library("sm")
-  library("vioplot")
-  library("ggplot2")
+
   
   if (!is.null(config$modelType)){
     config$classification = config$modelType == "classification"
@@ -4201,40 +4235,6 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <MetaInfo connection="Output1">
-          <RecordInfo>
-            <Field name="Trial" source="R-DATA:" type="Int32" />
-            <Field name="Fold" source="R-DATA:" type="Int32" />
-            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Response" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Actual" size="1073741823" source="R-DATA:" type="V_WString" />
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output2">
-          <RecordInfo>
-            <Field name="trial" source="R-DATA:" type="Double" />
-            <Field name="fold" source="R-DATA:" type="Double" />
-            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="variable" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="value" source="R-DATA:" type="Double" />
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output3">
-          <RecordInfo>
-            <Field name="Trial" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Fold" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Model" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Type" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString" />
-            <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString" />
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output4">
-          <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString" />
-          </RecordInfo>
-        </MetaInfo>
       </Properties>
       <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
     </Node>
@@ -4340,7 +4340,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_a5ed539727ea4a7c992eee150bbfb8a9_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_79c7c28362e54b49b28943e57d56fe71_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4631,7 +4631,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_e312d1f6b56e4749a9dfe2423b503818_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_018eb1bf5f05437c83b2e93d7437698c_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4751,7 +4751,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_f7f9c3a58482412891a0644ced97c784_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_fa87d711cade4ed189ac1c2f55824b36_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4778,7 +4778,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_1f3ef25bc3104df3a2e4cff66d897371_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_a13063a3215549b5811e8b2a7180f13d_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -4900,7 +4900,7 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6224_89165bd7174e4d6c835cb404072a3a3d_\Engine_4064_cc044ae0d4294f239e38535ef83c67c2_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_2836_6687f26c8e46409288cde70e8ce47267_\Engine_4064_3d6151ae09984ab9b8e9644f8f34e5d0_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
