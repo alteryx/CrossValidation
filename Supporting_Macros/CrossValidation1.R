@@ -4,13 +4,51 @@
 #' ---
 #' 
 #' 
+#' Utility function to check to see if the necessary packages are
+#' installed and install them if they're not.
+#'
+#'
+#' @param packages vector of package names to check and install.
+#' @export
+#' @author Bridget Toomey, Dan Putler
+checkInstalls <- function(packages) {
+  # See if the desired packages are installed, and install if they're not
+  if (!all(packages %in% row.names(installed.packages()))) {
+    # Use the IE based "Internet2" since it is most reliable for this action,
+    # it will be switched back at the end
+    setInternet2(use = TRUE)
+    # Make sure the path to the users library is in place and create it if it
+    # is not
+    minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
+    R_ver <- paste(R.Version()$major, minor_ver, sep = ".")
+    the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R_ver)
+    # Create the user's personal folder if it doesn't already exist
+    if (!dir.exists(the_path)) {
+      dir.create(the_path, recursive = TRUE, showWarnings = FALSE)
+    }
+    # The set of possible repositories to use
+    repos <- c("http://cran.revolutionanalytics.com", "https://cran.rstudio.com")
+    # Select a particular repository
+    repo <- sample(repos, 1)
+    repo <- c(repo, "https://alteryx.github.io/drat")
+    missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
+    install.packages(missingPackages, lib = the_path, repos = repo)
+    setInternet2(use = FALSE)
+  }
+}
+
+checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2", "AlteryxPredictive"))
+library(ROCR)
+library("TunePareto")
+library("sm")
+library("vioplot")
+library("ggplot2")
 
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 suppressWarnings(library(AlteryxPredictive))
 config <- list(
   `classification` = radioInput('%Question.classification%' , TRUE),
-  `displayGraphs` = checkboxInput('%Question.displayGraphs%' , TRUE),
   `modelType` = textInput("%Question.modelType%", NULL),
   `numberFolds` = numericInput('%Question.numberFolds%' , 5),
   `numberTrials` = numericInput('%Question.numberTrials%' , 3),
@@ -46,7 +84,8 @@ inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
-
+recordID <- c(1:NROW(inputs$data))
+inputs$data <- cbind(inputs$data, recordID)
 
 ##---- Inputs/Config Complete
 
@@ -262,7 +301,18 @@ adjustGbmModel <- function(model){
   return(model)
 }
 
-
+naiveBayesUpdate <- function(model, trainingData, currentYvar) {
+  if (is.null(model$laplace)) {
+    model$laplace <- 0
+    AlteryxMessage2("The Laplace smoothing parameter was not saved in the model object.", iType = 2, iPriority = 3)
+    AlteryxMessage2("Hence, we are using a smoothing parameter of 0 for Cross-Validation.", iType = 2, iPriority = 3)
+  }
+  predictors <- trainingData[,-(which(colnames(trainingData) == currentYvar))]
+  response <- trainingData[,(which(colnames(trainingData) == currentYvar))]
+  naiveBayes.default <- getS3method("naiveBayes", "default")
+  currentModel <- update(model, x = predictors, y = response, laplace = model$laplace)
+  return(currentModel)
+}
 
 #' Given a model, a dataset and index of test cases, return actual and response
 getActualandResponse <- function(model, data, testIndices, extras, mid){
@@ -270,23 +320,30 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   testData <- data[testIndices,]
   testData <- matchLevels(testData, getXlevels(model))
   currentYvar <- getOneYVar(model)
-  currentModel <- update(model, data = trainingData)
+  #Check if the model is Naive Bayes and lacking a Laplace parameter.
+  #If so, set the Laplace parameter to 0 and warn the user.
+  if (inherits(model, "naiveBayes")) {
+    currentModel <- naiveBayesUpdate(model, trainingData, currentYvar)
+  } else {
+    currentModel <- update(model, data = trainingData)
+  }
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
   actual <- (extras$yVar)[testIndices]
+  recordID <- (data[testIndices,])$recordID
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
-    d <- data.frame(response = response, actual = actual)
+    d <- data.frame(recordID = recordID, response = response, actual = actual)
     return(cbind(d, pred))
   } else {
     response <- pred$Score
-    return(data.frame(response = response, actual = actual))
+    return(data.frame(recordID = recordID, response = response, actual = actual))
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
 #safeGetActualAndResponse <- getActualandResponse
 
 #' 
@@ -553,12 +610,7 @@ plotRegressionData <- function(plotData, config, modelNames) {
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
-  checkInstalls(c("ROCR", "plyr", "TunePareto", "sm", "vioplot", "ggplot2"))
-  library(ROCR)
-  library("TunePareto")
-  library("sm")
-  library("vioplot")
-  library("ggplot2")
+
   
   if (!is.null(config$modelType)){
     config$classification = config$modelType == "classification"
@@ -586,7 +638,9 @@ runCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+  print("head of dataoutput1 is:")
+  print(head(dataOutput1))
+  preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
                                Response = dataOutput1$response, Actual = dataOutput1$actual)
   write.Alteryx2(preppedOutput1, nOutput = 1)
 
@@ -602,25 +656,23 @@ runCrossValidation <- function(inputs, config){
     write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
   
-  if (config$displayGraphs) {
-    plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
+
+  plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
                       extras = extras, config = config
-    )
-    if (config$classification) {
-      if (length(extras$levels) == 2) {
-        print('binary case')
-        plotBinaryData(plotData, config, modelNames)
-      } else {
-        #Generate an empty plot
-        empty_df <- data.frame()
-        emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
-        AlteryxGraph2(emptyPlot, nOutput = 4)
-      }
+  )
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      plotBinaryData(plotData, config, modelNames)
     } else {
-      print('regression case')
-      plotRegressionData(plotData, config, modelNames)
+      #Generate an empty plot
+      empty_df <- data.frame()
+      emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
+      AlteryxGraph2(emptyPlot, nOutput = 4)
     }
+  } else {
+    plotRegressionData(plotData, config, modelNames)
   }
+  
 }
 
 
