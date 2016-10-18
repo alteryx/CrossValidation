@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="10.5">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxRPluginGui.R">
+        <Position x="54" y="150" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <RScript><![CDATA[predictors <- as.data.frame(matrix(runif(n = 300, min = -1, max = 1), nrow = 100))
+response <- sample(c("Yes", "No"), size = 100, replace = TRUE)
+write.Alteryx(data.frame(col1 = predictors[,1], col2 = predictors[,2], col3 = predictors[,3], response = response), 1)
+
+
+
+]]></RScript>
+          <UseFullUpdate value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output1">
+          <RecordInfo>
+            <Field name="col1" source="R-DATA:" type="Double" />
+            <Field name="col2" source="R-DATA:" type="Double" />
+            <Field name="col3" source="R-DATA:" type="Double" />
+            <Field name="response" size="1073741823" source="R-DATA:" type="V_WString" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxRPluginEngine.dll" EngineDllEntryPoint="AlteryxR" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings>
+        <Position x="198" y="114" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="model.name">nb</Value>
+          <Value name="select.target">response</Value>
+          <Value name="select.predictors">col1=True,col2=True,col3=True,response=False</Value>
+          <Value name="laplace.val">0</Value>
+          <Value name="inches">True</Value>
+          <Value name="in.w">5.50</Value>
+          <Value name="in.h">5.50</Value>
+          <Value name="centimeters">False</Value>
+          <Value name="cm.w">13.00</Value>
+          <Value name="cm.h">14.95</Value>
+          <Value name="graph.resolution">1x</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="Predictive Tools\Naive_Bayes.yxmc" />
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings>
+        <Position x="390" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="numberTrials">3</Value>
+          <Value name="numberFolds">5</Value>
+          <Value name="classification">True</Value>
+          <Value name="regression">False</Value>
+          <Value name="stratified">False</Value>
+          <Value name="posClass">Yes</Value>
+          <Value name="seed">1</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings Macro="C:\Users\btoomey\Desktop\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="486" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9084_3fd96d0f2f884bf28c1742543d04b0f0_\Engine_8228_660d9f2f51e84b26a4dd5d7d76cb3bec_.yxdb</TempFile>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="486" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9084_3fd96d0f2f884bf28c1742543d04b0f0_\Engine_8228_f8d7ea539b8344669fa3854de2a2e0a3_.yxdb</TempFile>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="486" y="222" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9084_3fd96d0f2f884bf28c1742543d04b0f0_\Engine_8228_6989510e1282431c8916a2a0fa8fcc7f_.yxdb</TempFile>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output1" />
+      <Destination ToolID="2" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="1" Connection="Output1" />
+      <Destination ToolID="3" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="2" Connection="Object" />
+      <Destination ToolID="3" Connection="Input_Models" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Data" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Fit Measures" />
+      <Destination ToolID="5" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Full Report" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="True" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Naive_Bayes_test</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+  </Properties>
+</AlteryxDocument>

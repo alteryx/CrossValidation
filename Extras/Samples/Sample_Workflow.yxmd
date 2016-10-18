@@ -171,7 +171,6 @@ Cross-Validation</Text>
           <Value name="regression">True</Value>
           <Value name="stratified">False</Value>
           <Value name="posClass" />
-          <Value name="displayGraphs">True</Value>
           <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">

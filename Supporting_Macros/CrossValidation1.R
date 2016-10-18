@@ -84,7 +84,8 @@ inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
-
+recordID <- c(1:NROW(inputs$data))
+inputs$data <- cbind(inputs$data, recordID)
 
 ##---- Inputs/Config Complete
 
@@ -300,7 +301,18 @@ adjustGbmModel <- function(model){
   return(model)
 }
 
-
+naiveBayesUpdate <- function(model, trainingData, currentYvar) {
+  if (is.null(model$laplace)) {
+    model$laplace <- 0
+    AlteryxMessage2("The Laplace smoothing parameter was not saved in the model object.", iType = 2, iPriority = 3)
+    AlteryxMessage2("Hence, we are using a smoothing parameter of 0 for Cross-Validation.", iType = 2, iPriority = 3)
+  }
+  predictors <- trainingData[,-(which(colnames(trainingData) == currentYvar))]
+  response <- trainingData[,(which(colnames(trainingData) == currentYvar))]
+  naiveBayes.default <- getS3method("naiveBayes", "default")
+  currentModel <- update(model, x = predictors, y = response, laplace = model$laplace)
+  return(currentModel)
+}
 
 #' Given a model, a dataset and index of test cases, return actual and response
 getActualandResponse <- function(model, data, testIndices, extras, mid){
@@ -308,23 +320,30 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   testData <- data[testIndices,]
   testData <- matchLevels(testData, getXlevels(model))
   currentYvar <- getOneYVar(model)
-  currentModel <- update(model, data = trainingData)
+  #Check if the model is Naive Bayes and lacking a Laplace parameter.
+  #If so, set the Laplace parameter to 0 and warn the user.
+  if (inherits(model, "naiveBayes")) {
+    currentModel <- naiveBayesUpdate(model, trainingData, currentYvar)
+  } else {
+    currentModel <- update(model, data = trainingData)
+  }
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
   actual <- (extras$yVar)[testIndices]
+  recordID <- (data[testIndices,])$recordID
   if (config$classification) {
     response <- gsub("Score_", "", names(pred)[max.col(pred)])
-    d <- data.frame(response = response, actual = actual)
+    d <- data.frame(recordID = recordID, response = response, actual = actual)
     return(cbind(d, pred))
   } else {
     response <- pred$Score
-    return(data.frame(response = response, actual = actual))
+    return(data.frame(recordID = recordID, response = response, actual = actual))
   }
 }
 
-safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = TRUE)
+safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
 #safeGetActualAndResponse <- getActualandResponse
 
 #' 
@@ -619,7 +638,9 @@ runCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  preppedOutput1 <- data.frame(Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+  print("head of dataoutput1 is:")
+  print(head(dataOutput1))
+  preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
                                Response = dataOutput1$response, Actual = dataOutput1$actual)
   write.Alteryx2(preppedOutput1, nOutput = 1)
 
@@ -641,7 +662,6 @@ runCrossValidation <- function(inputs, config){
   )
   if (config$classification) {
     if (length(extras$levels) == 2) {
-      print('binary case')
       plotBinaryData(plotData, config, modelNames)
     } else {
       #Generate an empty plot
@@ -650,7 +670,6 @@ runCrossValidation <- function(inputs, config){
       AlteryxGraph2(emptyPlot, nOutput = 4)
     }
   } else {
-    print('regression case')
     plotRegressionData(plotData, config, modelNames)
   }
   
