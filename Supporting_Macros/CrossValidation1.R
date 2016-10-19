@@ -473,8 +473,10 @@ generateConfusionMatrices <- function(outData, extras) {
     paste0("Class_", nameOfClass)
   }
   names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
+  print("head of outdata is:")
+  print(head(outData))
   for (i in 1:length(extras$levels)) {
-    outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
+    outvec[i] <- length(which((outData$actual) == ((extras$levels)[i])))
   }
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
@@ -483,12 +485,19 @@ generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  
+  print("d immediately after the ddply")
+  print(d)
   d$Model <- modelNames[as.numeric(d$mid)]
   d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
+  print("d before the melt")
+  print(d)
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
+  print('d after the melt')
+  print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
+  print('d after the renaming of columns')
+  print(d)
   return(d)
 }
 
