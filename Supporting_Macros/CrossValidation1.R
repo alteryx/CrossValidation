@@ -395,7 +395,7 @@ getMeasuresRegression <- function(outData, extras) {
     mape <- 100*mean(abs(err/actual))
   }
   data.frame(
-    cor = cor(predicted, actual), rmse = rmse, mae = mae, mpe= mpe, mape = mape
+    Correlation = cor(predicted, actual), RMSE = rmse, MAE = mae, MPE= mpe, MAPE = mape
   )
 }
 
@@ -447,7 +447,7 @@ getMeasuresClassification <- function(outData, extras) {
     #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
     percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
     percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
-    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
     #outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
@@ -459,7 +459,7 @@ getMeasuresClassification <- function(outData, extras) {
       outVec[l] <- thisAcc
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
-    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, outVec)
     #outList <- list(outvec)
   }
   return(outVec)
@@ -501,8 +501,22 @@ generateOutput2 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
   d$Model <- modelNames[as.numeric(d$mid)]
   d <- subset(d, select = -c(mid))
-  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
+  return(d)
 }
+
+# generateReportOutput <- function(dataOutput2, config, extras) {
+#   if (config$regression) {
+#     return(ddply(dataOutput2, .(Model), summarize, Mean_Correlation = mean(Correlation), Mean_MAE = mean(MAE),
+#                  Mean_MAPE = mean(MAPE), Mean_MPE = mean(MPE), Mean_RMSE = mean(RMSE)))
+#   } else if (length(extras$levels) == 2) {
+#     #Binary classification
+#     return(ddply(dataOutput2, .(Model), summarize, Mean_Accuracy_Overall = mean(Accuracy_Overall), Mean_Accuracy_Class_1 = mean(Accuracy_Class_1),
+#                  Mean_Accuracy_Class_2 = mean(Accuracy_Class_2), Mean_F1 = mean(F1), Mean_AUC = mean(AUC)))
+#   } else {
+#     #>2 class classification
+#     
+#   }
+# }
 
 generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
@@ -646,7 +660,11 @@ runCrossValidation <- function(inputs, config){
 
 
   dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
-  write.Alteryx2(dataOutput2, nOutput = 2)
+  reportFitOutput <- ddply(dataOutput2[,-c(1:2)], .(Model), colwise(mean))
+  reportFitOutput <- reshape2::melt(reportFitOutput, id = 'Model')
+  write.Alteryx2(reportFitOutput, nOutput = 5)
+  preppedOutput2 <- reshape2::melt(dataOutput2, id = c('trial', 'fold', 'Model'))
+  write.Alteryx2(preppedOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras, modelNames)
