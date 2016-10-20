@@ -5,6 +5,5 @@
 {{ `modelType` }}
 {{ `stratified` }}
 {{ `posClass` }}
-{{ `displayGraphs` }}
 {{ `seed` }}
 </fieldset>
