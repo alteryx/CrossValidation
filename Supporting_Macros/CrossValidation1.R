@@ -84,8 +84,6 @@ inputs <- list(
   data = read.Alteryx2("#1", default = defaults$data),
   models = readModelObjects("#2", default = defaults$models)
 )
-recordID <- c(1:NROW(inputs$data))
-inputs$data <- cbind(inputs$data, recordID)
 
 ##---- Inputs/Config Complete
 
@@ -330,7 +328,7 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
-  pred <- scoreModel(currentModel, new.data = testData)
+  pred <- AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
   print("head of pred is:")
   print(head(pred))
   actual <- (extras$yVar)[testIndices]
@@ -635,7 +633,7 @@ plotRegressionData <- function(plotData, config, modelNames) {
 # Helper Functions End ----
 
 runCrossValidation <- function(inputs, config){
-
+  inputs$data$recordID <- 1:NROW(inputs$data)
   
   if (!is.null(config$modelType)){
     config$classification = config$modelType == "classification"
