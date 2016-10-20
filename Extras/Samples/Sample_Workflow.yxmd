@@ -178,9 +178,6 @@ Cross-Validation</Text>
           <DefaultAnnotationText />
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
       </Properties>
       <EngineSettings Macro="C:\Users\btoomey\Desktop\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
     </Node>
@@ -209,7 +206,7 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_99c0d99431f94fe594913040b6f4b071_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_72bb701ff7b74556bc593fe567f28821_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -232,7 +229,7 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_d9f8e2fbbe79488e8d6dff851034b2ee_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_d7908cfa8ee148e9a6660a24d416c9a6_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -255,7 +252,7 @@ Cross-Validation</Text>
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_844_1288ad2a738a49c0b4614ebfdf891435_\Engine_4496_cc5b95aad59d4ba3b7f2e22094a6a6f2_.yxdb</TempFile>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_fa1f5223dc964732b137c5bf564993d4_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -406,14 +403,14 @@ Union
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="570" y="66" width="138.6955" height="19" />
+        <Position x="570" y="66" width="262" height="274" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>Module Description</Caption>
           <Style TextColor="#2f4f4f" FillColor="#ffffff" BorderColor="#2f4f4f" Transparency="10" Margin="10" />
           <Disabled value="False" />
-          <Folded value="True" />
+          <Folded value="False" />
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -428,7 +425,7 @@ Union
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Text>The Cross-Validation tool directly evaluates one or model Alteryx-generated predictive models without requiring separate test and training datasets. The model quality metrics provided by the tool depend on the type of modeling problem (regression, two-class classification, or classification with more than two classes). This workflow illustrates how the Cross-Validation tool can be used in a regression problem. Gender, height, age, weight, and Body Mass Index are used to predict a person's body fat percentage.</Text>
+              <Text>The Cross-Validation tool directly evaluates one or more Alteryx-generated predictive models without requiring separate test and training datasets. The model quality metrics provided by the tool depend on the type of modeling problem (regression, two-class classification, or classification with more than two classes). This workflow illustrates how the Cross-Validation tool can be used in a regression problem. Gender, height, age, weight, and Body Mass Index are used to predict a person's body fat percentage.</Text>
               <Font name="Microsoft Sans Serif" size="9.75" style="0" />
               <TextColor name="Black" />
               <FillColor name="White" />

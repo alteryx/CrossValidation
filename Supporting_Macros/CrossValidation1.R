@@ -331,6 +331,8 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
+  print("head of pred is:")
+  print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -353,7 +355,7 @@ getCrossValidatedResults <- function(inputs, allFolds, extras, config){
     testIndices <- allFolds[[trial]][[fold]]
     out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
     if (is.null(out)) {
-      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", "the data could not be scored."), iType = 2, iPriority = 3)
+      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", fold, " the data could not be scored."), iType = 2, iPriority = 3)
     } else {
       out <- cbind(trial = trial, fold = fold, mid = mid, out)
     }
@@ -395,7 +397,7 @@ getMeasuresRegression <- function(outData, extras) {
     mape <- 100*mean(abs(err/actual))
   }
   data.frame(
-    cor = cor(predicted, actual), rmse = rmse, mae = mae, mpe= mpe, mape = mape
+    Correlation = cor(predicted, actual), RMSE = rmse, MAE = mae, MPE= mpe, MAPE = mape
   )
 }
 
@@ -447,7 +449,7 @@ getMeasuresClassification <- function(outData, extras) {
     #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
     percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
     percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
-    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
     #outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
@@ -459,7 +461,7 @@ getMeasuresClassification <- function(outData, extras) {
       outVec[l] <- thisAcc
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
-    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Overall_Accuracy = overallAcc, outVec)
+    outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, outVec)
     #outList <- list(outvec)
   }
   return(outVec)
@@ -473,8 +475,10 @@ generateConfusionMatrices <- function(outData, extras) {
     paste0("Class_", nameOfClass)
   }
   names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
+  print("head of outdata is:")
+  print(head(outData))
   for (i in 1:length(extras$levels)) {
-    outvec[i] <- length(which((outData[,3+i]) == ((extras$levels)[i])))
+    outvec[i] <- length(which((outData$actual) == ((extras$levels)[i])))
   }
   return(c(mid = unique(outData$mid), trial = unique(outData$trial), fold = unique(outData$fold), Predicted_class = as.character(unique(outData$response)), outvec))
 }
@@ -483,12 +487,19 @@ generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  
+  print("d immediately after the ddply")
+  print(d)
   d$Model <- modelNames[as.numeric(d$mid)]
   d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
+  print("d before the melt")
+  print(d)
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
+  print('d after the melt')
+  print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
+  print('d after the renaming of columns')
+  print(d)
   return(d)
 }
 
@@ -501,8 +512,22 @@ generateOutput2 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid), fun, extras = extras)
   d$Model <- modelNames[as.numeric(d$mid)]
   d <- subset(d, select = -c(mid))
-  d <- reshape2::melt(d, id = c('trial', 'fold', 'Model'))
+  return(d)
 }
+
+# generateReportOutput <- function(dataOutput2, config, extras) {
+#   if (config$regression) {
+#     return(ddply(dataOutput2, .(Model), summarize, Mean_Correlation = mean(Correlation), Mean_MAE = mean(MAE),
+#                  Mean_MAPE = mean(MAPE), Mean_MPE = mean(MPE), Mean_RMSE = mean(RMSE)))
+#   } else if (length(extras$levels) == 2) {
+#     #Binary classification
+#     return(ddply(dataOutput2, .(Model), summarize, Mean_Accuracy_Overall = mean(Accuracy_Overall), Mean_Accuracy_Class_1 = mean(Accuracy_Class_1),
+#                  Mean_Accuracy_Class_2 = mean(Accuracy_Class_2), Mean_F1 = mean(F1), Mean_AUC = mean(AUC)))
+#   } else {
+#     #>2 class classification
+#     
+#   }
+# }
 
 generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
@@ -582,14 +607,14 @@ plotBinaryData <- function(plotData, config, modelNames) {
   rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
                       models = plotData$modelVec, trial = plotData$trialVec)
   
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
-  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle('Gain Charts')
-  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle('Precision and Recall Curves')
-  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + facet_grid(models ~ trial) +
-    geom_line(aes(colour=fold)) + ggtitle('ROC Curves')
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + 
+    geom_smooth(aes(colour=models)) + ggtitle("Lift curves") 
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + 
+    geom_smooth(aes(colour=models)) + ggtitle('Gain Charts')
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + 
+    geom_smooth(aes(colour=models)) + ggtitle('Precision and Recall Curves')
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) +
+    geom_smooth(aes(colour=models)) + ggtitle('ROC Curves')
   AlteryxGraph2(liftPlotObj, nOutput = 4)
   AlteryxGraph2(gainPlotObj, nOutput = 4)
   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
@@ -602,8 +627,8 @@ plotRegressionData <- function(plotData, config, modelNames) {
   plotData <- cbind(plotData, modelVec, trialVec)
   plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
                        models = plotData$modelVec, trial = plotData$trialVec)
-  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
+  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + 
+    geom_smooth(aes(colour=models)) + ggtitle("Predicted value vs actual values")
   AlteryxGraph2(plotObj, nOutput = 4)
 }
 
@@ -646,7 +671,11 @@ runCrossValidation <- function(inputs, config){
 
 
   dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
-  write.Alteryx2(dataOutput2, nOutput = 2)
+  reportFitOutput <- ddply(dataOutput2[,-c(1:2)], .(Model), colwise(mean))
+  reportFitOutput <- reshape2::melt(reportFitOutput, id = 'Model')
+  write.Alteryx2(reportFitOutput, nOutput = 5)
+  preppedOutput2 <- reshape2::melt(dataOutput2, id = c('trial', 'fold', 'Model'))
+  write.Alteryx2(preppedOutput2, nOutput = 2)
 
   if (config$classification) {
     confMats <- generateOutput3(dataOutput1, extras, modelNames)
@@ -655,11 +684,8 @@ runCrossValidation <- function(inputs, config){
     #Provide garbage data that'll get filtered out on the Alteryx side.
     write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
-  
-
   plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
-                      extras = extras, config = config
-  )
+                      extras = extras, config = config)
   if (config$classification) {
     if (length(extras$levels) == 2) {
       plotBinaryData(plotData, config, modelNames)
