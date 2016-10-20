@@ -331,6 +331,8 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- scoreModel(currentModel, new.data = testData)
+  print("head of pred is:")
+  print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -353,7 +355,7 @@ getCrossValidatedResults <- function(inputs, allFolds, extras, config){
     testIndices <- allFolds[[trial]][[fold]]
     out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
     if (is.null(out)) {
-      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", "the data could not be scored."), iType = 2, iPriority = 3)
+      AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", fold, " the data could not be scored."), iType = 2, iPriority = 3)
     } else {
       out <- cbind(trial = trial, fold = fold, mid = mid, out)
     }
@@ -605,14 +607,14 @@ plotBinaryData <- function(plotData, config, modelNames) {
   rocdf <- data.frame(False_Pos_Rate = plotData$False_Pos_Rate, True_Pos_Rate = plotData$True_Pos_Rate, fold = paste0("Fold", plotData$fold),
                       models = plotData$modelVec, trial = plotData$trialVec)
   
-  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle("Lift curves") 
-  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle('Gain Charts')
-  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle('Precision and Recall Curves')
-  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) + facet_grid(models ~ trial) +
-    geom_line(aes(colour=fold)) + ggtitle('ROC Curves')
+  liftPlotObj <- ggplot(data = liftdf, aes(x = Rate_positive_predictions, y = lift)) + 
+    geom_smooth(aes(colour=models)) + ggtitle("Lift curves") 
+  gainPlotObj <- ggplot(data = gaindf, aes(x = Rate_positive_predictions, y = True_Pos_Rate)) + 
+    geom_smooth(aes(colour=models)) + ggtitle('Gain Charts')
+  PrecRecallPlotObj <- ggplot(data = prec_recalldf, aes(x = recall, y = precision)) + 
+    geom_smooth(aes(colour=models)) + ggtitle('Precision and Recall Curves')
+  ROCPlotObj <- ggplot(data = rocdf, aes(x = False_Pos_Rate, y = True_Pos_Rate)) +
+    geom_smooth(aes(colour=models)) + ggtitle('ROC Curves')
   AlteryxGraph2(liftPlotObj, nOutput = 4)
   AlteryxGraph2(gainPlotObj, nOutput = 4)
   AlteryxGraph2(PrecRecallPlotObj, nOutput = 4)
@@ -625,8 +627,8 @@ plotRegressionData <- function(plotData, config, modelNames) {
   plotData <- cbind(plotData, modelVec, trialVec)
   plotdf <- data.frame(Actual = plotData$actual, Predicted = plotData$response, fold = paste0("Fold", plotData$fold), 
                        models = plotData$modelVec, trial = plotData$trialVec)
-  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + facet_grid(models ~ trial) + 
-    geom_line(aes(colour=fold)) + ggtitle("Predicted value vs actual values")
+  plotObj <- ggplot(data = plotdf, aes(x = Actual, y = Predicted)) + 
+    geom_smooth(aes(colour=models)) + ggtitle("Predicted value vs actual values")
   AlteryxGraph2(plotObj, nOutput = 4)
 }
 
@@ -682,11 +684,8 @@ runCrossValidation <- function(inputs, config){
     #Provide garbage data that'll get filtered out on the Alteryx side.
     write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
   }
-  
-
   plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
-                      extras = extras, config = config
-  )
+                      extras = extras, config = config)
   if (config$classification) {
     if (length(extras$levels) == 2) {
       plotBinaryData(plotData, config, modelNames)
