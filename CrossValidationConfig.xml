@@ -9,7 +9,7 @@
     <OutputConnections>
       <Connection Name="Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
       <Connection Name="Fit Measures" AllowMultiple="False" Optional="False" Type="Connection" Label="F"/>
-      <Connection Name="Confusion Matrices" AllowMultiple="False" Optional="False" Type="Connection" Label="C"/>
+      <Connection Name="Full Report" AllowMultiple="False" Optional="False" Type="Connection" Label="R"/>
     </OutputConnections>
   </GuiSettings>
   <Properties>
