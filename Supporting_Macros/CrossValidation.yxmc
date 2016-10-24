@@ -3622,7 +3622,6 @@ config &lt;- list(
   `predFields` = listInput('%Question.predFields%'),
   `regression` = radioInput('%Question.regression%' , FALSE),
   `stratified` = checkboxInput('%Question.stratified%' , FALSE),
-  `targetField` = dropdownInput('%Question.targetField%'),
   `seed` = numericInput('%Question.seed%', 1)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
@@ -3659,10 +3658,11 @@ areIdentical &lt;- function(v1, v2){
 }
 
 #' Helper Functions For Tests
-makePayload &lt;- function(csvFile, modelsFile, targetVar){
+makePayload &lt;- function(csvFile, modelsFile){
   test_data &lt;- read.csv(csvFile)
   list(
-    data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
+    #data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
+    data = test_data,
     models = AlteryxPredictive::readModelObjects("2", readRDS(modelsFile))
   )
 }
@@ -3894,7 +3894,11 @@ getActualandResponse &lt;- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel &lt;- adjustGbmModel(currentModel)
   }
-  pred &lt;- AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
+  pred &lt;- if (packageVersion('AlteryxPredictive') &lt;= '0.3.2') {
+    AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
+  } else {
+    AlteryxPredictive::scoreModel(currentModel, new.data = testData)
+  }
   print("head of pred is:")
   print(head(pred))
   actual &lt;- (extras$yVar)[testIndices]
@@ -4202,10 +4206,10 @@ runCrossValidation &lt;- function(inputs, config){
   inputs$data$recordID &lt;- 1:NROW(inputs$data)
   
   if (!is.null(config$modelType)){
-    config$classification = config$modelType == "classification"
+    config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-
+  print(config)
   yVar &lt;- getYvars(inputs$data, inputs$models)
   if ((config$classification) &amp;&amp; (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
