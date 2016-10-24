@@ -37,7 +37,6 @@
           <Value name="regression">True</Value>
           <Value name="stratified">False</Value>
           <Value name="posClass" />
-          <Value name="displayGraphs">True</Value>
           <Value name="seed">1</Value>
         </Configuration>
         <Annotation DisplayMode="0">
@@ -57,7 +56,8 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6792_4fb6bdf75f744d05a7d36eae72ac8c93_\Engine_7388_579db7e96ae14a87b49f3c16e2dbd91b_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_e945aaf31e11476ea85e5a90bde19942_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_da2b5942bec94ed48b263017a6f7c4cb_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -80,7 +80,8 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6792_4fb6bdf75f744d05a7d36eae72ac8c93_\Engine_7388_f1ebe6869a104fb1b735542dde2b6134_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_4b033f8ab48b419891087aff3ade8621_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_e102120abbb14fbb9f93855c5d10199c_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -103,7 +104,8 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_6792_4fb6bdf75f744d05a7d36eae72ac8c93_\Engine_7388_fbd56246156b4d41ba9548f55a985379_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_578dff9bb958494f8e44d97e8a56faba_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_8620_44654723f0634dcba47ce52d03805916_\Engine_9124_d3f04615ac56421890e16c3639133327_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -150,13 +152,13 @@
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="age" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="sex" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="bmi" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="children" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="smoker" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="region" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="charges" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="age" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="sex" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="bmi" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="children" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="smoker" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="region" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="charges" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -244,6 +246,10 @@
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />
