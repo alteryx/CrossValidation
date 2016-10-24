@@ -115,7 +115,11 @@ runTest <- function(modelName, payload){
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
-  modelXVars <- lapply(inputs$models, getXVars2)
+  modelXVars <-  if (packageVersion('AlteryxPredictive') <= '0.3.2'){
+    lapply(inputs$models, getXVars2)
+  } else {
+    lapply(inputs$models, getXVars)
+  }
   dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
