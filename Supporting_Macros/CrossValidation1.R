@@ -56,7 +56,6 @@ config <- list(
   `predFields` = listInput('%Question.predFields%'),
   `regression` = radioInput('%Question.regression%' , FALSE),
   `stratified` = checkboxInput('%Question.stratified%' , FALSE),
-  `targetField` = dropdownInput('%Question.targetField%'),
   `seed` = numericInput('%Question.seed%', 1)
 )
 options(alteryx.wd = '%Engine.WorkflowDirectory%')
@@ -93,10 +92,11 @@ areIdentical <- function(v1, v2){
 }
 
 #' Helper Functions For Tests
-makePayload <- function(csvFile, modelsFile, targetVar){
+makePayload <- function(csvFile, modelsFile){
   test_data <- read.csv(csvFile)
   list(
-    data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
+    #data = test_data[, c(targetVar, setdiff(names(test_data), targetVar))],
+    data = test_data,
     models = AlteryxPredictive::readModelObjects("2", readRDS(modelsFile))
   )
 }
@@ -328,7 +328,11 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
-  pred <- AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
+  pred <- if (packageVersion('AlteryxPredictive') <= '0.3.2') {
+    AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
+  } else {
+    AlteryxPredictive::scoreModel(currentModel, new.data = testData)
+  }
   print("head of pred is:")
   print(head(pred))
   actual <- (extras$yVar)[testIndices]
@@ -636,10 +640,10 @@ runCrossValidation <- function(inputs, config){
   inputs$data$recordID <- 1:NROW(inputs$data)
   
   if (!is.null(config$modelType)){
-    config$classification = config$modelType == "classification"
+    config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-
+  print(config)
   yVar <- getYvars(inputs$data, inputs$models)
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
