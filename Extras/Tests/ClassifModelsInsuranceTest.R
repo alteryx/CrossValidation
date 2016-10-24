@@ -10,14 +10,12 @@ config <- list(
   numberTrials = 1,
   posClass = "",
   regression = FALSE,
-  stratified = FALSE,
-  targetField = 'smoker'
+  stratified = FALSE
 )
 
 payload <- makePayload(
   'Extras/Tests/Data/Insurance.csv',
-  'Extras/Tests/Data/AllClassifModelsInsurance.rds',
-  config$targetField
+  'Extras/Tests/Data/AllClassifModelsInsurance.rds'
 )
 
 l_ply(names(payload$models[-1]), failwith(f = runTest), payload = payload)

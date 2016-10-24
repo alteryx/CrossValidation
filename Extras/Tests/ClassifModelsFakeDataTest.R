@@ -10,14 +10,12 @@ config <- list(
   numberTrials = 3,
   posClass = "",
   regression = FALSE,
-  stratified = FALSE,
-  targetField = 'lastCol'
+  stratified = FALSE
 )
 
 payload <- makePayload(
   'Extras/Tests/Data/FakeData.csv',
-  'Extras/Tests/Data/RandomForest_FakeData.rds',
-  config$targetField
+  'Extras/Tests/Data/RandomForest_FakeData.rds'
 )
 
 set.seed(1234)

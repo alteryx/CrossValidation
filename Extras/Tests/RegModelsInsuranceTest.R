@@ -11,16 +11,14 @@ config <- config <- list(
   numberTrials = 1,
   posClass = "",
   regression = FALSE,
-  stratified = FALSE,
-  targetField = 'charges'
+  stratified = FALSE
 )
 
 
 
 payload <- makePayload(
   'Extras/Tests/Data/Insurance.csv',
-  'Extras/Tests/Data/AllRegModelsInsurance.rds',
-  config$targetField
+  'Extras/Tests/Data/AllRegModelsInsurance.rds'
 )
 
 
