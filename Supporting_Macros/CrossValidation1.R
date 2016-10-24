@@ -44,6 +44,15 @@ library("sm")
 library("vioplot")
 library("ggplot2")
 
+#Make sure the user has at least AlteryxPredictive 0.3.1, since that version
+#contains scoreModel2
+if (packageVersion("AlteryxPredictive") < '0.3.2') {
+  setInternet2(use = TRUE)
+  the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R.Version()$major, ".", substr(R.Version()$minor, start = 1, stop = 1))
+  install.packages("AlteryxPredictive", lib = the_path, repos = "https://alteryx.github.io/drat")
+  setInternet2(use = FALSE)
+}
+
 #' ### Read Configuration
 #' ## DO NOT MODIFY: Auto Inserted by AlteryxRhelper ----
 suppressWarnings(library(AlteryxPredictive))
@@ -329,8 +338,6 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
     currentModel <- adjustGbmModel(currentModel)
   }
   pred <- AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
-  print("head of pred is:")
-  print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -344,7 +351,6 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
 }
 
 safeGetActualAndResponse <- failwith(NULL, getActualandResponse, quiet = FALSE)
-#safeGetActualAndResponse <- getActualandResponse
 
 #' 
 getCrossValidatedResults <- function(inputs, allFolds, extras, config){
@@ -371,13 +377,10 @@ getPkgListForModels <- function(models){
   unique(unlist(pkgMap[modelClasses]))
 }
 
-
-
-
 #Get the necessary measures in the regression case
 getMeasuresRegression <- function(outData, extras) {
   actual <- unlist(outData$actual)
-  predicted <- unlist(outData$response)
+  predicted <- unlist(outData$Score)
   modelIndic <- outData$mid
   trialIndic <- outData$trial
   foldIndic <- outData$fold
@@ -402,7 +405,7 @@ getMeasuresRegression <- function(outData, extras) {
 #Get the necessary measures in the classification case
 getMeasuresClassification <- function(outData, extras) {
   actual <- as.character(outData$actual)
-  scoredData <- outData[,6:7]
+  scoredData <- outData[,7:8]
   scoredOutput <- as.character(outData$response)
   posClass <- extras$posClass
   modelIndic <- unique(outData$mid)
@@ -438,17 +441,11 @@ getMeasuresClassification <- function(outData, extras) {
     precision <- nCorrectPos/nPredPos
     recall <- nCorrectPos/nActualPos
     F1 <- 2*(precision*recall)/(precision + recall)
-    #F1 <- performance(predictionObj, "f")
-    #F1 <- unlist(F1@y.values) # converting S4 class to scalar
-    
     AUC <- performance(prediction.obj = predictionObj, measure = "auc")
     AUC <- unlist(AUC@y.values)
-    #     rocrMeasures <- list(accuracy = perf_acc, lift = perf_lift, gain = perf_gain,
-    #                          roc = perf_roc, pr = perf_pr, AUC = AUC, F1 = F1)
     percentClass1Right <- sum(scoredOutput[which(actual == (extras$levels)[1])] == (extras$levels)[[1]])/length(which(actual == (extras$levels)[1]))
     percentClass2Right <- sum(scoredOutput[which(actual == (extras$levels)[2])] == (extras$levels)[[2]])/length(which(actual == (extras$levels)[2]))
     outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, Accuracy_Class_1 = percentClass1Right, Accuracy_Class_2 = percentClass2Right, F1 = F1, AUC = AUC)
-    #outList <- list(outVec, rocrMeasures)
   } else {
     #Compute accuracy by class
     outVec <- vector(length = length((extras$levels)))
@@ -460,7 +457,6 @@ getMeasuresClassification <- function(outData, extras) {
       names(outVec)[l] <- paste0("Accuracy_Class_", l)
     }
     outVec <- c(mid = modelIndic, trial = trialIndic, fold = foldIndic, Accuracy_Overall = overallAcc, outVec)
-    #outList <- list(outvec)
   }
   return(outVec)
 }
@@ -473,8 +469,6 @@ generateConfusionMatrices <- function(outData, extras) {
     paste0("Class_", nameOfClass)
   }
   names(outvec) <- sapply(X = (extras$levels), FUN = pasteClass, simplify = TRUE)
-  print("head of outdata is:")
-  print(head(outData))
   for (i in 1:length(extras$levels)) {
     outvec[i] <- length(which((outData$actual) == ((extras$levels)[i])))
   }
@@ -485,19 +479,11 @@ generateOutput3 <- function(data, extras, modelNames) {
   d <- ddply(data, .(trial, fold, mid, response), generateConfusionMatrices, 
     extras = extras
   )
-  print("d immediately after the ddply")
-  print(d)
   d$Model <- modelNames[as.numeric(d$mid)]
   d$Type <- rep.int('Classification', times = length(d$Model))
   d <- subset(d, select = -c(mid, response))
-  print("d before the melt")
-  print(d)
   d <- reshape2::melt(d, id = c('trial', 'fold', 'Model', 'Type', 'Predicted_class'))
-  print('d after the melt')
-  print(d)
   colnames(d) <- c('Trial', 'Fold', 'Model', 'Type', 'Predicted_class', 'Variable', 'Value')
-  print('d after the renaming of columns')
-  print(d)
   return(d)
 }
 
@@ -512,20 +498,6 @@ generateOutput2 <- function(data, extras, modelNames) {
   d <- subset(d, select = -c(mid))
   return(d)
 }
-
-# generateReportOutput <- function(dataOutput2, config, extras) {
-#   if (config$regression) {
-#     return(ddply(dataOutput2, .(Model), summarize, Mean_Correlation = mean(Correlation), Mean_MAE = mean(MAE),
-#                  Mean_MAPE = mean(MAPE), Mean_MPE = mean(MPE), Mean_RMSE = mean(RMSE)))
-#   } else if (length(extras$levels) == 2) {
-#     #Binary classification
-#     return(ddply(dataOutput2, .(Model), summarize, Mean_Accuracy_Overall = mean(Accuracy_Overall), Mean_Accuracy_Class_1 = mean(Accuracy_Class_1),
-#                  Mean_Accuracy_Class_2 = mean(Accuracy_Class_2), Mean_F1 = mean(F1), Mean_AUC = mean(AUC)))
-#   } else {
-#     #>2 class classification
-#     
-#   }
-# }
 
 generateOutput1 <- function(inputs, config, extras){
   pkgsToLoad <- getPkgListForModels(inputs$models)
@@ -567,17 +539,20 @@ computeBinaryMetrics <- function(pred_prob, actual, threshold){
 }
 
 generateDataForPlots <- function(d, extras, config){
-  if ((length(extras$levels) == 2) && (config$classification)) {
-    thresholds <- seq(0, 1, 0.05)
-    ldply(thresholds, computeBinaryMetrics, 
-          actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
-          pred_prob = d[[paste0('Score_', extras$posClass)]]
-    )
+  if (config$classification) {
+    if (length(extras$levels) == 2) {
+      thresholds <- seq(0, 1, 0.05)
+      ldply(thresholds, computeBinaryMetrics, 
+            actual = ifelse(d$actual == extras$posClass, TRUE, FALSE), 
+            pred_prob = d[[paste0('Score_', extras$posClass)]]
+      )
+    } else{
+      data.frame()
+    }
   } else {
-    data.frame(response = d$response, actual = d$actual)
+    data.frame(response = d$Score, actual = d$actual)
   }
 }
-
 
 generateLabels <- function(plotData, config) {
   trials <- c()
@@ -651,8 +626,6 @@ runCrossValidation <- function(inputs, config){
   modelNames <- names(inputs$models)
   checkXVars(inputs)
   
-  
-  
   extras <- list(
     yVar = yVar,
     posClass = config$posClass,
@@ -661,17 +634,16 @@ runCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  print("head of dataoutput1 is:")
-  print(head(dataOutput1))
+  if (config$regression) {
   preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
-                               Response = dataOutput1$response, Actual = dataOutput1$actual)
+                               Response = dataOutput1$Score, Actual = dataOutput1$actual)
+  } else {
+    preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
+                                 Response = dataOutput1$response, Actual = dataOutput1$actual)
+  }
   write.Alteryx2(preppedOutput1, nOutput = 1)
 
-
   dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
-  reportFitOutput <- ddply(dataOutput2[,-c(1:2)], .(Model), colwise(mean))
-  reportFitOutput <- reshape2::melt(reportFitOutput, id = 'Model')
-  write.Alteryx2(reportFitOutput, nOutput = 5)
   preppedOutput2 <- reshape2::melt(dataOutput2, id = c('trial', 'fold', 'Model'))
   write.Alteryx2(preppedOutput2, nOutput = 2)
 
@@ -696,7 +668,6 @@ runCrossValidation <- function(inputs, config){
   } else {
     plotRegressionData(plotData, config, modelNames)
   }
-  
 }
 
 
