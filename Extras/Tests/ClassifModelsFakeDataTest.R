@@ -1,6 +1,7 @@
 #' ### Classification Model Tests
 library(testthat)
 library(plyr)
+options(testscript = TRUE)
 source('Supporting_Macros/CrossValidation1.r')
 
 config <- list(
@@ -20,7 +21,7 @@ payload <- makePayload(
 
 set.seed(1234)
 inputs <- list(data = payload$data, models = payload$models[1])
-d <- runCrossValidation(inputs, config)
+d <- getResultsCrossValidation(inputs, config)
 
 #l_ply(names(payload$models), failwith(f = runTest), payload = payload)
-
+options(testscript = NULL)
