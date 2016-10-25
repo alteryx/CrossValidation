@@ -38,3 +38,6 @@ SaveModelData.yxmc
 .DS_Store
 README.html
 Extras/Extraneous
+#yxzp and yzi
+*.yxi
+*.yxzp
