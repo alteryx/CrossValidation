@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="25">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="54" y="54" width="672" height="77" />
+        <Position x="101" y="54" width="672" height="77" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -22,28 +22,9 @@ Cross-Validation</Text>
         </Annotation>
       </Properties>
     </Node>
-    <Node ToolID="33">
-      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="138" width="166.1095" height="50" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Caption>&lt;Insert Workflow Name&gt;</Caption>
-          <Style TextColor="#2f4f4f" FillColor="#ecf2f2" BorderColor="#2f4f4f" Transparency="25" Margin="25" />
-          <Disabled value="False" />
-          <Folded value="False" />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <ChildNodes />
-    </Node>
     <Node ToolID="38">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="54" y="258" />
+        <Position x="54" y="230" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -80,7 +61,7 @@ Cross-Validation</Text>
     </Node>
     <Node ToolID="43">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="150" y="258" />
+        <Position x="150" y="234" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -102,180 +83,200 @@ Cross-Validation</Text>
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
     </Node>
-    <Node ToolID="44">
-      <GuiSettings>
-        <Position x="258" y="258" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Value name="Model Name">Linear_regression</Value>
-          <Value name="Y Var">pbf</Value>
-          <Value name="X Vars">gender + height_inches + age + weight_lbs + bmi</Value>
-          <Value name="Omit Constant">False</Value>
-          <Value name="Use Weights">False</Value>
-          <Value name="Weight Vec">height_inches</Value>
-          <Value name="graph.resolution">1x</Value>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings Macro="Predictive Tools\Linear_Regression.yxmc" />
-    </Node>
-    <Node ToolID="45">
-      <GuiSettings>
-        <Position x="258" y="342" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Value name="Model Name">Random_forest</Value>
-          <Value name="Y Var">pbf</Value>
-          <Value name="X Vars">gender + height_inches + age + weight_lbs + bmi</Value>
-          <Value name="Num Trees">500</Value>
-          <Value name="Custom Num Vars">False</Value>
-          <Value name="Num Vars">3</Value>
-          <Value name="model.size">False</Value>
-          <Value name="total.nodes">100</Value>
-          <Value name="max.depth">10</Value>
-          <Value name="node.size">5</Value>
-          <Value name="replace">True</Value>
-          <Value name="samp.rate">100</Value>
-          <Value name="inches">True</Value>
-          <Value name="in.w">5.50</Value>
-          <Value name="in.h">5.50</Value>
-          <Value name="centimeters">False</Value>
-          <Value name="cm.w">13.00</Value>
-          <Value name="cm.h">14.95</Value>
-          <Value name="graph.resolution">1x</Value>
-          <Value name="pointsize">10</Value>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
-    </Node>
-    <Node ToolID="46">
-      <GuiSettings>
-        <Position x="450" y="294" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <Value name="numberTrials">3</Value>
-          <Value name="numberFolds">5</Value>
-          <Value name="classification">False</Value>
-          <Value name="regression">True</Value>
-          <Value name="stratified">False</Value>
-          <Value name="posClass" />
-          <Value name="seed">1</Value>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings Macro="C:\Users\btoomey\Desktop\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
-    </Node>
-    <Node ToolID="47">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
-        <Position x="354" y="306" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <ByName_ErrorMode>Warning</ByName_ErrorMode>
-          <ByName_OutputMode>All</ByName_OutputMode>
-          <Mode>ByName</Mode>
-          <SetOutputOrder value="False" />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
-    </Node>
-    <Node ToolID="48">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="546" y="210" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_72bb701ff7b74556bc593fe567f28821_.yxdb</TempFile>
-          <Layout>
-            <View1>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="49">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="546" y="294" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_d7908cfa8ee148e9a6660a24d416c9a6_.yxdb</TempFile>
-          <Layout>
-            <View1>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="50">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="546" y="378" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7544_94d877498abd4df1a39e340178d7a8b2_\Engine_1832_fa1f5223dc964732b137c5bf564993d4_.yxdb</TempFile>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="37">
+    <Node ToolID="95">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="66.00002" y="582" width="649.0001" height="265" />
+        <Position x="294" y="150" width="467" height="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Regression problem</Caption>
+          <Style TextColor="#314c4a" FillColor="#ecf2f2" BorderColor="#314c4a" Transparency="25" Margin="60" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="47">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+            <Position x="449" y="308" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <ByName_ErrorMode>Warning</ByName_ErrorMode>
+              <ByName_OutputMode>All</ByName_OutputMode>
+              <Mode>ByName</Mode>
+              <SetOutputOrder value="False" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+        </Node>
+        <Node ToolID="45">
+          <GuiSettings>
+            <Position x="354" y="356" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="Model Name">Random_forest</Value>
+              <Value name="Y Var">pbf</Value>
+              <Value name="X Vars">gender + height_inches + age + weight_lbs + bmi</Value>
+              <Value name="Num Trees">500</Value>
+              <Value name="Custom Num Vars">False</Value>
+              <Value name="Num Vars">3</Value>
+              <Value name="model.size">False</Value>
+              <Value name="total.nodes">100</Value>
+              <Value name="max.depth">10</Value>
+              <Value name="node.size">5</Value>
+              <Value name="replace">True</Value>
+              <Value name="samp.rate">100</Value>
+              <Value name="inches">True</Value>
+              <Value name="in.w">5.50</Value>
+              <Value name="in.h">5.50</Value>
+              <Value name="centimeters">False</Value>
+              <Value name="cm.w">13.00</Value>
+              <Value name="cm.h">14.95</Value>
+              <Value name="graph.resolution">1x</Value>
+              <Value name="pointsize">10</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
+        </Node>
+        <Node ToolID="44">
+          <GuiSettings>
+            <Position x="354" y="260" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="Model Name">Linear_regression</Value>
+              <Value name="Y Var">pbf</Value>
+              <Value name="X Vars">gender + height_inches + age + weight_lbs + bmi</Value>
+              <Value name="Omit Constant">False</Value>
+              <Value name="Use Weights">False</Value>
+              <Value name="Weight Vec">height_inches</Value>
+              <Value name="graph.resolution">1x</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="Predictive Tools\Linear_Regression.yxmc" />
+        </Node>
+        <Node ToolID="94">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="545" y="308" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">regression</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">3</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
+        </Node>
+        <Node ToolID="96">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="642" y="229" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_bfc03ba0769344f99194fcb3604ea61b_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="97">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="642" y="313" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_af4cbd8e68994ba0842ba3c7b5f83564_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="98">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="642" y="385" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_fe2282a7cfc743e69c5d74ae45ca68eb_.yxdb</TempFile>
+              <Layout>
+                <ViewMode>Single</ViewMode>
+                <ViewSize value="100" />
+                <View1>
+                  <DefaultTab>Report</DefaultTab>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+                <View2 />
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="88">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="149" y="1546" width="626" height="189" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -291,13 +292,13 @@ Cross-Validation</Text>
         </Annotation>
       </Properties>
       <ChildNodes>
-        <Node ToolID="34">
+        <Node ToolID="85">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="91.00002" y="626" width="203" height="196" />
+            <Position x="174" y="1590" width="179" height="48" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Text />
+              <Text>The heights are divided into groups A, B, and C using a Formula tool.</Text>
               <Font name="Microsoft Sans Serif" size="8.25" style="0" />
               <TextColor name="White" />
               <FillColor r="111" g="111" b="111" />
@@ -311,36 +312,36 @@ Cross-Validation</Text>
             </Annotation>
           </Properties>
         </Node>
-        <Node ToolID="35">
+        <Node ToolID="86">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="306.0001" y="630" width="180" height="132" />
+            <Position x="570" y="1590" width="180" height="84" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Text />
+              <Text>The model is evaluated using the Cross-Validation tool. Observe that a union tool is unnecessary in this case, since only one model is being used as input to the Cross-Validation tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="White" />
+              <FillColor r="111" g="111" b="111" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="87">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="366" y="1590" width="179.9999" height="120" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The Spline Model tool is used to create a model predicting the height group based on the other variables. Note that the height_inches variable is not being used here, since it would be a perfect predictor of the height group. (Then the problem wouldn't be very interesting!)</Text>
               <Font name="Microsoft Sans Serif" size="8.25" style="0" />
               <TextColor name="DarkSlateGray" />
               <FillColor name="White" />
-              <Shape shape="0" />
-              <Justification Justification="0" />
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-        </Node>
-        <Node ToolID="36">
-          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="510.0001" y="630" width="180" height="132" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Text />
-              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
-              <TextColor name="White" />
-              <FillColor r="111" g="111" b="111" />
               <Shape shape="0" />
               <Justification Justification="0" />
             </Configuration>
@@ -355,7 +356,7 @@ Cross-Validation</Text>
     </Node>
     <Node ToolID="29">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="606" y="90" width="98.89567" height="19" />
+        <Position x="653" y="90" width="98.89567" height="19" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -373,7 +374,7 @@ Cross-Validation</Text>
       <ChildNodes>
         <Node ToolID="28">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="616" y="119" width="158" height="139" />
+            <Position x="663" y="119" width="158" height="139" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -403,14 +404,14 @@ Union
     </Node>
     <Node ToolID="27">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="570" y="66" width="262" height="274" />
+        <Position x="617" y="66" width="138.6955" height="19" />
       </GuiSettings>
       <Properties>
         <Configuration>
           <Caption>Module Description</Caption>
           <Style TextColor="#2f4f4f" FillColor="#ffffff" BorderColor="#2f4f4f" Transparency="10" Margin="10" />
           <Disabled value="False" />
-          <Folded value="False" />
+          <Folded value="True" />
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -421,13 +422,515 @@ Union
       <ChildNodes>
         <Node ToolID="26">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="580" y="95" width="242" height="235" />
+            <Position x="627" y="95" width="242" height="367" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Text>The Cross-Validation tool directly evaluates one or more Alteryx-generated predictive models without requiring separate test and training datasets. The model quality metrics provided by the tool depend on the type of modeling problem (regression, two-class classification, or classification with more than two classes). This workflow illustrates how the Cross-Validation tool can be used in a regression problem. Gender, height, age, weight, and Body Mass Index are used to predict a person's body fat percentage.</Text>
+              <Text>The Cross-Validation tool directly evaluates one or more Alteryx-generated predictive models without requiring separate test and training datasets. The model quality metrics provided by the tool depend on the type of modeling problem (regression, two-class classification, or classification with more than two classes). This workflow illustrates how the Cross-Validation tool can be used in a regression problem, two-class classification problem, or a multi-class classification problem. Gender, height, age, weight, and Body Mass Index are used to predict a person's body fat percentage in the regression problem. The same dataset is used in the binary classification problem, but gender is predicted using the other variables. Finally, heights are divided into four classes and predicted using the other variables to demonstrate a multiclass classification problem.</Text>
               <Font name="Microsoft Sans Serif" size="9.75" style="0" />
               <TextColor name="Black" />
+              <FillColor name="White" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="60">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="354" y="738" width="408" height="248" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Two-class classification problem</Caption>
+          <Style TextColor="#2f4f4f" FillColor="#ecf2f2" BorderColor="#2f4f4f" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="54">
+          <GuiSettings>
+            <Position x="390" y="878" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="Model Name">Random_forest</Value>
+              <Value name="Y Var">gender</Value>
+              <Value name="X Vars">height_inches + age + weight_lbs + bmi + pbf</Value>
+              <Value name="Num Trees">500</Value>
+              <Value name="Custom Num Vars">False</Value>
+              <Value name="Num Vars">3</Value>
+              <Value name="model.size">False</Value>
+              <Value name="total.nodes">100</Value>
+              <Value name="max.depth">10</Value>
+              <Value name="node.size">5</Value>
+              <Value name="replace">True</Value>
+              <Value name="samp.rate">100</Value>
+              <Value name="inches">True</Value>
+              <Value name="in.w">5.50</Value>
+              <Value name="in.h">5.50</Value>
+              <Value name="centimeters">False</Value>
+              <Value name="cm.w">13.00</Value>
+              <Value name="cm.h">14.95</Value>
+              <Value name="graph.resolution">1x</Value>
+              <Value name="pointsize">10</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
+        </Node>
+        <Node ToolID="56">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+            <Position x="486" y="854" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <ByName_ErrorMode>Warning</ByName_ErrorMode>
+              <ByName_OutputMode>All</ByName_OutputMode>
+              <Mode>ByName</Mode>
+              <SetOutputOrder value="False" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+        </Node>
+        <Node ToolID="57">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="678" y="782" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_a9e0b950d69e453d8472aa8c950c2d12_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="58">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="678" y="842" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_16ecc6ec31d64dc6a67dc864598dd018_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="59">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="678" y="902" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_36e0a61aed5d47e58530ff8da22e343f_.yxdb</TempFile>
+              <Layout>
+                <ViewMode>Single</ViewMode>
+                <ViewSize value="100" />
+                <View1>
+                  <DefaultTab>Report</DefaultTab>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+                <View2 />
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="80">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="570" y="830" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">classification</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">3</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
+        </Node>
+        <Node ToolID="81">
+          <GuiSettings>
+            <Position x="379" y="794" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="Model Name">Logistic_reg</Value>
+              <Value name="Y Var">gender</Value>
+              <Value name="X Vars">height_inches + age + weight_lbs + bmi + pbf</Value>
+              <Value name="Link">logit</Value>
+              <Value name="Use Weights">False</Value>
+              <Value name="Weight Vec">height_inches</Value>
+              <Value name="graph.resolution">1x</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="Predictive Tools\Logistic_Regression.yxmc" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="68">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="304" y="994" width="434" height="189" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Expand this container to display tool descriptions*</Caption>
+          <Style TextColor="#2f4f4f" FillColor="#ffffff" BorderColor="#2f4f4f" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="65">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="329" y="1038" width="179.9999" height="120" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The Forest Model tool and the Logsitic Regression tool are used to generate models that will predict gender based on the remaining fields. These models are unioned together using a Union tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="DarkSlateGray" />
+              <FillColor name="White" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="66">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="533" y="1038" width="180" height="52" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The models are evaluated using the Cross-Validation tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="White" />
+              <FillColor r="111" g="111" b="111" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="78">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="233" y="1222" width="516" height="296" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Multiclass classification problem</Caption>
+          <Style TextColor="#2f4f4f" FillColor="#ecf2f2" BorderColor="#2f4f4f" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="73">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="665" y="1266" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_a2d7bb77310048deadc60ed4de89ca89_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="74">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="665" y="1350" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_0291a251953b433aa666a8e3aafbd4af_.yxdb</TempFile>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="75">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="665" y="1434" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_e338c144b35e4ad79aa3bdee5b86b2da_.yxdb</TempFile>
+              <Layout>
+                <ViewMode>Single</ViewMode>
+                <ViewSize value="100" />
+                <View1>
+                  <DefaultTab>Report</DefaultTab>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+                <View2 />
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="79">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+            <Position x="258" y="1338" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <FormulaFields>
+                <FormulaField field="Height_class" type="String" size="64" expression="IF [height_inches] &lt; 63&#xA;THEN 'A' &#xA;ELSEIF [height_inches] &lt; 69 &#xA;THEN 'B'&#xA;ELSE 'C'&#xA;ENDIF" />
+              </FormulaFields>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText>Height_class=IF [height_inches] &lt; 63
+THEN 'A' 
+ELSEIF [height...</DefaultAnnotationText>
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+        </Node>
+        <Node ToolID="84">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="534" y="1350" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">classification</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">2</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
+        </Node>
+        <Node ToolID="90">
+          <GuiSettings>
+            <Position x="390" y="1302" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="model.name">nnet</Value>
+              <Value name="select.target">Height_class</Value>
+              <Value name="select.predictors">gender=True,height_inches=False,age=True,weight_lbs=True,bmi=True,pbf=True,Height_class=False</Value>
+              <Value name="use.weights">False</Value>
+              <Value name="select.weights">height_inches</Value>
+              <Value name="num.nodes">10</Value>
+              <Value name="marginal.plots">True</Value>
+              <Value name="custom.scaling">False</Value>
+              <Value name="scale.type">z-score</Value>
+              <Value name="decay">0.100</Value>
+              <Value name="range">0.700</Value>
+              <Value name="max.wts">1000</Value>
+              <Value name="max.iter">100</Value>
+              <Value name="inches">True</Value>
+              <Value name="in.w">5.50</Value>
+              <Value name="in.h">5.50</Value>
+              <Value name="centimeters">False</Value>
+              <Value name="cm.w">13.00</Value>
+              <Value name="cm.h">14.95</Value>
+              <Value name="graph.resolution">1x</Value>
+              <Value name="pointsize">10</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
+        </Node>
+      </ChildNodes>
+    </Node>
+    <Node ToolID="37">
+      <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
+        <Position x="114" y="534" width="649.0001" height="193" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Caption>Expand this container to display tool descriptions*</Caption>
+          <Style TextColor="#2f4f4f" FillColor="#ffffff" BorderColor="#2f4f4f" Transparency="25" Margin="25" />
+          <Disabled value="False" />
+          <Folded value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <ChildNodes>
+        <Node ToolID="34">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="139" y="578" width="203" height="64" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The data is entered using an Input Data tool, and the fields are converted to appropriate types using a Select tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="White" />
+              <FillColor r="111" g="111" b="111" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="36">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="558.0001" y="582" width="180" height="60" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The models are evaluated using the Cross-Validation tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="White" />
+              <FillColor r="111" g="111" b="111" />
+              <Shape shape="0" />
+              <Justification Justification="0" />
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+        </Node>
+        <Node ToolID="35">
+          <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
+            <Position x="354.0001" y="582" width="179.9999" height="120" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Text>The Linear Regression tool and the Forest Model tool are used to generate models that will predict body fat percentage based on the remaining fields. These models are unioned together using a Union tool.</Text>
+              <Font name="Microsoft Sans Serif" size="8.25" style="0" />
+              <TextColor name="DarkSlateGray" />
               <FillColor name="White" />
               <Shape shape="0" />
               <Justification Justification="0" />
@@ -449,7 +952,23 @@ Union
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="44" Connection="Input" />
+      <Destination ToolID="54" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="79" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="81" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="80" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="56" Connection="Output" />
+      <Destination ToolID="80" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
@@ -457,31 +976,79 @@ Union
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="46" Connection="Input_Data" />
+      <Destination ToolID="44" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="94" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="47" Connection="Output" />
-      <Destination ToolID="46" Connection="Input_Models" />
-    </Connection>
-    <Connection name="#2">
-      <Origin ToolID="44" Connection="Output" />
-      <Destination ToolID="47" Connection="Input" />
+      <Destination ToolID="94" Connection="Input_Models" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="45" Connection="Output" />
       <Destination ToolID="47" Connection="Input" />
     </Connection>
-    <Connection>
-      <Origin ToolID="46" Connection="Data" />
-      <Destination ToolID="48" Connection="Input" />
+    <Connection name="#2">
+      <Origin ToolID="44" Connection="Output" />
+      <Destination ToolID="47" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="46" Connection="Fit Measures" />
-      <Destination ToolID="49" Connection="Input" />
+      <Origin ToolID="94" Connection="Data" />
+      <Destination ToolID="96" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="46" Connection="Full Report" />
-      <Destination ToolID="50" Connection="Input" />
+      <Origin ToolID="94" Connection="Fit Measures" />
+      <Destination ToolID="97" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="94" Connection="Full Report" />
+      <Destination ToolID="98" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="54" Connection="Output" />
+      <Destination ToolID="56" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="81" Connection="Output" />
+      <Destination ToolID="56" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="80" Connection="Full Report" />
+      <Destination ToolID="59" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="80" Connection="Fit Measures" />
+      <Destination ToolID="58" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="80" Connection="Data" />
+      <Destination ToolID="57" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="79" Connection="Output" />
+      <Destination ToolID="84" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="90" Connection="Output" />
+      <Destination ToolID="84" Connection="Input_Models" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="79" Connection="Output" />
+      <Destination ToolID="90" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="84" Connection="Fit Measures" />
+      <Destination ToolID="74" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="84" Connection="Full Report" />
+      <Destination ToolID="75" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="84" Connection="Data" />
+      <Destination ToolID="73" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>

@@ -1,5 +1,5 @@
 ### script parameters
-patient_count <- 2000
+patient_count <- 500
 output_file <- "./Extras/Samples/simulated_emr.csv"
 ### gender
 patient_df <- data.frame(
