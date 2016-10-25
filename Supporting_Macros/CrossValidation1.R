@@ -114,7 +114,7 @@ runTest <- function(modelName, payload){
   inputs <- list(data = payload$data, models = payload$models[modelName])
   message(paste(modelName, 'passes'))
   test_that(paste(modelName, 'passes'), {
-    expect_that(invisible(runCrossValidation(inputs, config)), throws_error(NA) )
+    expect_that(invisible(getResultsCrossValidation(inputs, config)), throws_error(NA) )
   })
 }
 
@@ -347,8 +347,8 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   } else {
     AlteryxPredictive::scoreModel(currentModel, new.data = testData)
   }
-  print("head of pred is:")
-  print(head(pred))
+  #print("head of pred is:")
+  #print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -391,7 +391,7 @@ getPkgListForModels <- function(models){
 #Get the necessary measures in the regression case
 getMeasuresRegression <- function(outData, extras) {
   actual <- unlist(outData$actual)
-  predicted <- unlist(outData$Score)
+  predicted <- unlist(outData$response)
   modelIndic <- outData$mid
   trialIndic <- outData$trial
   foldIndic <- outData$fold
@@ -561,7 +561,7 @@ generateDataForPlots <- function(d, extras, config){
       data.frame()
     }
   } else {
-    data.frame(response = d$Score, actual = d$actual)
+    data.frame(response = d$response, actual = d$actual)
   }
 }
 
@@ -617,15 +617,14 @@ plotRegressionData <- function(plotData, config, modelNames) {
 }
 
 # Helper Functions End ----
-
-runCrossValidation <- function(inputs, config){
+getResultsCrossValidation <- function(inputs, config){
   inputs$data$recordID <- 1:NROW(inputs$data)
   
   if (!is.null(config$modelType)){
     config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-  print(config)
+  #print(config)
   yVar <- getYvars(inputs$data, inputs$models)
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
@@ -645,42 +644,62 @@ runCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
-  if (config$regression) {
-  preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
-                               Response = dataOutput1$Score, Actual = dataOutput1$actual)
+  preppedOutput1 <- if (config$regression) {
+    data.frame(RecordID = dataOutput1$recordID, 
+      Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
+      Actual = dataOutput1$actual
+    )
   } else {
-    preppedOutput1 <- data.frame(RecordID = dataOutput1$recordID, Trial = dataOutput1$trial, Fold = dataOutput1$fold, Model = modelNames[dataOutput1$mid],
-                                 Response = dataOutput1$response, Actual = dataOutput1$actual)
+    data.frame(RecordID = dataOutput1$recordID, 
+      Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
+      Actual = dataOutput1$actual
+   )
   }
-  write.Alteryx2(preppedOutput1, nOutput = 1)
-
+  #write.Alteryx2(preppedOutput1, nOutput = 1)
+  
   dataOutput2 <- generateOutput2(dataOutput1, extras, modelNames)
   preppedOutput2 <- reshape2::melt(dataOutput2, id = c('trial', 'fold', 'Model'))
-  write.Alteryx2(preppedOutput2, nOutput = 2)
-
-  if (config$classification) {
-    confMats <- generateOutput3(dataOutput1, extras, modelNames)
-    write.Alteryx2(confMats, 3)
+  #write.Alteryx2(preppedOutput2, nOutput = 2)
+  
+  confMats <- if (config$classification) {
+    generateOutput3(dataOutput1, extras, modelNames)
+    #write.Alteryx2(confMats, 3)
   } else {
     #Provide garbage data that'll get filtered out on the Alteryx side.
-    write.Alteryx2(data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', Predicted_class = 'no', Variable = "Classno", Value = 50), 3)
+    data.frame(Trial = 1, Fold = 1, Model = 'model', Type = 'Regression', 
+      Predicted_class = 'no', Variable = "Classno", Value = 50
+    )
   }
   plotData <- ddply(dataOutput1, .(trial, fold, mid), generateDataForPlots, 
-                      extras = extras, config = config)
-  if (config$classification) {
+    extras = extras, config = config
+  )
+  outputPlot <- if (config$classification) {
     if (length(extras$levels) == 2) {
       plotBinaryData(plotData, config, modelNames)
     } else {
-      #Generate an empty plot
+      # Generate an empty plot
       empty_df <- data.frame()
-      emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + ggtitle("No plots available for >2 class classification")
-      AlteryxGraph2(emptyPlot, nOutput = 4)
+      emptyPlot <- ggplot(empty_df) + geom_point() + xlim(0, 1) + ylim(0, 1) + 
+        ggtitle("No plots available for >2 class classification")
     }
   } else {
     plotRegressionData(plotData, config, modelNames)
   }
+  list(
+    data = preppedOutput1, fitMeasures = preppedOutput2, 
+    confMats = confMats, outputPlot = outputPlot   
+  )
 }
 
+runCrossValidation <- function(inputs, config){
+  results <- getResultsCrossValidation(inputs, config)
+  write.Alteryx2(results$data, 1)
+  write.Alteryx2(results$fitMeasures, 2)
+  write.Alteryx2(results$confMats, 3)
+  AlteryxGraph2(results$outputPlot, 4)
+}
 
 if (is.null(getOption("testscript"))){
   runCrossValidation(inputs, config)
