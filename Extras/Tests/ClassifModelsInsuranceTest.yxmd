@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="54" y="174" />
+        <Position x="54" y="198" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -51,13 +51,13 @@
         </Annotation>
         <MetaInfo connection="Output">
           <RecordInfo>
-            <Field name="age" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="sex" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="bmi" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="children" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="smoker" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="region" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
-            <Field name="charges" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="age" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="sex" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="bmi" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="children" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="smoker" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="region" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
+            <Field name="charges" size="254" source="File: \\vmware-host\Shared Folders\SNIPPETS\dev\Predictive_Refresh\CrossValidation\Extras\Tests\Data\Insurance.csv" type="V_String" />
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -95,7 +95,8 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_4740_b9e64b98a1fb4a309bc35b4af22ab570_\Engine_1832_bf480343a2644b10a7f10f4a43ec69db_.yxdb</TempFile>
+
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3456_b7c6bb07c7414fe0acc296b1bd617a66_\Engine_9124_b328b8288537469487686f380bc01b62_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -118,7 +119,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_4740_b9e64b98a1fb4a309bc35b4af22ab570_\Engine_1832_3788e649888c44c9a0361409dc335632_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3456_b7c6bb07c7414fe0acc296b1bd617a66_\Engine_9124_54dcd46136144727bcc8e5d662652c09_.yxdb</TempFile>
           <Layout>
             <View1>
               <Hints>
@@ -141,7 +142,7 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_4740_b9e64b98a1fb4a309bc35b4af22ab570_\Engine_1832_db33241dcdd647378bc43363be027d03_.yxdb</TempFile>
+          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3456_b7c6bb07c7414fe0acc296b1bd617a66_\Engine_9124_c4dfe9bc160e451e85d02bcb23c96dda_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100" />
@@ -162,20 +163,21 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
-    <Node ToolID="13">
-      <GuiSettings>
-        <Position x="234" y="186" />
+    <Node ToolID="14">
+      <GuiSettings Plugin="CrossValidation">
+        <Position x="222" y="138" />
       </GuiSettings>
       <Properties>
         <Configuration>
-          <Value name="numberTrials">4</Value>
-          <Value name="numberFolds">5</Value>
-          <Value name="classification">True</Value>
-          <Value name="regression">False</Value>
-          <Value name="stratified">False</Value>
-          <Value name="posClass" />
-          <Value name="displayGraphs">True</Value>
           <Value name="seed">1</Value>
+          <Value name="posClass">
+          </Value>
+          <Value name="stratified">False</Value>
+          <Value name="modelType">classification</Value>
+          <Value name="numberFolds">5</Value>
+          <Value name="numberTrials">3</Value>
+          <Value name="regression">False</Value>
+          <Value name="classification">True</Value>
         </Configuration>
         <Annotation DisplayMode="0">
           <Name />
@@ -183,33 +185,33 @@
           <Left value="False" />
         </Annotation>
       </Properties>
-      <EngineSettings Macro="C:\Users\btoomey\Desktop\CrossValidation\Supporting_Macros\CrossValidation.yxmc" />
+      <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
     </Node>
   </Nodes>
   <Connections>
     <Connection>
       <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="13" Connection="Input_Models" />
+      <Destination ToolID="14" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="8" Connection="Output" />
-      <Destination ToolID="13" Connection="Input_Data" />
+      <Destination ToolID="14" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="7" Connection="Output" />
       <Destination ToolID="8" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="13" Connection="Full Report" />
-      <Destination ToolID="12" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="13" Connection="Fit Measures" />
+      <Origin ToolID="14" Connection="Fit Measures" />
       <Destination ToolID="11" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="13" Connection="Data" />
+      <Origin ToolID="14" Connection="Data" />
       <Destination ToolID="10" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="14" Connection="Full Report" />
+      <Destination ToolID="12" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -241,6 +243,10 @@
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />
