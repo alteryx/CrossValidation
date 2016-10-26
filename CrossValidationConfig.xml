@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <AlteryxJavaScriptPlugin>
   <EngineSettings EngineDLL="Macro" EngineDLLEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" SDKVersion="10.1"/>
-  <GuiSettings Html="CrossValidationGui.html" Icon="CrossValidationIcon.png" SDKVersion="10.1" Help=".htm">
+  <GuiSettings Html="CrossValidationGui.html" Icon="CrossValidationIcon.png" SDKVersion="10.1" Help="Cross_Validation.htm">
     <InputConnections>
       <Connection Name="Input_Data" AllowMultiple="False" Optional="False" Type="Connection" Label="D"/>
       <Connection Name="Input_Models" AllowMultiple="False" Optional="False" Type="Connection" Label="M"/>
