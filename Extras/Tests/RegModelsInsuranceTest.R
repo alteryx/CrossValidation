@@ -1,6 +1,7 @@
 #' ### Regression Model Tests
 library(testthat)
 library(plyr)
+options(testscript = TRUE)
 source('Supporting_Macros/CrossValidation1.r')
 
 config <- config <- list(
@@ -23,3 +24,4 @@ payload <- makePayload(
 
 
 l_ply(names(payload$models[-1]), failwith(f = runTest), payload = payload)
+options(testscript = NULL)
