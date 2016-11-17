@@ -16,7 +16,7 @@
     </Node>
     <Node ToolID="3">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="64.00005" y="251"/>
+        <Position x="64.00002" y="251"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -3913,8 +3913,6 @@ getActualandResponse &lt;- function(model, data, testIndices, extras, mid){
   } else {
     AlteryxPredictive::scoreModel(currentModel, new.data = testData)
   }
-  #print("head of pred is:")
-  #print(head(pred))
   actual &lt;- (extras$yVar)[testIndices]
   recordID &lt;- (data[testIndices,])$recordID
   if (config$classification) {
@@ -3957,7 +3955,7 @@ getPkgListForModels &lt;- function(models){
 #Get the necessary measures in the regression case
 getMeasuresRegression &lt;- function(outData, extras) {
   actual &lt;- unlist(outData$actual)
-  predicted &lt;- unlist(outData$response)
+  predicted &lt;- unlist(outData$Score)
   modelIndic &lt;- outData$mid
   trialIndic &lt;- outData$trial
   foldIndic &lt;- outData$fold
@@ -4127,7 +4125,7 @@ generateDataForPlots &lt;- function(d, extras, config){
       data.frame()
     }
   } else {
-    data.frame(response = d$response, actual = d$actual)
+    data.frame(response = d$Score, actual = d$actual)
   }
 }
 
@@ -4190,7 +4188,6 @@ getResultsCrossValidation &lt;- function(inputs, config){
     config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-  #print(config)
   yVar &lt;- getYvars(inputs$data, inputs$models)
   if ((config$classification) &amp;&amp; (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
@@ -4213,7 +4210,7 @@ getResultsCrossValidation &lt;- function(inputs, config){
   preppedOutput1 &lt;- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
       Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
-      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$Score, 
       Actual = dataOutput1$actual
     )
   } else {
@@ -4278,6 +4275,11 @@ if (is.null(getOption("testscript"))){
           <DefaultAnnotationText/>
           <Left value="False"/>
         </Annotation>
+        <MetaInfo connection="Output4">
+          <RecordInfo>
+            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString"/>
+          </RecordInfo>
+        </MetaInfo>
         <MetaInfo connection="Output1">
           <RecordInfo>
             <Field name="RecordID" source="R-DATA:" type="Int32"/>
@@ -4306,11 +4308,6 @@ if (is.null(getOption("testscript"))){
             <Field name="Predicted_class" size="1073741823" source="R-DATA:" type="V_WString"/>
             <Field name="Variable" size="1073741823" source="R-DATA:" type="V_WString"/>
             <Field name="Value" size="1073741823" source="R-DATA:" type="V_WString"/>
-          </RecordInfo>
-        </MetaInfo>
-        <MetaInfo connection="Output4">
-          <RecordInfo>
-            <Field name="Graph" size="1073741823" source="Report:R-Graph:" type="V_WString"/>
           </RecordInfo>
         </MetaInfo>
       </Properties>
@@ -4362,7 +4359,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="28">
       <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
-        <Position x="64.00005" y="383"/>
+        <Position x="64.00002" y="383"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4830,7 +4827,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7824_799ce61f1cbc4c599aceb5e738855d82_\Engine_8664_b646467a817346e5be3dc676432948d4_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_dfa5b310fd2049b78fab55e0bf191494_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_1ef0f9f8306047788c5ca9e6ade0a371_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4857,7 +4855,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7824_799ce61f1cbc4c599aceb5e738855d82_\Engine_8664_13bcb6b9fd384f979c58d7dbb229593d_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_18794f72e781438ba2595d2346166898_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_cd5f298626d940c1b46013ad0642aab3_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4923,7 +4922,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54" y="54" width="622" height="134"/>
+        <Position x="54.00001" y="54" width="622" height="134"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4941,7 +4940,7 @@ if (is.null(getOption("testscript"))){
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="76.00008" y="112.0001" width="59" height="59"/>
+            <Position x="76.00007" y="112.0001" width="59" height="59"/>
           </GuiSettings>
           <Properties>
             <Configuration/>
@@ -5025,7 +5024,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="51">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="64" y="87.99996" width="72" height="24"/>
+            <Position x="64.00001" y="87.99996" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -5045,7 +5044,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="52">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="136" y="88.00001" width="72" height="24"/>
+            <Position x="136" y="87.99995" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -5330,7 +5329,7 @@ if (is.null(getOption("testscript"))){
     <MetaInfo>
       <NameIsFileName value="False"/>
       <Name>Cross Validation</Name>
-      <Description>Benchmark multiple models using cross validation(1).</Description>
+      <Description>Benchmark multiple models using cross validation.</Description>
       <RootToolName/>
       <ToolVersion/>
       <ToolInDb value="False"/>
