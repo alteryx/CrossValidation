@@ -5330,7 +5330,7 @@ if (is.null(getOption("testscript"))){
     <MetaInfo>
       <NameIsFileName value="False"/>
       <Name>Cross Validation</Name>
-      <Description>Benchmark multiple models using cross validation.</Description>
+      <Description>Benchmark multiple models using cross validation(1).</Description>
       <RootToolName/>
       <ToolVersion/>
       <ToolInDb value="False"/>

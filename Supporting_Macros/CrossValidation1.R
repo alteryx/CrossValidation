@@ -347,8 +347,6 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   } else {
     AlteryxPredictive::scoreModel(currentModel, new.data = testData)
   }
-  #print("head of pred is:")
-  #print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -391,7 +389,7 @@ getPkgListForModels <- function(models){
 #Get the necessary measures in the regression case
 getMeasuresRegression <- function(outData, extras) {
   actual <- unlist(outData$actual)
-  predicted <- unlist(outData$response)
+  predicted <- unlist(outData$Score)
   modelIndic <- outData$mid
   trialIndic <- outData$trial
   foldIndic <- outData$fold
@@ -561,7 +559,7 @@ generateDataForPlots <- function(d, extras, config){
       data.frame()
     }
   } else {
-    data.frame(response = d$response, actual = d$actual)
+    data.frame(response = d$Score, actual = d$actual)
   }
 }
 
@@ -624,7 +622,6 @@ getResultsCrossValidation <- function(inputs, config){
     config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-  #print(config)
   yVar <- getYvars(inputs$data, inputs$models)
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
@@ -647,7 +644,7 @@ getResultsCrossValidation <- function(inputs, config){
   preppedOutput1 <- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
       Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
-      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$Score, 
       Actual = dataOutput1$actual
     )
   } else {
