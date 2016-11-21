@@ -46,9 +46,6 @@ Cross-Validation</Text>
           <DefaultAnnotationText>simulated_emr.csv</DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
-        <Dependencies>
-          <Implicit />
-        </Dependencies>
         <MetaInfo connection="Output">
           <RecordInfo>
             <Field name="gender" size="254" source="File: C:\Users\btoomey\Desktop\CrossValidation\Extras\Samples\simulated_emr.csv" type="V_String" />
@@ -155,9 +152,6 @@ Cross-Validation</Text>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
         </Node>
@@ -180,9 +174,6 @@ Cross-Validation</Text>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Linear_Regression.yxmc" />
         </Node>
@@ -262,9 +253,9 @@ Cross-Validation</Text>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
         </Node>
-        <Node ToolID="126">
+        <Node ToolID="129">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="558" y="294" />
+            <Position x="546" y="270" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -275,8 +266,8 @@ Cross-Validation</Text>
               <Value name="modelType">regression</Value>
               <Value name="numberFolds">5</Value>
               <Value name="numberTrials">2</Value>
-              <Value name="regression">True</Value>
-              <Value name="classification">False</Value>
+              <Value name="regression">False</Value>
+              <Value name="classification">True</Value>
             </Configuration>
             <Annotation DisplayMode="0">
               <Name />
@@ -506,9 +497,6 @@ Union
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Forest_Model.yxmc" />
         </Node>
@@ -626,15 +614,12 @@ Union
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Logistic_Regression.yxmc" />
         </Node>
-        <Node ToolID="127">
+        <Node ToolID="130">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="570" y="846" />
+            <Position x="570" y="822" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -865,15 +850,12 @@ ELSEIF [height...</DefaultAnnotationText>
               <DefaultAnnotationText />
               <Left value="False" />
             </Annotation>
-            <Dependencies>
-              <Implicit />
-            </Dependencies>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
         </Node>
-        <Node ToolID="128">
+        <Node ToolID="131">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="558" y="1374" />
+            <Position x="546" y="1374" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -1005,19 +987,19 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="126" Connection="Input_Data" />
+      <Destination ToolID="129" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="47" Connection="Output" />
-      <Destination ToolID="126" Connection="Input_Models" />
+      <Destination ToolID="129" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="127" Connection="Input_Data" />
+      <Destination ToolID="130" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="56" Connection="Output" />
-      <Destination ToolID="127" Connection="Input_Models" />
+      <Destination ToolID="130" Connection="Input_Models" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="45" Connection="Output" />
@@ -1028,16 +1010,16 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="47" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="126" Connection="Full Report" />
-      <Destination ToolID="97" Connection="Input" />
+      <Origin ToolID="129" Connection="Data" />
+      <Destination ToolID="96" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="126" Connection="Fit Measures" />
+      <Origin ToolID="129" Connection="Fit Measures" />
       <Destination ToolID="98" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="126" Connection="Data" />
-      <Destination ToolID="96" Connection="Input" />
+      <Origin ToolID="129" Connection="Full Report" />
+      <Destination ToolID="97" Connection="Input" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="54" Connection="Output" />
@@ -1048,15 +1030,15 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="56" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="127" Connection="Data" />
-      <Destination ToolID="57" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="127" Connection="Fit Measures" />
+      <Origin ToolID="130" Connection="Fit Measures" />
       <Destination ToolID="59" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="127" Connection="Full Report" />
+      <Origin ToolID="130" Connection="Data" />
+      <Destination ToolID="57" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="130" Connection="Full Report" />
       <Destination ToolID="58" Connection="Input" />
     </Connection>
     <Connection>
@@ -1065,22 +1047,22 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="79" Connection="Output" />
-      <Destination ToolID="128" Connection="Input_Data" />
+      <Destination ToolID="131" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="90" Connection="Output" />
-      <Destination ToolID="128" Connection="Input_Models" />
+      <Destination ToolID="131" Connection="Input_Models" />
     </Connection>
     <Connection>
-      <Origin ToolID="128" Connection="Data" />
+      <Origin ToolID="131" Connection="Data" />
       <Destination ToolID="74" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="128" Connection="Fit Measures" />
+      <Origin ToolID="131" Connection="Fit Measures" />
       <Destination ToolID="73" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="128" Connection="Full Report" />
+      <Origin ToolID="131" Connection="Full Report" />
       <Destination ToolID="75" Connection="Input" />
     </Connection>
   </Connections>

@@ -640,6 +640,11 @@ getResultsCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
+  if ((config$regression) && ("Score" %in% colnames(dataOutput1))) {
+    dataOutput1 <- data.frame(trial = dataOutput1$trial, fold = dataOutput1$fold, 
+                              mid = dataOutput1$mid, recordID = dataOutput1$recordID,
+                              response = dataOutput1$Score, actual = dataOutput1$actual)
+  }
 
   preppedOutput1 <- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 

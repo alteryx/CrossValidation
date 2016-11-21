@@ -4206,6 +4206,11 @@ getResultsCrossValidation &lt;- function(inputs, config){
   )
   
   dataOutput1 &lt;- generateOutput1(inputs, config, extras)
+  if ((config$regression) &amp;&amp; ("Score" %in% colnames(dataOutput1))) {
+    dataOutput1 &lt;- data.frame(trial = dataOutput1$trial, fold = dataOutput1$fold, 
+                              mid = dataOutput1$mid, recordID = dataOutput1$recordID,
+                              response = dataOutput1$Score, actual = dataOutput1$actual)
+  }
 
   preppedOutput1 &lt;- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
@@ -4827,8 +4832,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_2f738f52a82a489d852798672041919d_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_c473121658404f84a62cd457d8cdf5cb_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_7ca39dc52f9a4f51b58392a28da1ae14_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_237930e3e070421382c3a240c532cfde_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4855,8 +4860,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_7c38708c619046529ed31af507174de8_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_ad16aa082bfb4c0f8ebf58b0e1b0c8ce_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_1268f6f3d07f4329b0f250f59668f5c0_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_e66dce411c6d4f2194d73608253a9cd0_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
