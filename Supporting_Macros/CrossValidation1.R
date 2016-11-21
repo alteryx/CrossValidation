@@ -341,7 +341,6 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
-
   pred <- if (packageVersion('AlteryxPredictive') <= '0.3.2') {
     AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
   } else {
@@ -389,7 +388,7 @@ getPkgListForModels <- function(models){
 #Get the necessary measures in the regression case
 getMeasuresRegression <- function(outData, extras) {
   actual <- unlist(outData$actual)
-  predicted <- unlist(outData$Score)
+  predicted <- unlist(outData$response)
   modelIndic <- outData$mid
   trialIndic <- outData$trial
   foldIndic <- outData$fold
@@ -559,7 +558,7 @@ generateDataForPlots <- function(d, extras, config){
       data.frame()
     }
   } else {
-    data.frame(response = d$Score, actual = d$actual)
+    data.frame(response = d$response, actual = d$actual)
   }
 }
 
@@ -641,10 +640,11 @@ getResultsCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
+
   preppedOutput1 <- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
       Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
-      Model = modelNames[dataOutput1$mid], Response = dataOutput1$Score, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
       Actual = dataOutput1$actual
     )
   } else {

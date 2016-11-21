@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxRPluginGui.R">
-        <Position x="54" y="150" />
+        <Position x="54" y="126" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -34,7 +34,7 @@ write.Alteryx(data.frame(col1 = predictors[,1], col2 = predictors[,2], col3 = pr
     </Node>
     <Node ToolID="2">
       <GuiSettings>
-        <Position x="198" y="210" />
+        <Position x="198" y="186" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -58,9 +58,79 @@ write.Alteryx(data.frame(col1 = predictors[,1], col2 = predictors[,2], col3 = pr
       </Properties>
       <EngineSettings Macro="Predictive Tools\Naive_Bayes.yxmc" />
     </Node>
-    <Node ToolID="7">
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="462" y="54" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_6f52e22c40494dfeac6887ec3a8baaa8_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_0b7294b5ee5e47e993cd890e97ed91a1_.yxdb</TempFileDataProfiling>
+          <Layout />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="462" y="138" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_873cb0f201b04f8998f64141ca984739_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_35cbfd37ebc94120afbc30ef8bc0ae74_.yxdb</TempFileDataProfiling>
+          <Layout>
+            <View1>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+        <Position x="462" y="222" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_bdab6e738a27410c835ff55590c75155_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_7776_3323add1f48740748395c4eb2ae4e783_\Engine_2812_f3453374a35b4310a16295d3373efa51_.yxdb</TempFileDataProfiling>
+          <Layout>
+            <ViewMode>Single</ViewMode>
+            <ViewSize value="100" />
+            <View1>
+              <DefaultTab>Report</DefaultTab>
+              <Hints>
+                <Table />
+              </Hints>
+            </View1>
+            <View2 />
+          </Layout>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+    </Node>
+    <Node ToolID="11">
       <GuiSettings Plugin="CrossValidation">
-        <Position x="366" y="162" />
+        <Position x="342" y="114" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -82,70 +152,6 @@ write.Alteryx(data.frame(col1 = predictors[,1], col2 = predictors[,2], col3 = pr
       </Properties>
       <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
     </Node>
-    <Node ToolID="8">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="462" y="78" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_f353b428bf5c47d6a684be81d3665041_.yxdb</TempFile>
-          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_7291248efe564f108cf282f2aafdb6a3_.yxdb</TempFileDataProfiling>
-          <Layout />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="9">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="462" y="162" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_95427694db654842bb45eed5f6dd7963_.yxdb</TempFile>
-          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_e4940ea8836c4b0e83483245ba512c42_.yxdb</TempFileDataProfiling>
-          <Layout />
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
-    <Node ToolID="10">
-      <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-        <Position x="462" y="246" />
-      </GuiSettings>
-      <Properties>
-        <Configuration>
-          <TempFile>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_aa67588fc30a455eaec3a4a822b0ddf8_.yxdb</TempFile>
-          <TempFileDataProfiling>C:\ProgramData\Alteryx\Engine\Engine_2748_0e57303f803e4529981b8ea681dfa1c3_\Engine_1600_eb220cbda0e3489a8e7d4dc52d4ce363_.yxdb</TempFileDataProfiling>
-          <Layout>
-            <ViewMode>Single</ViewMode>
-            <ViewSize value="100" />
-            <View1>
-              <DefaultTab>Report</DefaultTab>
-              <Hints>
-                <Table />
-              </Hints>
-            </View1>
-            <View2 />
-          </Layout>
-        </Configuration>
-        <Annotation DisplayMode="0">
-          <Name />
-          <DefaultAnnotationText />
-          <Left value="False" />
-        </Annotation>
-      </Properties>
-      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-    </Node>
   </Nodes>
   <Connections>
     <Connection>
@@ -154,23 +160,23 @@ write.Alteryx(data.frame(col1 = predictors[,1], col2 = predictors[,2], col3 = pr
     </Connection>
     <Connection>
       <Origin ToolID="1" Connection="Output1" />
-      <Destination ToolID="7" Connection="Input_Data" />
+      <Destination ToolID="11" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="2" Connection="Object" />
-      <Destination ToolID="7" Connection="Input_Models" />
+      <Destination ToolID="11" Connection="Input_Models" />
     </Connection>
     <Connection>
-      <Origin ToolID="7" Connection="Data" />
-      <Destination ToolID="8" Connection="Input" />
+      <Origin ToolID="11" Connection="Full Report" />
+      <Destination ToolID="10" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="7" Connection="Fit Measures" />
+      <Origin ToolID="11" Connection="Fit Measures" />
       <Destination ToolID="9" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="7" Connection="Full Report" />
-      <Destination ToolID="10" Connection="Input" />
+      <Origin ToolID="11" Connection="Data" />
+      <Destination ToolID="8" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>

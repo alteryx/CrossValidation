@@ -1,3 +1,5 @@
+.libPaths(c(.libPaths(), "C:/Program Files/Alteryx/R-3.2.3/library"))
+rev(.libPaths())
 #' ### Regression Model Tests
 library(testthat)
 library(plyr)

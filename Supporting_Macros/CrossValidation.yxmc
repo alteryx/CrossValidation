@@ -3907,7 +3907,6 @@ getActualandResponse &lt;- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel &lt;- adjustGbmModel(currentModel)
   }
-
   pred &lt;- if (packageVersion('AlteryxPredictive') &lt;= '0.3.2') {
     AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
   } else {
@@ -3955,7 +3954,7 @@ getPkgListForModels &lt;- function(models){
 #Get the necessary measures in the regression case
 getMeasuresRegression &lt;- function(outData, extras) {
   actual &lt;- unlist(outData$actual)
-  predicted &lt;- unlist(outData$Score)
+  predicted &lt;- unlist(outData$response)
   modelIndic &lt;- outData$mid
   trialIndic &lt;- outData$trial
   foldIndic &lt;- outData$fold
@@ -4125,7 +4124,7 @@ generateDataForPlots &lt;- function(d, extras, config){
       data.frame()
     }
   } else {
-    data.frame(response = d$Score, actual = d$actual)
+    data.frame(response = d$response, actual = d$actual)
   }
 }
 
@@ -4207,10 +4206,11 @@ getResultsCrossValidation &lt;- function(inputs, config){
   )
   
   dataOutput1 &lt;- generateOutput1(inputs, config, extras)
+
   preppedOutput1 &lt;- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
       Trial = dataOutput1$trial, Fold = dataOutput1$fold, 
-      Model = modelNames[dataOutput1$mid], Response = dataOutput1$Score, 
+      Model = modelNames[dataOutput1$mid], Response = dataOutput1$response, 
       Actual = dataOutput1$actual
     )
   } else {
@@ -4827,8 +4827,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_dfa5b310fd2049b78fab55e0bf191494_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_1ef0f9f8306047788c5ca9e6ade0a371_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_2f738f52a82a489d852798672041919d_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_c473121658404f84a62cd457d8cdf5cb_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4855,8 +4855,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_18794f72e781438ba2595d2346166898_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9556_967bbd45d25747d2bd5f48ae7d10d83b_\Engine_2660_cd5f298626d940c1b46013ad0642aab3_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_7c38708c619046529ed31af507174de8_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8600_4829ad6b5c1a408bbc0351db1a14367f_\Engine_5820_ad16aa082bfb4c0f8ebf58b0e1b0c8ce_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
