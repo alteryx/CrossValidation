@@ -341,14 +341,11 @@ getActualandResponse <- function(model, data, testIndices, extras, mid){
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
-
   pred <- if (packageVersion('AlteryxPredictive') <= '0.3.2') {
     AlteryxPredictive::scoreModel2(currentModel, new.data = testData)
   } else {
     AlteryxPredictive::scoreModel(currentModel, new.data = testData)
   }
-  #print("head of pred is:")
-  #print(head(pred))
   actual <- (extras$yVar)[testIndices]
   recordID <- (data[testIndices,])$recordID
   if (config$classification) {
@@ -624,7 +621,6 @@ getResultsCrossValidation <- function(inputs, config){
     config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
-  #print(config)
   yVar <- getYvars(inputs$data, inputs$models)
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
@@ -644,6 +640,12 @@ getResultsCrossValidation <- function(inputs, config){
   )
   
   dataOutput1 <- generateOutput1(inputs, config, extras)
+  if ((config$regression) && ("Score" %in% colnames(dataOutput1))) {
+    dataOutput1 <- data.frame(trial = dataOutput1$trial, fold = dataOutput1$fold, 
+                              mid = dataOutput1$mid, recordID = dataOutput1$recordID,
+                              response = dataOutput1$Score, actual = dataOutput1$actual)
+  }
+
   preppedOutput1 <- if (config$regression) {
     data.frame(RecordID = dataOutput1$recordID, 
       Trial = dataOutput1$trial, Fold = dataOutput1$fold, 

@@ -85,7 +85,7 @@ Cross-Validation</Text>
     </Node>
     <Node ToolID="95">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="294" y="150" width="467" height="354" />
+        <Position x="294" y="150" width="479" height="325" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -103,7 +103,7 @@ Cross-Validation</Text>
       <ChildNodes>
         <Node ToolID="47">
           <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
-            <Position x="449" y="308" />
+            <Position x="450" y="306" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -177,35 +177,14 @@ Cross-Validation</Text>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Linear_Regression.yxmc" />
         </Node>
-        <Node ToolID="94">
-          <GuiSettings Plugin="CrossValidation">
-            <Position x="545" y="308" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Value name="seed">1</Value>
-              <Value name="posClass">
-              </Value>
-              <Value name="stratified">False</Value>
-              <Value name="modelType">regression</Value>
-              <Value name="numberFolds">5</Value>
-              <Value name="numberTrials">3</Value>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
-        </Node>
         <Node ToolID="96">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
             <Position x="642" y="229" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_bfc03ba0769344f99194fcb3604ea61b_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_4673f7c9cb8e4c0c8bc1bdb4b0d1c785_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_8be6b6e219f24483aeab7f09d7b63271_.yxdb</TempFileDataProfiling>
               <Layout>
                 <View1>
                   <Hints>
@@ -224,34 +203,12 @@ Cross-Validation</Text>
         </Node>
         <Node ToolID="97">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="642" y="313" />
+            <Position x="654" y="330" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_af4cbd8e68994ba0842ba3c7b5f83564_.yxdb</TempFile>
-              <Layout>
-                <View1>
-                  <Hints>
-                    <Table />
-                  </Hints>
-                </View1>
-              </Layout>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-        </Node>
-        <Node ToolID="98">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="642" y="385" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8412_fce1c250cd3849749ba87f2694995135_\Engine_7240_fe2282a7cfc743e69c5d74ae45ca68eb_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_ac65f6d4a29040058921edb38ab7205e_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_db001c61d2f243f7b8195f6a47986f7e_.yxdb</TempFileDataProfiling>
               <Layout>
                 <ViewMode>Single</ViewMode>
                 <ViewSize value="100" />
@@ -271,6 +228,54 @@ Cross-Validation</Text>
             </Annotation>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="98">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="654" y="282" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_48a5e78646d2473ea16aa612a7645ada_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_552fc9dff621405f9d918cc17807a2ce_.yxdb</TempFileDataProfiling>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
+        </Node>
+        <Node ToolID="129">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="546" y="270" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">regression</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">2</Value>
+              <Value name="regression">False</Value>
+              <Value name="classification">True</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
         </Node>
       </ChildNodes>
     </Node>
@@ -444,7 +449,7 @@ Union
     </Node>
     <Node ToolID="60">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="354" y="738" width="408" height="248" />
+        <Position x="354" y="738" width="408" height="224" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -497,7 +502,7 @@ Union
         </Node>
         <Node ToolID="56">
           <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
-            <Position x="486" y="854" />
+            <Position x="486" y="858" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -520,7 +525,8 @@ Union
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_a9e0b950d69e453d8472aa8c950c2d12_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_6f181a03957d480b821401ac19f127e7_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_e4e7d47901074e4689c8493c10636669_.yxdb</TempFileDataProfiling>
               <Layout>
                 <View1>
                   <Hints>
@@ -539,34 +545,12 @@ Union
         </Node>
         <Node ToolID="58">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="678" y="842" />
+            <Position x="678" y="870" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_16ecc6ec31d64dc6a67dc864598dd018_.yxdb</TempFile>
-              <Layout>
-                <View1>
-                  <Hints>
-                    <Table />
-                  </Hints>
-                </View1>
-              </Layout>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
-        </Node>
-        <Node ToolID="59">
-          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="678" y="902" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_36e0a61aed5d47e58530ff8da22e343f_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_c1058ec83fc64919a39a75b7a39c5e37_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_c8f7554157144c8d88d7c4b181004da2_.yxdb</TempFileDataProfiling>
               <Layout>
                 <ViewMode>Single</ViewMode>
                 <ViewSize value="100" />
@@ -587,19 +571,21 @@ Union
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
         </Node>
-        <Node ToolID="80">
-          <GuiSettings Plugin="CrossValidation">
-            <Position x="570" y="830" />
+        <Node ToolID="59">
+          <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
+            <Position x="678" y="822" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <Value name="seed">1</Value>
-              <Value name="posClass">
-              </Value>
-              <Value name="stratified">False</Value>
-              <Value name="modelType">classification</Value>
-              <Value name="numberFolds">5</Value>
-              <Value name="numberTrials">3</Value>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_7ac6cff565b049a69701f3adcf6ce303_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_78935f5b50d74830af0145e1d963afad_.yxdb</TempFileDataProfiling>
+              <Layout>
+                <View1>
+                  <Hints>
+                    <Table />
+                  </Hints>
+                </View1>
+              </Layout>
             </Configuration>
             <Annotation DisplayMode="0">
               <Name />
@@ -607,7 +593,7 @@ Union
               <Left value="False" />
             </Annotation>
           </Properties>
-          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
+          <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
         </Node>
         <Node ToolID="81">
           <GuiSettings>
@@ -630,6 +616,30 @@ Union
             </Annotation>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Logistic_Regression.yxmc" />
+        </Node>
+        <Node ToolID="130">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="570" y="822" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">classification</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">1</Value>
+              <Value name="regression">False</Value>
+              <Value name="classification">True</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
         </Node>
       </ChildNodes>
     </Node>
@@ -695,7 +705,7 @@ Union
     </Node>
     <Node ToolID="78">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="233" y="1222" width="516" height="296" />
+        <Position x="233" y="1282" width="553" height="224" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -713,11 +723,12 @@ Union
       <ChildNodes>
         <Node ToolID="73">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="665" y="1266" />
+            <Position x="702" y="1386" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_a2d7bb77310048deadc60ed4de89ca89_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_39c0ceb2108e4e288c1bbb8e4da7b4ba_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_f98771b7832a4f5ea046b92ca56592f7_.yxdb</TempFileDataProfiling>
               <Layout>
                 <View1>
                   <Hints>
@@ -736,11 +747,12 @@ Union
         </Node>
         <Node ToolID="74">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="665" y="1350" />
+            <Position x="690" y="1326" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_0291a251953b433aa666a8e3aafbd4af_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_42237eb1e5974c88aaadea1756160d97_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_a1a330eb9bf247e9aaebc3ee2546bc4d_.yxdb</TempFileDataProfiling>
               <Layout>
                 <View1>
                   <Hints>
@@ -759,11 +771,12 @@ Union
         </Node>
         <Node ToolID="75">
           <GuiSettings Plugin="AlteryxBasePluginsGui.BrowseV2.BrowseV2">
-            <Position x="665" y="1434" />
+            <Position x="690" y="1422" />
           </GuiSettings>
           <Properties>
             <Configuration>
-              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8908_1e8e254f67f94204be45ef16de09c940_\Engine_8680_e338c144b35e4ad79aa3bdee5b86b2da_.yxdb</TempFile>
+              <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_24c7078bbc41449b9c3e0f6011484ef5_.yxdb</TempFile>
+              <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_9180_60ccce19177444e987d5477bbe16e5a8_\Engine_8832_b71b2b40279945ab89aa66e399a01305_.yxdb</TempFileDataProfiling>
               <Layout>
                 <ViewMode>Single</ViewMode>
                 <ViewSize value="100" />
@@ -804,31 +817,9 @@ ELSEIF [height...</DefaultAnnotationText>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
         </Node>
-        <Node ToolID="84">
-          <GuiSettings Plugin="CrossValidation">
-            <Position x="534" y="1350" />
-          </GuiSettings>
-          <Properties>
-            <Configuration>
-              <Value name="seed">1</Value>
-              <Value name="posClass">
-              </Value>
-              <Value name="stratified">False</Value>
-              <Value name="modelType">classification</Value>
-              <Value name="numberFolds">5</Value>
-              <Value name="numberTrials">2</Value>
-            </Configuration>
-            <Annotation DisplayMode="0">
-              <Name />
-              <DefaultAnnotationText />
-              <Left value="False" />
-            </Annotation>
-          </Properties>
-          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
-        </Node>
         <Node ToolID="90">
           <GuiSettings>
-            <Position x="390" y="1302" />
+            <Position x="378" y="1350" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -861,6 +852,30 @@ ELSEIF [height...</DefaultAnnotationText>
             </Annotation>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
+        </Node>
+        <Node ToolID="131">
+          <GuiSettings Plugin="CrossValidation">
+            <Position x="546" y="1374" />
+          </GuiSettings>
+          <Properties>
+            <Configuration>
+              <Value name="seed">1</Value>
+              <Value name="posClass">
+              </Value>
+              <Value name="stratified">False</Value>
+              <Value name="modelType">classification</Value>
+              <Value name="numberFolds">5</Value>
+              <Value name="numberTrials">3</Value>
+              <Value name="regression">False</Value>
+              <Value name="classification">True</Value>
+            </Configuration>
+            <Annotation DisplayMode="0">
+              <Name />
+              <DefaultAnnotationText />
+              <Left value="False" />
+            </Annotation>
+          </Properties>
+          <EngineSettings Macro="CrossValidation/Supporting_Macros/CrossValidation.yxmc" EngineDll="Macro" EngineDllEntryPoint="CrossValidation/Supporting_Macros/CrossValidation.yxmc" />
         </Node>
       </ChildNodes>
     </Node>
@@ -964,14 +979,6 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="80" Connection="Input_Data" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="56" Connection="Output" />
-      <Destination ToolID="80" Connection="Input_Models" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="43" Connection="Output" />
       <Destination ToolID="45" Connection="Input" />
     </Connection>
     <Connection>
@@ -980,11 +987,19 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="94" Connection="Input_Data" />
+      <Destination ToolID="129" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="47" Connection="Output" />
-      <Destination ToolID="94" Connection="Input_Models" />
+      <Destination ToolID="129" Connection="Input_Models" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="130" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="56" Connection="Output" />
+      <Destination ToolID="130" Connection="Input_Models" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="45" Connection="Output" />
@@ -995,16 +1010,16 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="47" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="94" Connection="Data" />
+      <Origin ToolID="129" Connection="Data" />
       <Destination ToolID="96" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="94" Connection="Fit Measures" />
-      <Destination ToolID="97" Connection="Input" />
+      <Origin ToolID="129" Connection="Fit Measures" />
+      <Destination ToolID="98" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="94" Connection="Full Report" />
-      <Destination ToolID="98" Connection="Input" />
+      <Origin ToolID="129" Connection="Full Report" />
+      <Destination ToolID="97" Connection="Input" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="54" Connection="Output" />
@@ -1015,40 +1030,40 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="56" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="80" Connection="Full Report" />
+      <Origin ToolID="130" Connection="Fit Measures" />
       <Destination ToolID="59" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="80" Connection="Fit Measures" />
-      <Destination ToolID="58" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="80" Connection="Data" />
+      <Origin ToolID="130" Connection="Data" />
       <Destination ToolID="57" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="79" Connection="Output" />
-      <Destination ToolID="84" Connection="Input_Data" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="90" Connection="Output" />
-      <Destination ToolID="84" Connection="Input_Models" />
+      <Origin ToolID="130" Connection="Full Report" />
+      <Destination ToolID="58" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="79" Connection="Output" />
       <Destination ToolID="90" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="84" Connection="Fit Measures" />
+      <Origin ToolID="79" Connection="Output" />
+      <Destination ToolID="131" Connection="Input_Data" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="90" Connection="Output" />
+      <Destination ToolID="131" Connection="Input_Models" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="131" Connection="Data" />
       <Destination ToolID="74" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="84" Connection="Full Report" />
-      <Destination ToolID="75" Connection="Input" />
+      <Origin ToolID="131" Connection="Fit Measures" />
+      <Destination ToolID="73" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="84" Connection="Data" />
-      <Destination ToolID="73" Connection="Input" />
+      <Origin ToolID="131" Connection="Full Report" />
+      <Destination ToolID="75" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>
@@ -1080,6 +1095,10 @@ ELSEIF [height...</DefaultAnnotationText>
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />

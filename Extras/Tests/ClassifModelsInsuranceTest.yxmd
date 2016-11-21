@@ -95,7 +95,6 @@
       </GuiSettings>
       <Properties>
         <Configuration>
-
           <TempFile>C:\ProgramData\Alteryx\Engine\Engine_3456_b7c6bb07c7414fe0acc296b1bd617a66_\Engine_9124_b328b8288537469487686f380bc01b62_.yxdb</TempFile>
           <Layout>
             <View1>
@@ -163,9 +162,9 @@
       </Properties>
       <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
     </Node>
-    <Node ToolID="14">
+    <Node ToolID="15">
       <GuiSettings Plugin="CrossValidation">
-        <Position x="222" y="138" />
+        <Position x="222" y="162" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -175,7 +174,7 @@
           <Value name="stratified">False</Value>
           <Value name="modelType">classification</Value>
           <Value name="numberFolds">5</Value>
-          <Value name="numberTrials">3</Value>
+          <Value name="numberTrials">4</Value>
           <Value name="regression">False</Value>
           <Value name="classification">True</Value>
         </Configuration>
@@ -191,26 +190,26 @@
   <Connections>
     <Connection>
       <Origin ToolID="2" Connection="Output" />
-      <Destination ToolID="14" Connection="Input_Models" />
+      <Destination ToolID="15" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="8" Connection="Output" />
-      <Destination ToolID="14" Connection="Input_Data" />
+      <Destination ToolID="15" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="7" Connection="Output" />
       <Destination ToolID="8" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="14" Connection="Fit Measures" />
-      <Destination ToolID="11" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="14" Connection="Data" />
+      <Origin ToolID="15" Connection="Data" />
       <Destination ToolID="10" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="14" Connection="Full Report" />
+      <Origin ToolID="15" Connection="Fit Measures" />
+      <Destination ToolID="11" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="15" Connection="Full Report" />
       <Destination ToolID="12" Connection="Input" />
     </Connection>
   </Connections>
