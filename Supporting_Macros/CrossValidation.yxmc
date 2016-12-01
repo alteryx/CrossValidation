@@ -4832,8 +4832,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_7ca39dc52f9a4f51b58392a28da1ae14_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_237930e3e070421382c3a240c532cfde_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_10984_646fb7662b5b437d90b48a230752d9f5_\Engine_1404_4a118f442d094cf9a3ce8f3dfcbb69b3_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_10524_76d26b699ce846c287b209815a3690f6_\Engine_12928_c476caeb8090426b87d2f286e08493fc_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4860,8 +4860,8 @@ if (is.null(getOption("testscript"))){
       </GuiSettings>
       <Properties>
         <Configuration>
-          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_1268f6f3d07f4329b0f250f59668f5c0_.yxdb</TempFileDataProfiling>
-          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_8804_294858ae8a0740a19da2b34d0827f22c_\Engine_8832_e66dce411c6d4f2194d73608253a9cd0_.yxdb</TempFile>
+          <TempFileDataProfiling>C:\Users\btoomey\AppData\Local\Temp\Engine_10984_646fb7662b5b437d90b48a230752d9f5_\Engine_1404_17298ee47b56493eb5e4a71a17b98a01_.yxdb</TempFileDataProfiling>
+          <TempFile>C:\Users\btoomey\AppData\Local\Temp\Engine_10524_76d26b699ce846c287b209815a3690f6_\Engine_12928_34db56cceb5643e6bb24bd88fe476520_.yxdb</TempFile>
           <Layout>
             <ViewMode>Single</ViewMode>
             <ViewSize value="100"/>
@@ -4927,7 +4927,7 @@ if (is.null(getOption("testscript"))){
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxGuiToolkit.ToolContainer.ToolContainer">
-        <Position x="54.00001" y="54" width="622" height="134"/>
+        <Position x="54" y="54" width="622" height="134"/>
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -4945,7 +4945,7 @@ if (is.null(getOption("testscript"))){
       <ChildNodes>
         <Node ToolID="23">
           <GuiSettings Plugin="AlteryxGuiToolkit.Questions.NumericUpDown.NumericUpDown">
-            <Position x="76.00007" y="112.0001" width="59" height="59"/>
+            <Position x="76.00006" y="112.0001" width="59" height="59"/>
           </GuiSettings>
           <Properties>
             <Configuration/>
@@ -5029,7 +5029,7 @@ if (is.null(getOption("testscript"))){
         </Node>
         <Node ToolID="51">
           <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-            <Position x="64.00001" y="87.99996" width="72" height="24"/>
+            <Position x="64" y="87.99996" width="72" height="24"/>
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -5324,30 +5324,20 @@ if (is.null(getOption("testscript"))){
         <Value/>
         <IsNumeric value="True"/>
       </Constant>
-      <Constant>
-        <Namespace>Question</Namespace>
-        <Name>Macro Output (89)</Name>
-        <Value/>
-        <IsNumeric value="False"/>
-      </Constant>
     </Constants>
     <MetaInfo>
       <NameIsFileName value="False"/>
       <Name>Cross Validation</Name>
       <Description>Benchmark multiple models using cross validation.</Description>
       <RootToolName/>
-      <ToolVersion/>
+      <ToolVersion>1.0.0.0</ToolVersion>
       <ToolInDb value="False"/>
-      <CategoryName>Predictive Refresh</CategoryName>
+      <CategoryName>Predictive</CategoryName>
       <SearchTags/>
-      <Author>Advanced Analytics</Author>
+      <Author>Alteryx Products</Author>
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
       <DescriptionLink actual="" displayed=""/>
-      <Example>
-        <Description/>
-        <File/>
-      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True"/>

@@ -253,9 +253,9 @@ Cross-Validation</Text>
           </Properties>
           <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxBrowseV2" />
         </Node>
-        <Node ToolID="129">
+        <Node ToolID="132">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="546" y="270" />
+            <Position x="534" y="282" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -617,9 +617,9 @@ Union
           </Properties>
           <EngineSettings Macro="Predictive Tools\Logistic_Regression.yxmc" />
         </Node>
-        <Node ToolID="130">
+        <Node ToolID="133">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="570" y="822" />
+            <Position x="570" y="810" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -853,9 +853,9 @@ ELSEIF [height...</DefaultAnnotationText>
           </Properties>
           <EngineSettings Macro="Predictive Tools\Neural_Network.yxmc" />
         </Node>
-        <Node ToolID="131">
+        <Node ToolID="134">
           <GuiSettings Plugin="CrossValidation">
-            <Position x="546" y="1374" />
+            <Position x="522" y="1350" />
           </GuiSettings>
           <Properties>
             <Configuration>
@@ -987,19 +987,19 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="129" Connection="Input_Data" />
+      <Destination ToolID="132" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="47" Connection="Output" />
-      <Destination ToolID="129" Connection="Input_Models" />
+      <Destination ToolID="132" Connection="Input_Models" />
     </Connection>
     <Connection>
       <Origin ToolID="43" Connection="Output" />
-      <Destination ToolID="130" Connection="Input_Data" />
+      <Destination ToolID="133" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="56" Connection="Output" />
-      <Destination ToolID="130" Connection="Input_Models" />
+      <Destination ToolID="133" Connection="Input_Models" />
     </Connection>
     <Connection name="#1">
       <Origin ToolID="45" Connection="Output" />
@@ -1010,15 +1010,15 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="47" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="129" Connection="Data" />
-      <Destination ToolID="96" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="129" Connection="Fit Measures" />
+      <Origin ToolID="132" Connection="Fit Measures" />
       <Destination ToolID="98" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="129" Connection="Full Report" />
+      <Origin ToolID="132" Connection="Data" />
+      <Destination ToolID="96" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="132" Connection="Full Report" />
       <Destination ToolID="97" Connection="Input" />
     </Connection>
     <Connection name="#1">
@@ -1030,16 +1030,16 @@ ELSEIF [height...</DefaultAnnotationText>
       <Destination ToolID="56" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="130" Connection="Fit Measures" />
+      <Origin ToolID="133" Connection="Full Report" />
+      <Destination ToolID="58" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="133" Connection="Fit Measures" />
       <Destination ToolID="59" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="130" Connection="Data" />
+      <Origin ToolID="133" Connection="Data" />
       <Destination ToolID="57" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="130" Connection="Full Report" />
-      <Destination ToolID="58" Connection="Input" />
     </Connection>
     <Connection>
       <Origin ToolID="79" Connection="Output" />
@@ -1047,22 +1047,22 @@ ELSEIF [height...</DefaultAnnotationText>
     </Connection>
     <Connection>
       <Origin ToolID="79" Connection="Output" />
-      <Destination ToolID="131" Connection="Input_Data" />
+      <Destination ToolID="134" Connection="Input_Data" />
     </Connection>
     <Connection>
       <Origin ToolID="90" Connection="Output" />
-      <Destination ToolID="131" Connection="Input_Models" />
+      <Destination ToolID="134" Connection="Input_Models" />
     </Connection>
     <Connection>
-      <Origin ToolID="131" Connection="Data" />
+      <Origin ToolID="134" Connection="Data" />
       <Destination ToolID="74" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="131" Connection="Fit Measures" />
+      <Origin ToolID="134" Connection="Fit Measures" />
       <Destination ToolID="73" Connection="Input" />
     </Connection>
     <Connection>
-      <Origin ToolID="131" Connection="Full Report" />
+      <Origin ToolID="134" Connection="Full Report" />
       <Destination ToolID="75" Connection="Input" />
     </Connection>
   </Connections>
@@ -1095,10 +1095,6 @@ ELSEIF [height...</DefaultAnnotationText>
       <Company />
       <Copyright />
       <DescriptionLink actual="" displayed="" />
-      <Example>
-        <Description />
-        <File />
-      </Example>
     </MetaInfo>
     <Events>
       <Enabled value="True" />
