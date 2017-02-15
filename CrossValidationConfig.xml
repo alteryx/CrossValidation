@@ -18,11 +18,11 @@
       <Name>Cross Validation</Name>
       <Description>Benchmark multiple models using cross validation.</Description>
       <RootToolName></RootToolName>
-      <ToolVersion></ToolVersion>
+      <ToolVersion>1.0.0.0</ToolVersion>
       <ToolInDb></ToolInDb>
-      <CategoryName>Predictive Refresh</CategoryName>
+      <CategoryName>Predictive</CategoryName>
       <SearchTags></SearchTags>
-      <Author>Advanced Analytics</Author>
+      <Author>Alteryx Products</Author>
       <Company>Alteryx, Inc</Company>
       <Copyright>Alteryx, Inc</Copyright>
       <DescriptionLink></DescriptionLink>
