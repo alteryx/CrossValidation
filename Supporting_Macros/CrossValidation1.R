@@ -14,9 +14,6 @@
 checkInstalls <- function(packages) {
   # See if the desired packages are installed, and install if they're not
   if (!all(packages %in% row.names(installed.packages()))) {
-    # Use the IE based "Internet2" since it is most reliable for this action,
-    # it will be switched back at the end
-    setInternet2(use = TRUE)
     # Make sure the path to the users library is in place and create it if it
     # is not
     minor_ver <- strsplit(R.Version()$minor, "\\.")[[1]][1]
@@ -33,7 +30,6 @@ checkInstalls <- function(packages) {
     repo <- c(repo, "https://alteryx.github.io/drat")
     missingPackages <- packages[which(!(packages %in% row.names(installed.packages())))]
     install.packages(missingPackages, lib = the_path, repos = repo)
-    setInternet2(use = FALSE)
   }
 }
 
@@ -44,13 +40,11 @@ library("sm")
 library("vioplot")
 library("ggplot2")
 
-#Make sure the user has at least AlteryxPredictive 0.3.1, since that version
-#contains scoreModel2
-if (packageVersion("AlteryxPredictive") < '0.3.2') {
-  setInternet2(use = TRUE)
+#Make sure the user has at least AlteryxPredictive 0.4.3, since that version
+#contains getYvar and other necessary utility functions.
+if (packageVersion("AlteryxPredictive") < '0.4.3') {
   the_path <- paste0(normalizePath("~"), "\\R\\win-library\\", R.Version()$major, ".", substr(R.Version()$minor, start = 1, stop = 1))
   install.packages("AlteryxPredictive", lib = the_path, repos = "https://alteryx.github.io/drat")
-  setInternet2(use = FALSE)
 }
 
 #' ### Read Configuration
@@ -124,11 +118,13 @@ runTest <- function(modelName, payload){
 checkXVars <- function(inputs){
   numModels <- length(inputs$models)
   modelNames <- names(inputs$models)
+  print('about to lapply getxvars')
   modelXVars <-  if (packageVersion('AlteryxPredictive') <= '0.3.2'){
     lapply(inputs$models, getXVars2)
   } else {
     lapply(inputs$models, getXVars)
   }
+  print('got xvars')
   dataXVars <- names(inputs$data)[which(names(inputs$data) %in% unlist(modelXVars))]
   errorMsg <- NULL
   if (numModels > 1) {
@@ -256,7 +252,7 @@ getOneYVar <- function(model) {
 getYvars <- function(data, models) {
   # Get the names of the target fields and make sure they are all same. If not,
   # throw an error.
-  y_names <- sapply(models, getOneYVar)
+  y_names <- sapply(models, getYVar)
   if (!all(y_names == y_names[1])) {
     stop.Alteryx2("More than one target variable are present in the provided models")
   } else if (!(y_names[1] %in% colnames(data))) {
@@ -326,18 +322,21 @@ naiveBayesUpdate <- function(model, trainingData, currentYvar) {
 }
 
 #' Given a model, a dataset and index of test cases, return actual and response
-getActualandResponse <- function(model, data, testIndices, extras, mid){
+getActualandResponse <- function(model, data, testIndices, extras, mid, config){
   trainingData <- data[-testIndices,]
   testData <- data[testIndices,]
   testData <- matchLevels(testData, getXlevels(model))
-  currentYvar <- getOneYVar(model)
+  currentYvar <- getYVar(model)
+  print('about to update')
   #Check if the model is Naive Bayes and lacking a Laplace parameter.
   #If so, set the Laplace parameter to 0 and warn the user.
   if (inherits(model, "naiveBayes")) {
     currentModel <- naiveBayesUpdate(model, trainingData, currentYvar)
-  } else {
+  } 
+  else {
     currentModel <- update(model, data = trainingData)
   }
+  print('did the update')
   if (inherits(currentModel, 'gbm')){
     currentModel <- adjustGbmModel(currentModel)
   }
@@ -365,7 +364,12 @@ getCrossValidatedResults <- function(inputs, allFolds, extras, config){
   function(mid, trial, fold){
     model <- inputs$models[[mid]]
     testIndices <- allFolds[[trial]][[fold]]
-    out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid))
+    #Enable use of original config options from the original model if the model comes from 
+    #Linear or Logistic Regression (refreshed versions)
+    if (!is.null(model$config)) {
+      config <- append(config, model$config)
+    }
+    out <- (safeGetActualAndResponse(model, inputs$data, testIndices, extras, mid, config))
     if (is.null(out)) {
       AlteryxMessage2(paste0("For model ", mid, " trial ", trial, " fold ", fold, " the data could not be scored."), iType = 2, iPriority = 3)
     } else {
@@ -616,12 +620,14 @@ plotRegressionData <- function(plotData, config, modelNames) {
 # Helper Functions End ----
 getResultsCrossValidation <- function(inputs, config){
   inputs$data$recordID <- 1:NROW(inputs$data)
-  
+  print('got recordid')
   if (!is.null(config$modelType)){
     config$classification = (config$modelType == "classification")
     config$regression = !config$classification
   }
+  print('about to getyvars')
   yVar <- getYvars(inputs$data, inputs$models)
+  print('got yvars')
   if ((config$classification) && (length(unique(yVar)) == 2)) {
     if (config$posClass == "") {
       config$posClass <- as.character(getPosClass(config, levels(yVar)))
